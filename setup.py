@@ -16,7 +16,7 @@ test_requirements = ['pytest>=3', ]
 
 setup(
     author="Stavros Kolometsos",
-    author_email='st@example.com',
+    author_email='stkolome@iit.demokritos.gr',
     python_requires='>=3.6',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
@@ -31,7 +31,7 @@ setup(
     description="Evolved5G CLI prototype ",
     entry_points={
         'console_scripts': [
-            'evolved5g=evolved5g.cli:main',
+            'evolved5g=evolved5g.cli:cli',
         ],
     },
     install_requires=requirements,
