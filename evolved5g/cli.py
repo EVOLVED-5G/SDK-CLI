@@ -3,13 +3,13 @@ import click
 from cookiecutter.main import cookiecutter
 import os
 
-# @click.command()
-# def main(args=None):
-#     """Console script for evolved5g."""
-#     click.echo(
-#         "The console script for Evolved5G, this messages comes from evolved5g.cli.main")
-#     click.echo("See click documentation at https://click.palletsprojects.com/")
-#     return 0
+@click.command()
+def main(args=None):
+    """Console script for evolved5g."""
+    click.echo(
+        "The console script for Evolved5G, this messages comes from evolved5g.cli.main")
+    click.echo("See click documentation at https://click.palletsprojects.com/")
+    return 0
 
 # Creating Command group
 
