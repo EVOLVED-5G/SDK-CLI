@@ -1,5 +1,4 @@
 """Console script for evolved5g."""
-import sys
 import click
 from cookiecutter.main import cookiecutter
 import os
@@ -34,7 +33,7 @@ def generate():
     """Generate EVOLVED-5G compliant NetApp from template"""
     __location__ = os.path.realpath(os.path.join(
         os.getcwd(), os.path.dirname(__file__), ".."))
-    click.echo(__location__)
+    # click.echo(__location__)  # -- for debug
     # Create project from the cookiecutter-pypackage/ template
     cookiecutter(__location__ + '/cookiecutter_template/')
     # Create project from the cookiecutter-pypackage.git repo template in case we want to do it from Repo later
@@ -52,7 +51,3 @@ cli.add_command(test)
 cli.add_command(generate)
 cli.add_command(connect)
 
-
-if __name__ == "__main__":
-    sys.exit(main())  # pragma: no cover
-    cli()
