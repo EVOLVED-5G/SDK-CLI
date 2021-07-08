@@ -3,6 +3,10 @@ import click
 from cookiecutter.main import cookiecutter
 import os
 
+def cookiecutter_generate(location, no_input=False,**kwargs):
+    extra_context = kwargs['extra_context']
+    cookiecutter(location, no_input=no_input, extra_context=extra_context)
+
 @click.command()
 def main(args=None):
     """Console script for evolved5g."""
@@ -29,13 +33,19 @@ def test(repeat, name):
 
 
 @click.command()
-def generate():
+@click.option('--no-input', type=bool, is_flag=True,
+              help='Enables no prompt from the CLI during template generation', default=False)
+@click.option('-r', '--repo-name', type=str, help='Enter Repository name')
+@click.option('-p', '--package-name', type=str, help='Enter package name')
+def generate(no_input, repo_name, package_name):
     """Generate EVOLVED-5G compliant NetApp from template"""
     __location__ = os.path.realpath(os.path.join(
         os.getcwd(), os.path.dirname(__file__), ".."))
+    location = (__location__ + '/cookiecutter_template/')
     # click.echo(__location__)  # -- for debug
+    extra = {}
     # Create project from the cookiecutter-pypackage/ template
-    cookiecutter(__location__ + '/cookiecutter_template/')
+    cookiecutter_generate(location, no_input=no_input, extra_context=extra)
     # Create project from the cookiecutter-pypackage.git repo template in case we want to do it from Repo later
     # cookiecutter('https://github.com/audreyr/cookiecutter-pypackage.git')
 
@@ -50,4 +60,3 @@ def connect():
 cli.add_command(test)
 cli.add_command(generate)
 cli.add_command(connect)
-
