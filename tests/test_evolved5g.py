@@ -3,7 +3,7 @@
 """Tests for `evolved5g` package."""
 
 import pytest
-
+import os
 from click.testing import CliRunner
 
 from evolved5g import evolved5g
@@ -26,12 +26,77 @@ def test_content(response):
     # assert 'GitHub' in BeautifulSoup(response.content).title.string
 
 
-def test_command_line_interface():
-    """Test the CLI."""
+# def test_command_line_interface():
+#     """Test the CLI."""
+#     runner = CliRunner()
+#     result = runner.invoke(cli.main)
+#     assert result.exit_code == 0
+#     assert 'evolved5g.cli.main' in result.output
+#     help_result = runner.invoke(cli.main, ['--help'])
+#     assert help_result.exit_code == 0
+#     assert '--help  Show this message and exit.' in help_result.output
+
+def test_cli():
+    """ Test the CLI  """
     runner = CliRunner()
-    result = runner.invoke(cli.main)
+    result = runner.invoke(cli.cli)
     assert result.exit_code == 0
-    assert 'evolved5g.cli.main' in result.output
-    help_result = runner.invoke(cli.main, ['--help'])
+    assert "interface for EVOLVED-5G" in result.output
+    assert "generate" in result.output
+    help_result = runner.invoke(cli.cli, ['--help'])
     assert help_result.exit_code == 0
     assert '--help  Show this message and exit.' in help_result.output
+
+def test_cli_generate():
+    """ Test the CLI generate command """
+    runner = CliRunner()
+    assert not os.path.isdir('NetApp')
+    result = runner.invoke(cli.cli, ['generate', "--help"])
+    assert result.exit_code == 0
+    assert "EVOLVED-5G compliant" in result.output
+    # shutil.rmtree('NetApp')  -- IF cleanup is needed
+
+def test_cli_default_generate():
+    """ Test the CLI default valued generate command """
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        assert not os.path.isdir('NetApp')
+        result = runner.invoke(cli.cli, ['generate'])
+        assert result.exit_code == 0
+        assert os.path.isdir('NetApp')
+        assert os.path.isdir(os.path.join('NetApp', 'netapp'))
+        assert os.path.isfile(os.path.join('NetApp', 'netapp', 'main.py'))
+        # shutil.rmtree('NetApp')  -- IF cleanup is needed
+
+
+def test_cli_custom_generate():
+    """ Test the CLI generate command with custom values through prompt """
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        result = runner.invoke(cli.cli, ['generate'], input="Tested")
+        assert result.exit_code == 0
+        assert os.path.isdir('Tested')
+        assert os.path.isdir(os.path.join('Tested', 'tested'))
+    # shutil.rmtree('NetApp')  -- IF cleanup is needed
+
+def test_cli_custom_generate_through_options():
+    """ Test the CLI generate command with custom values """
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        assert not os.path.isdir('Test2')
+        result = runner.invoke(cli.cli, ['generate', '-r', "Test2"])
+        assert result.exit_code == 0
+        assert os.path.isdir('Test2')
+        assert os.path.isdir(os.path.join('Test2', 'test2'))
+    # shutil.rmtree('NetApp')  -- IF cleanup is needed
+
+def test_cli_generate_no_prompt():
+    """ Test the CLI generate command no prompt asked """
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        result = runner.invoke(cli.cli, ['generate', '--no-input'], input="Tested")
+        assert result.exit_code == 0
+        assert os.path.isdir('NetApp')
+        assert not os.path.isdir('Tested')
+        assert os.path.isdir(os.path.join('NetApp', 'netapp'))
+        assert not os.path.isdir(os.path.join('Tested', 'tested'))
