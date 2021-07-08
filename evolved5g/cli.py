@@ -3,9 +3,13 @@ import click
 from cookiecutter.main import cookiecutter
 import os
 
-def cookiecutter_generate(location, no_input=False,**kwargs):
+
+def cookiecutter_generate(location, no_input=False, **kwargs):
+    """ Create project from the cookiecutter template in location given
+    with the appropriate arguments. """
     extra_context = kwargs['extra_context']
     cookiecutter(location, no_input=no_input, extra_context=extra_context)
+
 
 @click.command()
 def main(args=None):
@@ -44,10 +48,12 @@ def generate(no_input, repo_name, package_name):
     location = (__location__ + '/cookiecutter_template/')
     # click.echo(__location__)  # -- for debug
     extra = {}
+    if repo_name:
+        extra['repoName'] = repo_name
+    if package_name:
+        extra['packageName'] = package_name
     # Create project from the cookiecutter-pypackage/ template
     cookiecutter_generate(location, no_input=no_input, extra_context=extra)
-    # Create project from the cookiecutter-pypackage.git repo template in case we want to do it from Repo later
-    # cookiecutter('https://github.com/audreyr/cookiecutter-pypackage.git')
 
 
 @click.command()
