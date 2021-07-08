@@ -100,3 +100,33 @@ def test_cli_generate_no_prompt():
         assert not os.path.isdir('Tested')
         assert os.path.isdir(os.path.join('NetApp', 'netapp'))
         assert not os.path.isdir(os.path.join('Tested', 'tested'))
+
+def test_cli_generate_no_prompt_custom():
+    """ Test the CLI generate command no prompt asked but custom value gived """
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        result = runner.invoke(cli.cli, ['generate', '--no-input', '-r', "Test2", "-p", "not_test"], input="Tested")
+        assert result.exit_code == 0
+        assert os.path.isdir('Test2')
+        assert not os.path.isdir('Tested')
+        assert os.path.isdir(os.path.join('Test2', 'not_test'))
+        assert not os.path.isdir(os.path.join('Tested', 'tested'))
+
+
+def test_cli_generate_custom_package():
+    """ Test the CLI generate command with custom package name """
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        result = runner.invoke(cli.cli, ['generate',"-p", "not_test"])
+        assert result.exit_code == 0
+        assert os.path.isdir(os.path.join('NetApp', 'not_test'))
+
+def test_cli_generate_custom_package_prompt_repo():
+    """ Test the CLI generate command no prompt asked but custom value gived """
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        result = runner.invoke(cli.cli, ['generate', "-p", "not_test"], input="Test2")
+        assert result.exit_code == 0
+        assert os.path.isdir('Test2')
+        assert not os.path.isdir('NetApp')
+        assert os.path.isdir(os.path.join('Test2', 'not_test'))
