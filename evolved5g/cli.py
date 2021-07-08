@@ -17,6 +17,7 @@ def main(args=None):
 
 @click.group()
 def cli():
+    """Console interface for EVOLVED-5G H2020 project"""
     pass
 
 
