@@ -36,7 +36,7 @@ Installation
 ============
 
 
-Stable release
+Stable release (NOT YET INTEGRATED)
 --------------
 
 To install Evolved5G_CLI, run this command in your terminal:
