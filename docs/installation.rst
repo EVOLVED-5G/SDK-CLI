@@ -32,13 +32,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/skolome/evolved5g
+    $ git clone git://github.com/skolome/evolved5g_cli
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/skolome/evolved5g/tarball/master
+    $ curl -OJL https://github.com/skolome/evolved5g_cli/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/skolome/evolved5g
-.. _tarball: https://github.com/skolome/evolved5g/tarball/master
+.. _Github repo: https://github.com/skolome/evolved5g_cli
+.. _tarball: https://github.com/skolome/evolved5g_cli/tarball/master

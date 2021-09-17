@@ -6,11 +6,9 @@ Evolved5G_CLI
 .. image:: https://img.shields.io/pypi/v/evolved5g.svg
         :target: https://pypi.python.org/pypi/evolved5g
 
-.. image:: https://img.shields.io/travis/skolome/evolved5g.svg
-        :target: https://travis-ci.com/skolome/evolved5g
 
-.. image:: https://readthedocs.org/projects/evolved5g/badge/?version=latest
-        :target: https://evolved5g.readthedocs.io/en/latest/?version=latest
+.. image:: https://readthedocs.org/projects/evolved5g_cli/badge/?version=latest
+        :target: https://evolved5g_cli.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
 
 
@@ -20,7 +18,7 @@ Evolved5G CLI prototype
 
 
 * Free software: Apache Software License 2.0
-* Documentation: https://evolved5g.readthedocs.io.
+* Documentation: https://evolved5g_cli.readthedocs.io.
 
 =============
 Features
@@ -28,90 +26,15 @@ Features
 
 * Generate a new python NetApp from a template
 * Assist in connecting the new NetApp & repo with EVOLVED-5G CI/CD pipeline
+
 .. highlight:: shell
 
+.. include:: ../docs/installation.rst
 
-============
-Installation
-============
+.. highlight:: shell
 
+.. include:: ../docs/usage.rst
 
-Stable release (NOT YET INTEGRATED)
---------------
-
-To install Evolved5G_CLI, run this command in your terminal:
-
-.. code-block:: console
-
-    $ pip install evolved5g
-
-This is the preferred method to install Evolved5G_CLI, as it will always install the most recent stable release.
-
-If you don't have `pip`_ installed, this `Python installation guide`_ can guide
-you through the process.
-
-.. _pip: https://pip.pypa.io
-.. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
-
-
-From sources
-------------
-
-The sources for Evolved5G_CLI can be downloaded from the `Github repo`_.
-
-You can either clone the public repository:
-
-.. code-block:: console
-
-    $ git clone git://github.com/skolome/evolved5g
-
-Or download the `tarball`_:
-
-.. code-block:: console
-
-    $ curl -OJL https://github.com/skolome/evolved5g/tarball/master
-
-Once you have a copy of the source, you can install it with:
-
-.. code-block:: console
-
-    $ python setup.py install
-
-
-.. _Github repo: https://github.com/skolome/evolved5g
-.. _tarball: https://github.com/skolome/evolved5g/tarball/master
-
-============
-Usage
-============
-
-
-Run the following command to access the documentation/help page and read about the various options
-
-.. code-block:: console
-
-    $ evolved5g
-
-Generate
-------------
-
-To generate a new NetApp project run the following command. You will be asked for some inputs such as the repoName, packageName etc
-
-.. code-block:: console
-
-    $ evolved5g generate
-   
-or to learn more about the available options
-   
-.. code-block:: console
-
-    $ evolved5g generate --help
-    
-For example run the following command, to have the repoName as "firstNetApp" and all other values as the default ones:
- 
-.. code-block:: console
- 
-    $ evolved5g generate --no-input -r firstNetApp
 
 Credits
 -------
