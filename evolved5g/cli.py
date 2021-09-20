@@ -36,19 +36,23 @@ def test(repeat, name):
               help='Enables no prompt from the CLI during template generation', default=False)
 @click.option('-r', '--repo-name', type=str, help='Enter Repository name')
 @click.option('-p', '--package-name', type=str, help='Enter package name')
-def generate(no_input, repo_name, package_name):
+@click.option('-t', '--template', type=str, help="Provide template location for custom package")
+def generate(no_input, repo_name, package_name, template):
     """Generate EVOLVED-5G compliant NetApp from template"""
     # __location__ = os.path.realpath(os.path.join(
     #    os.getcwd(), os.path.dirname(__file__), ".."))
     # location = (__location__ + '/cookiecutter_template/')
     # click.echo(__location__)  # -- for debug
-    location = "gh:EVOLVED-5G/template"
     extra = {}
     if repo_name:
         extra['repoName'] = repo_name
     if package_name:
         extra['packageName'] = package_name
-    # Create project from the cookiecutter-pypackage/ template
+    if template:
+        cookiecutter_generate(template,no_input=no_input,extra_context=extra)
+        return
+    location = "gh:EVOLVED-5G/template" # location to github package
+    # Create project from the github package template
     cookiecutter_generate(location, no_input=no_input, extra_context=extra)
 
 

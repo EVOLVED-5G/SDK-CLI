@@ -2,6 +2,14 @@
 History
 =======
 
+0.1.9 (2021-20-09)
+------------------
+
+* Added version option to CLI
+* Changed 'generate' command to point to EVOLVED-5G/template at Github
+* Added template option to point to your user's template. Used in tests by default pointing at skolome/netapp-ckcutter-template
+
+
 0.1.4 (2021-17-09)
 ------------------
 
