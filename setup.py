@@ -43,7 +43,7 @@ setup(
     packages=find_packages(include=['evolved5g', 'evolved5g.*']),
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/skolome/evolved5g',
+    url='https://github.com/skolome/evolved5g_cli',
     version='0.1.9',
     zip_safe=False,
 )
