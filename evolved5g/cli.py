@@ -16,6 +16,7 @@ def main(args=None):
 
 
 @click.group()
+@click.version_option()
 def cli():
     """Console interface for EVOLVED-5G H2020 project"""
     pass
@@ -27,7 +28,7 @@ def cli():
 def test(repeat, name):
     """For Testing purposes, TODO Delete"""
     for i in range(repeat):
-        click.echo(f'Hello {name}')
+        click.echo(f'Hello {name}. This is a test')
 
 
 @click.command()
@@ -37,10 +38,11 @@ def test(repeat, name):
 @click.option('-p', '--package-name', type=str, help='Enter package name')
 def generate(no_input, repo_name, package_name):
     """Generate EVOLVED-5G compliant NetApp from template"""
-    __location__ = os.path.realpath(os.path.join(
-        os.getcwd(), os.path.dirname(__file__), ".."))
-    location = (__location__ + '/cookiecutter_template/')
+    # __location__ = os.path.realpath(os.path.join(
+    #    os.getcwd(), os.path.dirname(__file__), ".."))
+    # location = (__location__ + '/cookiecutter_template/')
     # click.echo(__location__)  # -- for debug
+    location = "gh:EVOLVED-5G/template"
     extra = {}
     if repo_name:
         extra['repoName'] = repo_name
