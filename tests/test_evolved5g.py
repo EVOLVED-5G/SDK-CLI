@@ -6,7 +6,6 @@ import pytest
 import os
 from click.testing import CliRunner
 
-from evolved5g import evolved5g
 from evolved5g import cli
 
 
