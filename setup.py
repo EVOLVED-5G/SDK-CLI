@@ -37,7 +37,7 @@ setup(
     license="Apache Software License 2.0",
     long_description=readme + '\n\n' + history,
     include_package_data=True,
-    keywords='evolved5g', 'sdk', 'NetApps',
+    keywords='evolved5g',
     name='evolved5g',
     packages=find_packages(include=['evolved5g', 'evolved5g.*']),
     test_suite='tests',
