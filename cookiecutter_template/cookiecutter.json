@@ -1,5 +1,0 @@
-{
-    "repoName": "NetApp",
-    "packageName": "{{ cookiecutter.repoName|lower|replace(' ', '_') }}",
-    "your_name": "Babis"
-}
