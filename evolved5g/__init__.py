@@ -1,5 +1,8 @@
 """Top-level package for Evolved5G_CLI."""
 
-__author__ = "Stavros Kolometsos"
-__email__ = 'stkolome at iit.demokritos.gr'
-__version__ = '0.2.2'
+__author__ = "EVOLVED5G project"
+__version__ = '0.2.5'
+
+# Uncomment next lines to give direct import access to modules
+#from . import cli
+#from . import sdk

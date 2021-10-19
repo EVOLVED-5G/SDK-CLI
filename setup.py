@@ -15,11 +15,10 @@ requirements = ['Click>=7.0', 'Cookiecutter', ]
 test_requirements = ['pytest>=3', ]
 
 setup(
-    author="Stavros Kolometsos",
-    author_email='stkolome@iit.demokritos.gr',
+    author="EVOLVED5G project",
     python_requires='>=3.6',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 2 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
@@ -43,7 +42,7 @@ setup(
     packages=find_packages(include=['evolved5g', 'evolved5g.*']),
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/skolome/evolved5g_cli',
-    version='0.2.2',
+    url='https://github.com/EVOLVED-5G/SDK-CLI',
+    version='0.2.5',
     zip_safe=False,
 )
