@@ -59,13 +59,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/skolome/evolved5g_cli
+    $ git clone git://github.com/EVOLVED-5G/SDK-CLI
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/skolome/evolved5g_cli/tarball/master
+    $ curl -OJL https://github.com/EVOLVED-5G/SDK-CLI/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -74,8 +74,8 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/skolome/evolved5g_cli
-.. _tarball: https://github.com/skolome/evolved5g_cli/tarball/master
+.. _Github repo: https://github.com/EVOLVED-5G/SDK-CLI
+.. _tarball: https://github.com/EVOLVED-5G/SDK-CLI/tarball/master
 
 ============
 Usage
@@ -103,11 +103,6 @@ or to learn more about the available options
 
     $ evolved5g generate --help
     
-For example run the following command, to have the repoName as "firstNetApp" and all other values as the default ones:
- 
-.. code-block:: console
- 
-    $ evolved5g generate --no-input -r firstNetApp
 
 Credits
 -------

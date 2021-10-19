@@ -23,15 +23,6 @@ def cli():
 
 
 @click.command()
-@click.option('-r', '--repeat', type=int, help='times to repeat', default=1)
-@click.option('-n', '--name', type=str, help='Name to greet', default='World')
-def test(repeat, name):
-    """For Testing purposes, TODO Delete"""
-    for i in range(repeat):
-        click.echo(f'Hello {name}. This is a test')
-
-
-@click.command()
 @click.option('--no-input', type=bool, is_flag=True,
               help='Enables no prompt from the CLI during template generation', default=False)
 @click.option('-r', '--repo-name', type=str, help='Enter Repository name')
@@ -56,13 +47,21 @@ def generate(no_input, repo_name, package_name, template):
     cookiecutter_generate(location, no_input=no_input, extra_context=extra)
 
 
-@click.command()
-def connect():
-    """Connect repository to CI/CD"""
-    # Connect repository to CI/CD TODO
-    click.echo("Connecting Repo to CI/CD")
+# @click.command()
+# def connect():
+#     """Connect repository to CI/CD"""
+#     # Connect repository to CI/CD TODO
+#     click.echo("Connecting Repo to CI/CD")
 
+# @click.command()
+# @click.option('-r', '--repeat', type=int, help='times to repeat', default=1)
+# @click.option('-n', '--name', type=str, help='Name to greet', default='World')
+# def test(repeat, name):
+#     """For Testing purposes, TODO Delete"""
+#     for i in range(repeat):
+#         click.echo(f'Hello {name}. This is a test')
 
-cli.add_command(test)
+#cli.add_command(test)
+# cli.add_command(connect)
+
 cli.add_command(generate)
-cli.add_command(connect)
