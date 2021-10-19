@@ -18,7 +18,7 @@ setup(
     author="EVOLVED5G project",
     python_requires='>=3.6',
     classifiers=[
-        'Development Status :: 2 - Alpha',
+        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
