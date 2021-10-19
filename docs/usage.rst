@@ -24,8 +24,3 @@ or to learn more about the available options
 
     $ evolved5g generate --help
     
-For example run the following command, to have the repoName as "firstNetApp" and all other values as the default ones:
- 
-.. code-block:: console
- 
-    $ evolved5g generate --no-input -r firstNetApp

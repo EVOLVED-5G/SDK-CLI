@@ -46,9 +46,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Evolved5G_CLI'
-copyright = "2021, Stavros Kolometsos"
-author = "Stavros Kolometsos"
+project = 'Evolved5G_SDK-CLI'
+copyright = "2021, EVOLVED-5G"
+author = "EVOLVED-5G"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -129,7 +129,7 @@ latex_elements = {
 latex_documents = [
     (master_doc, 'evolved5g.tex',
      'Evolved5G_CLI Documentation',
-     'Stavros Kolometsos', 'manual'),
+     'EVOLVED-5G', 'manual'),
 ]
 
 
