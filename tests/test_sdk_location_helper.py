@@ -5,7 +5,7 @@ from evolved5g.sdk import LocationHelper
 from tests import emulator_utils
 
 
-@pytest.mark.skip(reason="This can only be completed")
+@pytest.mark.skip(reason="This is not yet complete")
 def test_location_helper_registering_subscription():
     # We assume that you have initiated the NEF_EMULATOR https://github.com/EVOLVED-5G/NEF_emulator
     # first at url http://localhost:8888
