@@ -1,7 +1,7 @@
 """
 Tests that demonstrate how to interact with the Emulator.
 We assume that you have initiated the NEF_EMULATOR https://github.com/EVOLVED-5G/NEF_emulator
-first at urlhttp://localhost:8888
+first at url http://localhost:8888
 """
 from evolved5g import swagger_client
 from evolved5g.swagger_client import LoginApi, User
