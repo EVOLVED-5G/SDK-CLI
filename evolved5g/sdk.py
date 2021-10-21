@@ -1,4 +1,5 @@
 """SDK module"""
+from evolved5g import swagger_client
 from evolved5g.swagger_client import MonitoringEventAPIApi, AsSessionWithQoSSubscription, \
     MonitoringEventSubscriptionCreate, MonitoringEventSubscription
 from evolved5g.swagger_client.api_client import ApiClient
@@ -8,8 +9,12 @@ from evolved5g.swagger_client.api_client import ApiClient
 
 class LocationHelper:
 
-    def __init__(self, apiClient: ApiClient):
-        self.monitoring_event_api = MonitoringEventAPIApi(apiClient)
+    def __init__(self, host: str, bearer_access_token: str):
+        configuration = swagger_client.Configuration()
+        configuration.host = host
+        configuration.access_token = bearer_access_token
+        api_client = swagger_client.ApiClient(configuration=configuration)
+        self.monitoring_event_api = MonitoringEventAPIApi(api_client)
 
     def __create_subscription_request(self,
                                       external_id,
@@ -28,14 +33,14 @@ class LocationHelper:
 
     def create_subscription(self, netapp_id: str,
                             external_id,
-                            misisd,
+                            misisdn,
                             ipv4_addr, #todo: to discuss, could the SKD get it automatically? or should the developer pass it
                             ipv6_addr,
                             notification_destination,
                             maximum_number_of_reports,
                             monitor_expire_time) -> MonitoringEventSubscription:
 
-        body = self.__create_subscription_request(external_id, misisd, ipv4_addr, ipv6_addr, notification_destination,
+        body = self.__create_subscription_request(external_id, misisdn, ipv4_addr, ipv6_addr, notification_destination,
                                                   maximum_number_of_reports, monitor_expire_time)
         #todo: Do we always return a MonitoringEventSubscription ? Why at swagger it has a 200 response too that returns
         # a monitoring event report
