@@ -10,3 +10,5 @@ twine
 Click==8.0.1
 pytest==6.2.4
 cookiecutter==1.7.3
+invoke==1.6.0
+requests==2.26.0
