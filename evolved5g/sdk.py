@@ -11,23 +11,6 @@ class LocationHelper:
     def __init__(self, apiClient: ApiClient):
         self.monitoring_event_api = MonitoringEventAPIApi(apiClient)
 
-    # def __create_subscription_request_body(self, callback_url: str) -> AsSessionWithQoSSubscription:
-    #     # todo discuss these paramemeters
-    #     link = 'https://myresource.com'
-    #     ipv4_addr = None
-    #     ipv6_addr = '0:0:0:0:0:0:0:1'
-    #     mac_addr = None
-    #     notification_destination = callback_url  ##'https://example.com/mynetapp'
-    #     snssai = None
-    #     dnn = 'province1.mnc01.mcc202.gprs'
-    #     qos_reference = None
-    #     alt_qo_s_references = None
-    #     usage_threshold = None
-    #     qos_mon_info = None
-    #     return AsSessionWithQoSSubscription(link, ipv4_addr, ipv6_addr, mac_addr, notification_destination,
-    #                                         snssai, dnn, qos_reference, alt_qo_s_references, usage_threshold,
-    #                                         qos_mon_info)
-
     def __create_subscription_request(self,
                                       external_id,
                                       msisdn,
@@ -69,10 +52,11 @@ class LocationHelper:
             body, netapp_id, subscription_id)
 
     def get_all_subscriptions(self, netapp_id: str):
+        #todo: check the return type here
         return self.monitoring_event_api.read_active_subscriptions_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_get(
             netapp_id)
 
-    def get_subscription(self, netapp_id: str, subscription_id: str):
+    def get_subscription(self, netapp_id: str, subscription_id: str) -> MonitoringEventSubscription:
         return self.monitoring_event_api.read_item_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_get(
             netapp_id,
             subscription_id)
