@@ -1,30 +1,85 @@
 """SDK module"""
+from evolved5g.swagger_client import MonitoringEventAPIApi, AsSessionWithQoSSubscription, \
+    MonitoringEventSubscriptionCreate, MonitoringEventSubscription
+from evolved5g.swagger_client.api_client import ApiClient
 
 """ This helper class allows you to subscribe to the Location monitoring API """
 
 
 class LocationHelper:
 
-    def __init__(self, host, access_token):
-        self.host = host
-        """The host of the API (EX. http://localhost:8888"""
-        self.accessToken = access_token
-        """The beared key of the API """
+    def __init__(self, apiClient: ApiClient):
+        self.monitoring_event_api = MonitoringEventAPIApi(apiClient)
 
-    def create_subscription(self, netapp_id: str):
-        # todo:  POST to /api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions
-        raise NotImplementedError
+    # def __create_subscription_request_body(self, callback_url: str) -> AsSessionWithQoSSubscription:
+    #     # todo discuss these paramemeters
+    #     link = 'https://myresource.com'
+    #     ipv4_addr = None
+    #     ipv6_addr = '0:0:0:0:0:0:0:1'
+    #     mac_addr = None
+    #     notification_destination = callback_url  ##'https://example.com/mynetapp'
+    #     snssai = None
+    #     dnn = 'province1.mnc01.mcc202.gprs'
+    #     qos_reference = None
+    #     alt_qo_s_references = None
+    #     usage_threshold = None
+    #     qos_mon_info = None
+    #     return AsSessionWithQoSSubscription(link, ipv4_addr, ipv6_addr, mac_addr, notification_destination,
+    #                                         snssai, dnn, qos_reference, alt_qo_s_references, usage_threshold,
+    #                                         qos_mon_info)
+
+    def __create_subscription_request(self,
+                                      external_id,
+                                      msisdn,
+                                      ipv4_addr,
+                                      ipv6_addr,
+                                      notification_destination,
+                                      maximum_number_of_reports,
+                                      monitor_expire_time) -> MonitoringEventSubscriptionCreate:
+
+        monitoring_type = "LOCATION_REPORTING"
+        return MonitoringEventSubscriptionCreate(external_id,msisdn,ipv4_addr,ipv6_addr,notification_destination,
+                                                 monitoring_type,
+                                                 maximum_number_of_reports,
+                                                 monitor_expire_time)
+
+    def create_subscription(self, netapp_id: str,
+                            external_id,
+                            misisd,
+                            ipv4_addr, #todo: to discuss, could the SKD get it automatically? or should the developer pass it
+                            ipv6_addr,
+                            notification_destination,
+                            maximum_number_of_reports,
+                            monitor_expire_time) -> MonitoringEventSubscription:
+
+        body = self.__create_subscription_request(external_id, misisd, ipv4_addr, ipv6_addr, notification_destination,
+                                                  maximum_number_of_reports, monitor_expire_time)
+        #todo: Do we always return a MonitoringEventSubscription ? Why at swagger it has a 200 response too that returns
+        # a monitoring event report
+        return self.monitoring_event_api.create_item_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(body,
+                                                                                                          netapp_id)
+
+    def update_subscription(self, netapp_id: str, subscription_id: str, external_id,
+                            misisd, ipv4_addr, ipv6_addr, notification_destination,
+                            maximum_number_of_reports, monitor_expire_time) -> MonitoringEventSubscription:
+
+        body = self.__create_subscription_request(external_id, misisd, ipv4_addr, ipv6_addr, notification_destination,
+                                                  maximum_number_of_reports, monitor_expire_time)
+        return self.monitoring_event_api.update_item_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_put(
+            body, netapp_id, subscription_id)
 
     def get_all_subscriptions(self, netapp_id: str):
-        # todo: GET to /api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions
-        raise NotImplementedError
+        return self.monitoring_event_api.read_active_subscriptions_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_get(
+            netapp_id)
 
     def get_subscription(self, netapp_id: str, subscription_id: str):
-        # todo: GET /api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}
-        raise NotImplementedError
+        return self.monitoring_event_api.read_item_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_get(
+            netapp_id,
+            subscription_id)
 
-    def update_subscription(self, netapp_id: str, subscription_id: str):
-        raise NotImplementedError
+
 
     def delete_subscription(self, netapp_id: str, subscription_id: str):
-        raise NotImplementedError
+        return self.monitoring_event_api.delete_item_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_delete(
+            netapp_id,
+            subscription_id)
