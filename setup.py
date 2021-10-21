@@ -3,6 +3,7 @@
 """The setup script."""
 
 from setuptools import setup, find_packages
+from pathlib import Path
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -10,7 +11,8 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0', 'Cookiecutter', ]
+with Path('requirements.txt').open() as file:
+    INSTALL_REQUIERES = file.readlines()
 
 test_requirements = ['pytest>=3', ]
 
@@ -33,7 +35,7 @@ setup(
             'evolved5g=evolved5g.cli:cli',
         ],
     },
-    install_requires=requirements,
+    install_requires=INSTALL_REQUIERES,
     license="Apache Software License 2.0",
     long_description=readme + '\n\n' + history,
     include_package_data=True,
