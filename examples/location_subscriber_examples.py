@@ -12,7 +12,7 @@ def showcase_create_subscription_and_retrieve_call_backs():
     and a local webserver that will print the location notifications it retrieves from the emulator
     """
 
-    ## Create a subscription, that will notify us 30 times, for the next 1 minute starting from now
+    ## Create a subscription, that will notify us in 30 times, for the next 15 minutes starting from now
     expire_time = (datetime.datetime.utcnow() + datetime.timedelta(minutes=15)).isoformat() + "Z"
     netapp_id = "myNetapp"
     host = emulator_utils.get_host_of_the_nef_emulator()
