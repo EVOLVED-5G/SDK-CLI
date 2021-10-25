@@ -105,7 +105,7 @@ or to learn more about the available options
     $ evolved5g generate --help
 
 
-.. include:: docs/libraries.rst
+.. include:: ./docs/libraries.rst
 
 Credits
 -------
