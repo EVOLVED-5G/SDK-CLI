@@ -1,7 +1,7 @@
 SDK - Libraries
 ============
 
-At the current release the SDK contains one utility class "**LocationSubscriber**"
+At the current release the SDK contains one class "**LocationSubscriber**"
 that allows you to track devices and retrieve updates about their location.
 You can use LocationSubscriber to create subscriptions, where each one of them can be used to track a device.
 
