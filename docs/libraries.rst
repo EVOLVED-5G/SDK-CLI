@@ -29,7 +29,8 @@ Run a webserver in order to capture the callback post requests from NEF EMULATOR
 
     python -m flask run
 
-This will initialize a web server at http://127.0.0.1:5000/
+where FLASK_APP should point to the absolute path of the SDK-CLI/examples/api.py file.
+These commands will initialize a web server at http://127.0.0.1:5000/
 
 Now you can run `Location subscriber example <https://github.com/EVOLVED-5G/SDK-CLI/blob/libraries/examples/location_subscriber_examples.py>`_
 
