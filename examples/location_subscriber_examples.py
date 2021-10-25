@@ -7,8 +7,9 @@ import uuid
 
 def showcase_create_subscription_and_retrieve_call_backs():
     """
-    This examples show cases how you can create a subscription to the 5G-API in order to monitor device location.
-    In order to run this example you need to follow the instruction in  readme.md
+    This example showcases how you can create a subscription to the 5G-API in order to monitor device location.
+    In order to run this example you need to follow the instructions in  readme.md in order to run the NEF emulator
+    and a local webserver that will print the location notifications it retrieves from the emulator
     """
 
     ## Create a subscription, that will notify us 30 times, for the next 1 minute starting from now
