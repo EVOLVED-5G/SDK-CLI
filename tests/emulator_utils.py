@@ -5,7 +5,7 @@ from evolved5g.swagger_client.models import Token
 
 def get_token() -> Token:
 
-    username = "admin@my-email.com";
+    username = "admin@my-email.com"
     password = "pass"
     # User name and pass matches are set in the .env of the docker of NEF_EMULATOR. See
     # https://github.com/EVOLVED-5G/NEF_emulator
@@ -25,6 +25,14 @@ def get_api_client(token) -> swagger_client.ApiClient:
     configuration.access_token = token.access_token
     api_client = swagger_client.ApiClient(configuration=configuration)
     return api_client
+
+
+def get_user() -> swagger_client.User:
+    token = get_token()
+    api_client = get_api_client(token)
+    api = LoginApi(api_client)
+    response = api.test_token_api_v1_login_test_token_post_with_http_info()
+    return response[0]
 
 
 def get_host_of_the_nef_emulator() -> str:

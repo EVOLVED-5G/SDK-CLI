@@ -5,7 +5,6 @@ first at url http://localhost:8888
 """
 import pytest
 
-from evolved5g import swagger_client
 from evolved5g.swagger_client import LoginApi, User
 from evolved5g.swagger_client.models import Token
 from tests import emulator_utils
