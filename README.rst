@@ -14,7 +14,7 @@ Evolved5G_CLI
 
 
 
-Evolved5G CLI prototype 
+Evolved5G CLI prototype
 
 
 * Free software: Apache Software License 2.0
@@ -96,13 +96,37 @@ To generate a new NetApp project run the following command. You will be asked fo
 .. code-block:: console
 
     $ evolved5g generate
-   
+
 or to learn more about the available options
-   
+
 .. code-block:: console
 
     $ evolved5g generate --help
-    
+
+
+============
+Running the examples
+============
+
+This repository displays examples on how to use the evolved-5G SKD and CLI.
+See project folder examples for user cases.
+Install the requirements_dev.txt
+.. code-block:: console
+    pip install -r requirements_dev.txt
+
+- Make sure initiated the NEF_EMULATOR at url http://localhost:8888 (See https://github.com/EVOLVED-5G/NEF_emulator for instructions)
+- Run a webserver in order to capture the callback post requests from NET EMULATOR
+On the terminal run the following commands to initiaze the webserver.
+Make sure you set the correct path to the examples/api.py file
+.. code-block:: console
+    export FLASK_APP=/home/user/evolved-5g/SDK-CLI/examples/api.py
+
+    export FLASK_ENV=development
+
+    python -m flask run
+
+This will initialize a web server at http://127.0.0.1:5000/
+Opening it should display a message "echo evolved5G web server started"
 
 Credits
 -------
