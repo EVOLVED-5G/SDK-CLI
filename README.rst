@@ -125,9 +125,9 @@ Install the requirements_dev.txt
 
     pip install -r requirements_dev.txt
 
-Make sure you have initiated the NEF_EMULATOR at url http://localhost:8888 (See  `here <https://github.com/EVOLVED-5G/NEF_emulator>`_  for instructions)
-
-Run a webserver in order to capture the callback post requests from NEF EMULATOR: On the terminal run the following commands to initiaze the webserver.
+Make sure you have initiated the NEF_EMULATOR at url http://localhost:8888 (See  `here <https://github.com/EVOLVED-5G/NEF_emulator>`_  for instructions),
+you have logged in to the interface, clicked on the map and have started the simulation.
+Then run a webserver in order to capture the callback post requests from NEF EMULATOR: On the terminal run the following commands to initiaze the webserver.
 
 
     export FLASK_APP=/home/user/evolved-5g/SDK-CLI/examples/api.py
@@ -140,7 +140,7 @@ where FLASK_APP should point to the absolute path of the SDK-CLI/examples/api.py
 These commands will initialize a web server at http://127.0.0.1:5000/
 
 Now you can run `Location subscriber example <https://github.com/EVOLVED-5G/SDK-CLI/blob/libraries/examples/location_subscriber_examples.py>`_
-
+You should be able to view the location updates, printed in the terminal that runs the FLASK webserver
 
 Credits
 -------
