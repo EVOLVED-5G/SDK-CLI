@@ -33,6 +33,7 @@ setup(
     entry_points={
         'console_scripts': [
             'evolved5g=evolved5g.cli:cli',
+            'cli_helper= evolved5g.cli:cli_helper',
         ],
     },
     install_requires=INSTALL_REQUIERES,
