@@ -6,6 +6,7 @@ from evolved5g.swagger_client import MonitoringEventAPIApi, \
 """
  This SKD class allows you to track devices and retrieve updates about their location.
  You can create subscriptions where each one of them can be used to track a device.
+ A notification is sent to a callback url you will provide, everytime the user device changes Cell
 """
 
 

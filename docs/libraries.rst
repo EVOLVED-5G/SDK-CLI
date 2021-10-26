@@ -27,7 +27,7 @@ Run a webserver in order to capture the callback post requests from NEF EMULATOR
 
     export FLASK_ENV=development
 
-    python -m flask run
+    python -m flask run --host=0.0.0.0
 
 where FLASK_APP should point to the absolute path of the SDK-CLI/examples/api.py file.
 These commands will initialize a web server at http://127.0.0.1:5000/

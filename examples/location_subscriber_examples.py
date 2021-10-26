@@ -12,21 +12,28 @@ def showcase_create_subscription_and_retrieve_call_backs():
     and a local webserver that will print the location notifications it retrieves from the emulator
     """
 
-    ## Create a subscription, that will notify us 30 times, for the next 15 minutes starting from now
-    expire_time = (datetime.datetime.utcnow() + datetime.timedelta(minutes=15)).isoformat() + "Z"
+    ## Create a subscription, that will notify us 1000 times, for the next 1 day starting from now
+    expire_time = (datetime.datetime.utcnow() + datetime.timedelta(days=1)).isoformat() + "Z"
     netapp_id = "myNetapp"
     host = emulator_utils.get_host_of_the_nef_emulator()
     token = emulator_utils.get_token()
     location_subscriber = LocationSubscriber(host, token.access_token)
-    # Let's create a subscription id
+
+    # In this example we are running flask at http://localhost:5000 with a POST route to (/monitoring/callback) in order to retrieve notifications.
+    # If you are running on the NEF emulator, you need to provide a notification_destination with an IP that the
+    # NEF emulator docker can understand
+    # For latest versions of docker this should be: http://host.docker.internal:5000/monitoring/callback"
+    # Alternative you can find the ip of the HOST by running 'ip addr show | grep "\binet\b.*\bdocker0\b" | awk '{print $2}' | cut -d '/' -f 1'
+    # See article for details: https://stackoverflow.com/questions/48546124/what-is-linux-equivalent-of-host-docker-internal/61001152
+
     subscription = location_subscriber.create_subscription(
                                                    netapp_id= netapp_id,
                                                    external_id= "123456789@domain.com",
                                                    misisdn= "918369110173",
-                                                   ipv4_addr="10.0.0.1",
+                                                   ipv4_addr="10.0.0.3",
                                                    ipv6_addr="::1",
-                                                   notification_destination ="http://localhost:5000/monitoring/callback",
-                                                   maximum_number_of_reports=30,
+                                                   notification_destination ="http://172.17.0.1:5000/monitoring/callback",
+                                                   maximum_number_of_reports=1000,
                                                    monitor_expire_time=expire_time
                                                )
 
@@ -37,8 +44,10 @@ def showcase_create_subscription_and_retrieve_call_backs():
     print(all_subscriptions)
 
     # Request information about a subscription
-    subscription_info = location_subscriber.get_subscription(netapp_id, subscription.link)
+    id =  subscription.link.split("/")[-1]
+    subscription_info = location_subscriber.get_subscription(netapp_id,id)
     print(subscription_info)
+
 
 if __name__ == "__main__":
     showcase_create_subscription_and_retrieve_call_backs()

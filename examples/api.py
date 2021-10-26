@@ -11,9 +11,11 @@ def index():
 
 @app.route('/monitoring/callback', methods=['POST'])
 def location_reporter():
-    print(request)
+    print("New location retrieved:")
+    print(request.get_json())
     return request.get_json()
 
 if __name__ == '__main__':
-    app.run()
+    print("initiating")
+    app.run(host='0.0.0.0')
 
