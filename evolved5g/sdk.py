@@ -111,15 +111,19 @@ class LocationSubscriber:
         return self.monitoring_event_api.update_item_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_put(
             body, netapp_id, subscription_id)
 
-    def get_all_subscriptions(self, netapp_id: str):
-       """
-             Reads all active subscriptions
+    def get_all_subscriptions(self, netapp_id: str,skip:int =0, limit: int=100):
+        """
+              Reads all active subscriptions
 
-             :param str netapp_id: string (The ID of the Netapp that creates a subscription)
-       """
+              :param skip: The number of subscriptions to skip
+              :param limit: The maximum number of transcriptions to return
+              :param str netapp_id: string (The ID of the Netapp that creates a subscription)
+        """
 
-       return self.monitoring_event_api.read_active_subscriptions_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_get(
-            netapp_id)
+        return self.monitoring_event_api.read_active_subscriptions_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_get(
+            netapp_id,
+            skip=skip,
+            limit=limit)
 
     def get_subscription(self, netapp_id: str, subscription_id: str) -> MonitoringEventSubscription:
         """

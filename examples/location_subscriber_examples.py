@@ -25,7 +25,7 @@ def showcase_create_subscription_and_retrieve_call_backs():
                                                    misisdn= "918369110173",
                                                    ipv4_addr="10.0.0.1",
                                                    ipv6_addr="::1",
-                                                   notification_destination ="http://127.0.0.1:5000/monitoring/callback",
+                                                   notification_destination ="http://localhost:5000/monitoring/callback",
                                                    maximum_number_of_reports=30,
                                                    monitor_expire_time=expire_time
                                                )
@@ -33,7 +33,7 @@ def showcase_create_subscription_and_retrieve_call_backs():
     print(subscription)
 
     # Get all subscriptions
-    all_subscriptions = location_subscriber.get_all_subscriptions(netapp_id)
+    all_subscriptions = location_subscriber.get_all_subscriptions(netapp_id, 0, 100)
     print(all_subscriptions)
 
     # Request information about a subscription
