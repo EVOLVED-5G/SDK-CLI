@@ -82,20 +82,6 @@ class  CLI_helper:
                     print (element)
                 elif "] stage" in element:
                     print (element)
-
-
-        # if "message" in result:
-        #     print (result["message"])
-
-        # else:
-        #     console = (json.dumps(result["console_log"]).split('\\n'))
-
-        #     for element in console:
-        #         if "] { (" in element:
-        #             print (element)
-        #         elif "[Pipeline]" not in element:
-        #             print (element)
-        #         elif "] stage" in element:
-        #             print (element)
+                    
 
 
