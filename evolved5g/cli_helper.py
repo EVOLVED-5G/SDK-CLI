@@ -2,6 +2,7 @@ from .utils import cookiecutter_generate
 import requests
 import json
 import json.decoder
+from click import echo
 
 
 
@@ -60,7 +61,7 @@ class  CLI_helper:
         mode = input("Type in which pipeline you want to run: build, deploy or destroy:\n ")
         result = self.curl(self.generate_token(), self.branch, mode)
 
-        print ("The ID of your pipeline is:\n", result,"\n")
+        echo("The ID of your pipeline is:\n", result,"\n")
 
     
     def check_pipeline(self):
@@ -71,17 +72,17 @@ class  CLI_helper:
         result = self.curl(self.generate_token(), pipelineid, "check")
 
         if result["status"] == "QUEUED":
-            print(result)
+            echo(result)
         else:
             console = (json.dumps(result["console_log"]).split('\\n'))
 
             for element in console:
                 if "] { (" in element:
-                    print (element)
+                    echo(element)
                 elif "[Pipeline]" not in element:
-                    print (element)
+                    echo(element)
                 elif "] stage" in element:
-                    print (element)
+                    echo(element)
                     
 
 
