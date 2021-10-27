@@ -26,15 +26,17 @@ def generate(ctx,no_input, repo_name, package_name, template):
 
 @cli.command()
 @click.option('--mode',type=click.Choice(['build', 'deploy','destroy'], case_sensitive=False))
+@click.option('--repo',type=str, help='Enter repo name')
 @click.pass_context
-def run_pipeline(ctx, mode):
+def run_pipeline(ctx, mode, repo):
     """
     """
-    ctx.obj["helper"].run_pipeline(mode) 
+    ctx.obj["helper"].run_pipeline(mode,repo) 
 
 @cli.command()
-def check_pipeline():
+@click.option('--id',type=int, help='Enter pipeline id')
+@click.pass_context
+def check_pipeline(ctx, id):
     """
     """
-    cli_helper = CLI_helper()
-    cli_helper.check_pipeline() 
+    ctx.obj["helper"].check_pipeline(id)

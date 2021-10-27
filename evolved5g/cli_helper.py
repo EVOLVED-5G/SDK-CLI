@@ -30,22 +30,6 @@ class  CLI_helper:
         location = "gh:EVOLVED-5G/template" 
         cookiecutter_generate(location, no_input=no_input) #extra_context=extra)
 
-    # def curl(self, tokeng, branchorpipe, mode):
-
-    #     self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": tokeng }
-        
-    #     if mode == "build" or mode == "deploy" or  mode == "destroy":
-    #         repo = input("Please write down your repo:\n")
-    #         data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "dummy-netapp/'+ mode +'", "parameters": { "VERSION": "1.0", "GIT_URL": "https://github.com/EVOLVED-5G/' + repo +'", "GIT_BRANCH": "' + branchorpipe + '"} }'
-    #         resp = requests.post(self.url_curl, headers=self.header, data=data)
-
-    #         return (resp.json()["id"])
-
-    #     if mode == "check":
-    #         resp = requests.get(f"{self.url_curl}/{branchorpipe}", headers=self.header)
-
-    #         return (resp.json())
-
     def generate_token(self):
 
         self.header = { "content-Type":"application/json", "accept": None, "Authorization": None }
@@ -53,20 +37,20 @@ class  CLI_helper:
         resp = requests.post(self.url_token, headers=self.header, data=data)
         return(resp.json()["access_token"])
 
-    def run_pipeline(self, mode):
+    def run_pipeline(self, mode, repo):
         """Run the build pipeline for the EVOLVED-5G NetApp"""
         self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
-        repo = input("Please write down your repo:\n")
+        # repo = input("Please write down your repo:\n")
         data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "dummy-netapp/'+ mode +'", "parameters": { "VERSION": "1.0", "GIT_URL": "https://github.com/EVOLVED-5G/' + repo +'", "GIT_BRANCH": "' + self.branch + '"} }'
         resp = requests.post(self.url_curl, headers=self.header, data=data)
         echo(resp.json()["id"])
 
-    def check_pipeline(self):
+    def check_pipeline(self, id):
 
         """Check the status of the pipeline for the EVOLVED-5G NetApp"""
         self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
-        pipelineid = input("Please write down the pipeline ID you want to check:\n")
-        resp = requests.get(f"{self.url_curl}/{pipelineid}", headers=self.header)
+        # pipelineid = input("Please write down the pipeline ID you want to check:\n")
+        resp = requests.get(f"{self.url_curl}/{id}", headers=self.header)
         result = resp.json()
 
         if result["status"] == "QUEUED":
