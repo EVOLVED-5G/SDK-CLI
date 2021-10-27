@@ -25,11 +25,12 @@ def generate(ctx,no_input, repo_name, package_name, template):
     ctx.obj["helper"].generate(no_input, repo_name, package_name, template) 
 
 @cli.command()
-def run_pipeline():
+@click.option('--mode',type=click.Choice(['build', 'deploy','destroy'], case_sensitive=False))
+@click.pass_context
+def run_pipeline(ctx, mode):
     """
     """
-    cli_helper = CLI_helper()
-    cli_helper.run_pipeline() 
+    ctx.obj["helper"].run_pipeline(mode) 
 
 @cli.command()
 def check_pipeline():
