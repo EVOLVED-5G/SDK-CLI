@@ -1,5 +1,5 @@
 ============
-Usage
+CLI
 ============
 
 
@@ -17,10 +17,9 @@ To generate a new NetApp project run the following command. You will be asked fo
 .. code-block:: console
 
     $ evolved5g generate
-   
+
 or to learn more about the available options
-   
+
 .. code-block:: console
 
     $ evolved5g generate --help
-    
