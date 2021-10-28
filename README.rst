@@ -250,7 +250,7 @@ Examples of usage
 
 The pipelines build, deploy or destroy will return an **ID** which can be used with the command *check_pipeline* to see how the NetApp is performing.
 
-Very important 
+**IMPORTANT** 
 -----------------
 
 Please check your NetApp repository has a branch **evolved5g**, otherwise the pipelines will fail.
