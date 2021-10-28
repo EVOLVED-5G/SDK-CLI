@@ -221,6 +221,31 @@ It will create a specific branch (evolved5g) which will be used by the CI/CD for
 When the repository is created you will be at branch evolved5g, so the push must be done there, in case you want to work with master (branch) you have to execute git checkout master and then do the push (git push -u origin master), to know in which branch you are, just execute git branch.
 
 ============
+SDK - Pipelines
+============
+
+This feature enables to run the pipelines from the SDK CLI. 
+Hereafter, the examples on how to usage will be described.
+
+Examples of usage
+^^^^^^^^^^^^^^
+
+evolved5g run_pipeline --mode build --repo REPOSITORY_NAME
+
+evolved5g run_pipeline --mode deploy --repo REPOSITORY_NAME
+
+evolved5g run_pipeline --mode destroy --repo REPOSITORY_NAME
+
+evolved5g check_pipeline --id YOUR_ID
+
+The pipelines build, deploy or destroy will return an **ID** which can be used with the command "check_pipeline" to see how the NetApp is performing.
+
+Very important 
+-----------------
+
+Please check your NetApp repository has a branch **evolved5g**, otherwise the pipelines will fail.
+
+============
 SDK - Libraries
 ============
 
