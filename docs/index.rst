@@ -6,11 +6,8 @@ Welcome to Evolved5G_CLI's documentation!
    :caption: Contents:
 
    readme
-   information
-   pre_requisites
    installation
    cli
-   pipelines
    libraries
    modules
    contributing
