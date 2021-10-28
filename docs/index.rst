@@ -12,7 +12,6 @@ Welcome to Evolved5G_CLI's documentation!
    cli
    pipelines
    libraries
-   modules
    contributing
    history
 

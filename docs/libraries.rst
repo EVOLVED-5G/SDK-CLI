@@ -1,18 +1,18 @@
 SDK - Libraries
-============
+===============
 
 At the current release the SDK contains one class "**LocationSubscriber**"
 that allows you to track devices and retrieve updates about their location.
 You can use LocationSubscriber to create subscriptions, where each one of them can be used to track a device.
 
 Examples of usage /Have a look at the code
-----
+------------------------------------------
 Have a look at the examples folder for code samples on how to use the SDK Library.
 
 `Location subscriber example <https://github.com/EVOLVED-5G/SDK-CLI/blob/libraries/examples/location_subscriber_examples.py>`_
 
 Prerequisites / How to start
-----
+----------------------------
 
 Install the requirements_dev.txt
 

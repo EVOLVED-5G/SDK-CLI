@@ -5,12 +5,14 @@ Pre-requisites
 To create a new repository within the EVOLVED-5G organization it is mandatory to create an SSH key since the communication with the repository will be through SSH connection, to create the SSH key can be done as follows:
 
 .. code-block:: console
+
    $ ssh-keygen -t rsa
 
 Some inputs will be asked, you just need to press enter to leave it by default.
 If left as default the key pair generated can be found in the /home/ubuntu/.ssh directory of your ubuntu machine. To be able to work through SSH, you will need to copy the public key file you have generated and add it to your GitHub account, this can be done as follows:
 
 .. code-block:: console
+
    $ cat ~/.ssh/id_rsa.pub
 
 #. Copy the output to your clipboard 
