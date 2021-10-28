@@ -1,6 +1,6 @@
-*************
+*******************
 Evolved5G CLI & SDK
-*************
+*******************
 
 
 .. image:: https://img.shields.io/pypi/v/evolved5g.svg
@@ -20,9 +20,9 @@ Evolved5G CLI prototype
 * Free software: Apache Software License 2.0
 * Documentation: https://evolved5g_cli.readthedocs.io.
 
-=============
+========
 Features
-=============
+========
 
 * Generate a new python NetApp from a template
 * Assist in connecting the new NetApp & repo with EVOLVED-5G CI/CD pipeline
@@ -54,26 +54,28 @@ Pre-requisites
 To create a new repository within the EVOLVED-5G organization it is mandatory to create an SSH key since the communication with the repository will be through SSH connection, to create the SSH key can be done as follows:
 
 .. code-block:: console
+
    $ ssh-keygen -t rsa
 
 Some inputs will be asked, you just need to press enter to leave it by default.
 If left as default the key pair generated can be found in the /home/ubuntu/.ssh directory of your ubuntu machine. To be able to work through SSH, you will need to copy the public key file you have generated and add it to your GitHub account, this can be done as follows:
 
 .. code-block:: console
+
    $ cat ~/.ssh/id_rsa.pub
 
 #. Copy the output to your clipboard 
 #. In your GitHub account go to "Settings" (up right) and then you will see a tab called "SSH and GPG Keys"
 
-   .. image:: docs/images/ssh_gpg.png
+.. image:: /images/ssh_gpg.png
 
 #. When you access this section, the first thing you will see is a button to create a new ssh key.
 
-   .. image:: docs/images/ssh_key_button.png
+.. image:: /images/ssh_key_button.png
 
 #. Click on that button, and the following screen will appear: 
 
-   .. image:: docs/images/ssh_key.png
+.. image:: /images/ssh_key.png
 
 As you can see in the example image above, you have to enter the public key you have previously generated on your machine and copied in the "Key" section and add a title to it if you want to have your key list more organized. Click on the "Add SSH Key" button and you will be able to work with GitHub via SSH.
 
@@ -81,16 +83,16 @@ Finally, before running the SDK tool, you need to create a Personal Access Token
 
 #. Go back to your profile, to the Settings section, but this time look for the "Developer settings" button and click on it to see the following:
 
-   .. image:: docs/images/token1.png
+.. image:: /images/token1.png
 
 #. As you can see in the image above, on that page there are three buttons, we choose to press “Personal access tokens”. And we will see the top right button "Generate new token". Click on this button and you will see the following page:
 
-   .. image:: docs/images/token2.png
+.. image:: /images/token2.png
 
 From the image you can add a note of what you want to use this token for, it is a matter of organization, as well as the days you want this token to last. Just below you will see that you are prompted to select the scope of the token, the recommendation is if you are going to use this token for the organization of EVOLVED-5G, select the maximum possible scope, i.e., select everything.
 #. When you have selected the scope of your token, click on the "Generate token" button, copy the token when it appears and save it in a txt file or similar, because once you leave this page, you will only see a list of tokens with the name you have given, as you can see below:
 
-   .. image:: docs/images/token3.png
+.. image:: /images/token3.png
 
 It is very important to copy and save your personal access token because **you won’t be able to see it again.**
 For more information about token creation please refer to `GitHub <https://docs.github.com/es/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token>`_
@@ -151,9 +153,9 @@ Once it is installed you will be able to generate (create) a repository for your
 .. _Github repo: https://github.com/EVOLVED-5G/SDK-CLI
 .. _tarball: https://github.com/EVOLVED-5G/SDK-CLI/tarball/master
 
-============
+=========
 CLI Usage
-============
+=========
 
 Run the following command to access the documentation/help page and read about the various options
 
@@ -162,7 +164,7 @@ Run the following command to access the documentation/help page and read about t
     $ evolved5g
 
 Generate
-------------
+--------
 
 To generate a new NetApp project run the following command. You will be asked for some inputs such as the repoName, packageName etc
 
@@ -205,24 +207,24 @@ If the command “evolved5g generate” does not give you any problem, then auto
 
 Finally, when this command is executed, you will see something like the following image, in which you have to enter the values requested, like the example you can see between brackets, for the execution to be completed:
 
-   .. image:: docs/images/generate_execution.png
+.. image:: /images/generate_execution.png
 
 If you access GitHub once you have seen that output in your terminal, you will see that the repository has been successfully created:
 
-   .. image:: docs/images/repo_creation.png
+.. image:: /images/repo_creation.png
 
 It will create a specific branch (evolved5g) which will be used by the CI/CD for verification purposes. A dummy example (nginx server) will be created in both branches (master and evolved5g) which allow to directly run a pipeline using such branch i.e., build (following TID instructions) and check that it works. You will see a Dockerfile and inside the src folder a dummy html file as an example. Below can see the file structure created.
 
-   .. image:: docs/images/repo_structure.png
+.. image:: /images/repo_structure.png
    
 
-   .. image:: docs/images/dummy_html_example.png
+.. image:: /images/dummy_html_example.png
 
 When the repository is created you will be at branch evolved5g, so the push must be done there, in case you want to work with master (branch) you have to execute git checkout master and then do the push (git push -u origin master), to know in which branch you are, just execute git branch.
 
-============
+===============
 SDK - Pipelines
-============
+===============
 
 This feature enables to run the pipelines from the SDK CLI. 
 Hereafter, the examples on how to usage will be described.
@@ -251,26 +253,26 @@ Examples of usage
 The pipelines build, deploy or destroy will return an **ID** which can be used with the command *check_pipeline* to see how the NetApp is performing.
 
 **IMPORTANT** 
------------------
+-------------
 
 Please check your NetApp repository has a branch **evolved5g**, otherwise the pipelines will fail.
 
-============
+===============
 SDK - Libraries
-============
+===============
 
 At the current release the SDK contains one class "**LocationSubscriber**"
 that allows you to track devices and retrieve updates about their location.
 You can use LocationSubscriber to create subscriptions, where each one of them can be used to track a device.
 
 Examples of usage /Have a look at the code
-----
+------------------------------------------
 Have a look at the examples folder for code samples on how to use the SDK Library.
 
 `Location subscriber example <https://github.com/EVOLVED-5G/SDK-CLI/blob/libraries/examples/location_subscriber_examples.py>`_
 
 Prerequisites / How to start
-----
+----------------------------
 
 Install the requirements_dev.txt
 
