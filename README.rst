@@ -67,15 +67,15 @@ If left as default the key pair generated can be found in the /home/ubuntu/.ssh 
 #. Copy the output to your clipboard 
 #. In your GitHub account go to "Settings" (up right) and then you will see a tab called "SSH and GPG Keys"
 
-.. image:: /images/ssh_gpg.png
+.. image:: /docs/images/ssh_gpg.png
 
 #. When you access this section, the first thing you will see is a button to create a new ssh key.
 
-.. image:: /images/ssh_key_button.png
+.. image:: /docs/images/ssh_key_button.png
 
 #. Click on that button, and the following screen will appear: 
 
-.. image:: /images/ssh_key.png
+.. image:: /docs/images/ssh_key.png
 
 As you can see in the example image above, you have to enter the public key you have previously generated on your machine and copied in the "Key" section and add a title to it if you want to have your key list more organized. Click on the "Add SSH Key" button and you will be able to work with GitHub via SSH.
 
@@ -83,7 +83,7 @@ Finally, before running the SDK tool, you need to create a Personal Access Token
 
 #. Go back to your profile, to the Settings section, but this time look for the "Developer settings" button and click on it to see the following:
 
-.. image:: /images/token1.png
+.. image:: /docs/images/token1.png
 
 #. As you can see in the image above, on that page there are three buttons, we choose to press “Personal access tokens”. And we will see the top right button "Generate new token". Click on this button and you will see the following page:
 
@@ -207,18 +207,18 @@ If the command “evolved5g generate” does not give you any problem, then auto
 
 Finally, when this command is executed, you will see something like the following image, in which you have to enter the values requested, like the example you can see between brackets, for the execution to be completed:
 
-.. image:: /images/generate_execution.png
+.. image:: /docs/images/generate_execution.png
 
 If you access GitHub once you have seen that output in your terminal, you will see that the repository has been successfully created:
 
-.. image:: /images/repo_creation.png
+.. image:: /docs/images/repo_creation.png
 
 It will create a specific branch (evolved5g) which will be used by the CI/CD for verification purposes. A dummy example (nginx server) will be created in both branches (master and evolved5g) which allow to directly run a pipeline using such branch i.e., build (following TID instructions) and check that it works. You will see a Dockerfile and inside the src folder a dummy html file as an example. Below can see the file structure created.
 
-.. image:: /images/repo_structure.png
+.. image:: /docs/images/repo_structure.png
    
 
-.. image:: /images/dummy_html_example.png
+.. image:: /docs/images/dummy_html_example.png
 
 When the repository is created you will be at branch evolved5g, so the push must be done there, in case you want to work with master (branch) you have to execute git checkout master and then do the push (git push -u origin master), to know in which branch you are, just execute git branch.
 
