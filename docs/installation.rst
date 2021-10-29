@@ -44,6 +44,7 @@ Once you have a copy of the source, you can install it with:
 
     $ python setup.py install
 
+Once it is installed you will be able to generate (create) a repository for your NetApp.
 
 .. _Github repo: https://github.com/EVOLVED-5G/SDK-CLI
 .. _tarball: https://github.com/EVOLVED-5G/SDK-CLI/tarball/master
