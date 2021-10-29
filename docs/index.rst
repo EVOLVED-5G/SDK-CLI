@@ -7,8 +7,7 @@ Welcome to Evolved5G_CLI's documentation!
 
    readme
    installation
-   cli
-   libraries
+   usage
    modules
    contributing
    history
