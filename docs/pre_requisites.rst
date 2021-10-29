@@ -43,7 +43,7 @@ Finally, before running the SDK tool, you need to create a Personal Access Token
 From the image you can add a note of what you want to use this token for, it is a matter of organization, as well as the days you want this token to last. Just below you will see that you are prompted to select the scope of the token, the recommendation is if you are going to use this token for the organization of EVOLVED-5G, select the maximum possible scope, i.e., select everything.
 #. When you have selected the scope of your token, click on the "Generate token" button, copy the token when it appears and save it in a txt file or similar, because once you leave this page, you will only see a list of tokens with the name you have given, as you can see below:
 
-.. image:: token3.png
+.. image:: ./images/token3.png
 
 It is very important to copy and save your personal access token because **you won’t be able to see it again.**
 For more information about token creation please refer to `GitHub <https://docs.github.com/es/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token>`_
