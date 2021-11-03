@@ -55,14 +55,14 @@ To create a new repository within the EVOLVED-5G organization it is mandatory to
 
 .. code-block:: console
 
-   $ ssh-keygen -t rsa
+    ssh-keygen -t rsa
 
 Some inputs will be asked, you just need to press enter to leave it by default.
 If left as default the key pair generated can be found in the /home/ubuntu/.ssh directory of your ubuntu machine. To be able to work through SSH, you will need to copy the public key file you have generated and add it to your GitHub account, this can be done as follows:
 
 .. code-block:: console
 
-   $ cat ~/.ssh/id_rsa.pub
+    cat ~/.ssh/id_rsa.pub
 
 #. Copy the output to your clipboard 
 #. In your GitHub account go to "Settings" (up right) and then you will see a tab called "SSH and GPG Keys"
@@ -111,10 +111,10 @@ To install Evolved5G_CLI, run this command in your terminal:
 
 .. code-block:: console
 
-    $ sudo apt update
-    $ supo apt install python3
-    $ sudo apt install python3-setuptools
-    $ pip install evolved5g
+    sudo apt update
+    supo apt install python3
+    sudo apt install python3-setuptools
+    pip install evolved5g
 
 This is the preferred method to install Evolved5G_CLI, as it will always install the most recent stable release.
 
@@ -134,19 +134,19 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/EVOLVED-5G/SDK-CLI
+    git clone git://github.com/EVOLVED-5G/SDK-CLI
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/EVOLVED-5G/SDK-CLI/tarball/master
+    curl -OJL https://github.com/EVOLVED-5G/SDK-CLI/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
 .. code-block:: console
 
-    $ python setup.py install
+    python setup.py install
 
 Once it is installed you will be able to generate (create) a repository for your NetApp.
 
@@ -161,7 +161,7 @@ Run the following command to access the documentation/help page and read about t
 
 .. code-block:: console
 
-    $ evolved5g
+    evolved5g
 
 Generate
 --------
@@ -170,13 +170,13 @@ To generate a new NetApp project run the following command. You will be asked fo
 
 .. code-block:: console
 
-    $ evolved5g generate
+    evolved5g generate
 
 or to learn more about the available options
 
 .. code-block:: console
 
-    $ evolved5g generate --help
+    evolved5g generate --help
 
 If you get an error saying **cookiecutter command not found** please do set the correct PATH as following:
 
@@ -188,11 +188,11 @@ In Linux:
 
 * .. code-block:: console
 
-    $ export PATH=$HOME/.local/bin:$PATH
+    export PATH=$HOME/.local/bin:$PATH
 
 * .. code-block:: console
 
-    $ source ~/.bash_profile
+    source ~/.bash_profile
 
 * Install cookiecutter
 
@@ -234,21 +234,20 @@ Examples of usage
 
 .. code-block:: console
     
-    $ evolved5g run_pipeline --mode build --repo REPOSITORY_NAME
+    evolved5g run-pipeline --mode build --repo REPOSITORY_NAME
 
 .. code-block:: console
 
-
-    $ evolved5g run_pipeline --mode deploy --repo REPOSITORY_NAME
-
-.. code-block:: console
-
-    $ evolved5g run_pipeline --mode destroy --repo REPOSITORY_NAME
-
+    evolved5g run-pipeline --mode deploy --repo REPOSITORY_NAME
 
 .. code-block:: console
 
-	$ evolved5g check_pipeline --id YOUR_ID
+    evolved5g run-pipeline --mode destroy --repo REPOSITORY_NAME
+
+
+.. code-block:: console
+
+    evolved5g check-pipeline --id YOUR_ID
 
 The pipelines build, deploy or destroy will return an **ID** which can be used with the command *check_pipeline* to see how the NetApp is performing.
 
@@ -276,12 +275,15 @@ Prerequisites / How to start
 
 Install the requirements_dev.txt
 
+.. code-block:: console
+
     pip install -r requirements_dev.txt
 
 Make sure you have initiated the NEF_EMULATOR at url http://localhost:8888 (See  `here <https://github.com/EVOLVED-5G/NEF_emulator>`_  for instructions),
 you have logged in to the interface, clicked on the map and have started the simulation.
 Then run a webserver in order to capture the callback post requests from NEF EMULATOR: On the terminal run the following commands to initiaze the webserver.
 
+.. code-block:: console
 
     export FLASK_APP=/home/user/evolved-5g/SDK-CLI/examples/api.py
 
