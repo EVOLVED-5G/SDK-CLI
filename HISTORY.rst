@@ -2,6 +2,12 @@
 History
 =======
 
+0.5.1 (2021-03-11)
+------------------
+
+* Added class LocationSubscriber to SDK. A class that allows to get location monitoring reports from the 5G-API
+
+
 0.1.9 (2021-20-09)
 ------------------
 
