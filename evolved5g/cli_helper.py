@@ -14,7 +14,7 @@ class  CLI_helper:
         self.url_token = "https://epg-api.tid.es/api/auth"
         self.username_token = "usu_Evolved5g"
         self.password_token = "evolved5g"
-        self.branch = "nginx-unprivileged"
+        self.branch = "evolved5g"
         self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": None }
 
     def generate(self, no_input, repo_name, package_name, template):
