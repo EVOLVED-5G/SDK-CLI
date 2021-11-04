@@ -6,6 +6,10 @@ History
 ------------------
 
 * Added class LocationSubscriber to SDK. A class that allows to get location monitoring reports from the 5G-API
+* Clean-up the code
+* New cli_helper.py class created to improve the code
+* cli.py class updated for better practices 
+* Added new command options to interact with the pipelines
 
 
 0.1.9 (2021-20-09)
