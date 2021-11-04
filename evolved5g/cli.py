@@ -25,18 +25,21 @@ def generate(ctx,no_input, repo_name, package_name, template):
     ctx.obj["helper"].generate(no_input, repo_name, package_name, template) 
 
 @cli.command()
+@click.option('--no-input', type=bool, is_flag=True,
+              help='Enables the absence of CLI prompts during pipeline run .', default=False)
 @click.option('--mode',type=click.Choice(['build', 'deploy','destroy'], case_sensitive=False))
 @click.option('--repo',type=str, help='Enter repo name')
+
 @click.pass_context
 def run_pipeline(ctx, mode, repo):
-    """
-    """
+    """Launch a pipeline (build, deploy or destroy)"""
     ctx.obj["helper"].run_pipeline(mode,repo) 
 
 @cli.command()
+@click.option('--no-input', type=bool, is_flag=True,
+              help='Enables the absence of CLI prompts during pipeline check.', default=False)
 @click.option('--id',type=int, help='Enter pipeline id')
 @click.pass_context
 def check_pipeline(ctx, id):
-    """
-    """
+    """Check the status of a pipeline"""
     ctx.obj["helper"].check_pipeline(id)
