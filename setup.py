@@ -3,7 +3,6 @@
 """The setup script."""
 
 from setuptools import setup, find_packages
-from pathlib import Path
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -11,8 +10,8 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-with Path('requirements.txt').open() as file:
-    INSTALL_REQUIERES = file.readlines()
+with open('requirements.txt') as file:
+    INSTALL_REQUIERES = file.read().splitlines()
 
 test_requirements = ['pytest>=3', ]
 
@@ -46,6 +45,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/EVOLVED-5G/SDK-CLI',
-    version='0.2.5',
+    version='0.5.0',
     zip_safe=False,
 )
