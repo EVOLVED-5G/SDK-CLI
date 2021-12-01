@@ -17,7 +17,7 @@ class  CLI_helper:
         self.branch = "evolved5g"
         self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": None }
 
-    def generate(self, no_input, repo_name, package_name, template):
+    def generate(self, repo_name, package_name, template):
         """Generate EVOLVED-5G compliant NetApp from template"""
         # extra = {}
         # if repo_name:
@@ -28,7 +28,8 @@ class  CLI_helper:
         #     cookiecutter_generate(template,no_input=no_input,extra_context=extra)
         #     return
         location = "gh:EVOLVED-5G/template" 
-        cookiecutter_generate(location, no_input=no_input) #extra_context=extra)
+        directory = "template"
+        cookiecutter_generate(location, directory) #extra_context=extra)
 
     def generate_token(self):
 
