@@ -28,7 +28,6 @@ class UEs(object):
                             and the value is json key in definition.
     """
     swagger_types = {
-        'supi': 'str',
         'name': 'str',
         'description': 'str',
         'g_nb_id': 'int',
@@ -40,15 +39,12 @@ class UEs(object):
         'mcc': 'int',
         'mnc': 'int',
         'external_identifier': 'str',
-        'latitude': 'float',
-        'longitude': 'float',
         'speed': 'AllOfUEsSpeed',
         'path_id': 'int',
         'cell_id_hex': 'str'
     }
 
     attribute_map = {
-        'supi': 'supi',
         'name': 'name',
         'description': 'description',
         'g_nb_id': 'gNB_id',
@@ -60,16 +56,13 @@ class UEs(object):
         'mcc': 'mcc',
         'mnc': 'mnc',
         'external_identifier': 'external_identifier',
-        'latitude': 'latitude',
-        'longitude': 'longitude',
         'speed': 'speed',
         'path_id': 'path_id',
         'cell_id_hex': 'cell_id_hex'
     }
 
-    def __init__(self, supi=None, name=None, description=None, g_nb_id=None, cell_id=None, ip_address_v4='169.254.46.5', ip_address_v6='fe80::349d:33ff:fe76:2cee', mac_address=None, dnn=None, mcc=None, mnc=None, external_identifier=None, latitude=None, longitude=None, speed=None, path_id=None, cell_id_hex=None):  # noqa: E501
+    def __init__(self, name=None, description=None, g_nb_id=None, cell_id=None, ip_address_v4='10.0.0.0', ip_address_v6='0:0:0:0:0:0:0:0', mac_address='22-00-00-00-00-00', dnn='province1.mnc01.mcc202.gprs', mcc=202, mnc=1, external_identifier='123456789@domain.com', speed=None, path_id=None, cell_id_hex=None):  # noqa: E501
         """UEs - a model defined in Swagger"""  # noqa: E501
-        self._supi = None
         self._name = None
         self._description = None
         self._g_nb_id = None
@@ -81,13 +74,10 @@ class UEs(object):
         self._mcc = None
         self._mnc = None
         self._external_identifier = None
-        self._latitude = None
-        self._longitude = None
         self._speed = None
         self._path_id = None
         self._cell_id_hex = None
         self.discriminator = None
-        self.supi = supi
         if name is not None:
             self.name = name
         if description is not None:
@@ -108,36 +98,11 @@ class UEs(object):
             self.mnc = mnc
         if external_identifier is not None:
             self.external_identifier = external_identifier
-        self.latitude = latitude
-        self.longitude = longitude
         if speed is not None:
             self.speed = speed
         if path_id is not None:
             self.path_id = path_id
         self.cell_id_hex = cell_id_hex
-
-    @property
-    def supi(self):
-        """Gets the supi of this UEs.  # noqa: E501
-
-
-        :return: The supi of this UEs.  # noqa: E501
-        :rtype: str
-        """
-        return self._supi
-
-    @supi.setter
-    def supi(self, supi):
-        """Sets the supi of this UEs.
-
-
-        :param supi: The supi of this UEs.  # noqa: E501
-        :type: str
-        """
-        if supi is None:
-            raise ValueError("Invalid value for `supi`, must not be `None`")  # noqa: E501
-
-        self._supi = supi
 
     @property
     def name(self):
@@ -231,6 +196,7 @@ class UEs(object):
     def ip_address_v4(self):
         """Gets the ip_address_v4 of this UEs.  # noqa: E501
 
+        String identifying an Ipv4 address  # noqa: E501
 
         :return: The ip_address_v4 of this UEs.  # noqa: E501
         :rtype: str
@@ -241,6 +207,7 @@ class UEs(object):
     def ip_address_v4(self, ip_address_v4):
         """Sets the ip_address_v4 of this UEs.
 
+        String identifying an Ipv4 address  # noqa: E501
 
         :param ip_address_v4: The ip_address_v4 of this UEs.  # noqa: E501
         :type: str
@@ -252,6 +219,7 @@ class UEs(object):
     def ip_address_v6(self):
         """Gets the ip_address_v6 of this UEs.  # noqa: E501
 
+        String identifying an Ipv6 address. Default value ::1/128 (loopback)  # noqa: E501
 
         :return: The ip_address_v6 of this UEs.  # noqa: E501
         :rtype: str
@@ -262,6 +230,7 @@ class UEs(object):
     def ip_address_v6(self, ip_address_v6):
         """Sets the ip_address_v6 of this UEs.
 
+        String identifying an Ipv6 address. Default value ::1/128 (loopback)  # noqa: E501
 
         :param ip_address_v6: The ip_address_v6 of this UEs.  # noqa: E501
         :type: str
@@ -294,6 +263,7 @@ class UEs(object):
     def dnn(self):
         """Gets the dnn of this UEs.  # noqa: E501
 
+        String identifying the Data Network Name (i.e., Access Point Name in 4G). For more information check clause 9A of 3GPP TS 23.003  # noqa: E501
 
         :return: The dnn of this UEs.  # noqa: E501
         :rtype: str
@@ -304,6 +274,7 @@ class UEs(object):
     def dnn(self, dnn):
         """Sets the dnn of this UEs.
 
+        String identifying the Data Network Name (i.e., Access Point Name in 4G). For more information check clause 9A of 3GPP TS 23.003  # noqa: E501
 
         :param dnn: The dnn of this UEs.  # noqa: E501
         :type: str
@@ -315,6 +286,7 @@ class UEs(object):
     def mcc(self):
         """Gets the mcc of this UEs.  # noqa: E501
 
+        Mobile Country Code (MCC) part of the Public Land Mobile Network (PLMN), comprising 3 digits, as defined in clause 9.3.3.5 of 3GPP TS 38.413  # noqa: E501
 
         :return: The mcc of this UEs.  # noqa: E501
         :rtype: int
@@ -325,6 +297,7 @@ class UEs(object):
     def mcc(self, mcc):
         """Sets the mcc of this UEs.
 
+        Mobile Country Code (MCC) part of the Public Land Mobile Network (PLMN), comprising 3 digits, as defined in clause 9.3.3.5 of 3GPP TS 38.413  # noqa: E501
 
         :param mcc: The mcc of this UEs.  # noqa: E501
         :type: int
@@ -336,6 +309,7 @@ class UEs(object):
     def mnc(self):
         """Gets the mnc of this UEs.  # noqa: E501
 
+        Mobile Network Code (MNC) part of the Public Land Mobile Network (PLMN), comprising 2 or 3 digits, as defined in clause 9.3.3.5 of 3GPP TS 38.413  # noqa: E501
 
         :return: The mnc of this UEs.  # noqa: E501
         :rtype: int
@@ -346,6 +320,7 @@ class UEs(object):
     def mnc(self, mnc):
         """Sets the mnc of this UEs.
 
+        Mobile Network Code (MNC) part of the Public Land Mobile Network (PLMN), comprising 2 or 3 digits, as defined in clause 9.3.3.5 of 3GPP TS 38.413  # noqa: E501
 
         :param mnc: The mnc of this UEs.  # noqa: E501
         :type: int
@@ -357,6 +332,7 @@ class UEs(object):
     def external_identifier(self):
         """Gets the external_identifier of this UEs.  # noqa: E501
 
+        Globally unique identifier containing a Domain Identifier and a Local Identifier. \\<Local Identifier\\>@\\<Domain Identifier\\>  # noqa: E501
 
         :return: The external_identifier of this UEs.  # noqa: E501
         :rtype: str
@@ -367,6 +343,7 @@ class UEs(object):
     def external_identifier(self, external_identifier):
         """Sets the external_identifier of this UEs.
 
+        Globally unique identifier containing a Domain Identifier and a Local Identifier. \\<Local Identifier\\>@\\<Domain Identifier\\>  # noqa: E501
 
         :param external_identifier: The external_identifier of this UEs.  # noqa: E501
         :type: str
@@ -375,56 +352,10 @@ class UEs(object):
         self._external_identifier = external_identifier
 
     @property
-    def latitude(self):
-        """Gets the latitude of this UEs.  # noqa: E501
-
-
-        :return: The latitude of this UEs.  # noqa: E501
-        :rtype: float
-        """
-        return self._latitude
-
-    @latitude.setter
-    def latitude(self, latitude):
-        """Sets the latitude of this UEs.
-
-
-        :param latitude: The latitude of this UEs.  # noqa: E501
-        :type: float
-        """
-        if latitude is None:
-            raise ValueError("Invalid value for `latitude`, must not be `None`")  # noqa: E501
-
-        self._latitude = latitude
-
-    @property
-    def longitude(self):
-        """Gets the longitude of this UEs.  # noqa: E501
-
-
-        :return: The longitude of this UEs.  # noqa: E501
-        :rtype: float
-        """
-        return self._longitude
-
-    @longitude.setter
-    def longitude(self, longitude):
-        """Sets the longitude of this UEs.
-
-
-        :param longitude: The longitude of this UEs.  # noqa: E501
-        :type: float
-        """
-        if longitude is None:
-            raise ValueError("Invalid value for `longitude`, must not be `None`")  # noqa: E501
-
-        self._longitude = longitude
-
-    @property
     def speed(self):
         """Gets the speed of this UEs.  # noqa: E501
 
-        This value decribes UE's speed. Possible values are \"STATIONARY\" (e.g, IoT device), \"LOW(e.g, pedestrian)\" and \"HIGH (e.g., vehicle)\"  # noqa: E501
+        This value describes UE's speed. Possible values are \"STATIONARY\" (e.g, IoT device), \"LOW(e.g, pedestrian)\" and \"HIGH (e.g., vehicle)\"  # noqa: E501
 
         :return: The speed of this UEs.  # noqa: E501
         :rtype: AllOfUEsSpeed
@@ -435,7 +366,7 @@ class UEs(object):
     def speed(self, speed):
         """Sets the speed of this UEs.
 
-        This value decribes UE's speed. Possible values are \"STATIONARY\" (e.g, IoT device), \"LOW(e.g, pedestrian)\" and \"HIGH (e.g., vehicle)\"  # noqa: E501
+        This value describes UE's speed. Possible values are \"STATIONARY\" (e.g, IoT device), \"LOW(e.g, pedestrian)\" and \"HIGH (e.g., vehicle)\"  # noqa: E501
 
         :param speed: The speed of this UEs.  # noqa: E501
         :type: AllOfUEsSpeed
@@ -447,6 +378,7 @@ class UEs(object):
     def path_id(self):
         """Gets the path_id of this UEs.  # noqa: E501
 
+        This value correlates a UE with a pre-defined path. More information can be found at /api/v1/frontend/location  # noqa: E501
 
         :return: The path_id of this UEs.  # noqa: E501
         :rtype: int
@@ -457,6 +389,7 @@ class UEs(object):
     def path_id(self, path_id):
         """Sets the path_id of this UEs.
 
+        This value correlates a UE with a pre-defined path. More information can be found at /api/v1/frontend/location  # noqa: E501
 
         :param path_id: The path_id of this UEs.  # noqa: E501
         :type: int

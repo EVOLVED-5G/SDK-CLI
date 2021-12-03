@@ -29,38 +29,38 @@ class PathCreate(object):
     """
     swagger_types = {
         'description': 'str',
-        'points': 'list[Point]',
         'start_point': 'Point',
         'end_point': 'Point',
-        'color': 'str'
+        'color': 'str',
+        'points': 'list[Point]'
     }
 
     attribute_map = {
         'description': 'description',
-        'points': 'points',
         'start_point': 'start_point',
         'end_point': 'end_point',
-        'color': 'color'
+        'color': 'color',
+        'points': 'points'
     }
 
-    def __init__(self, description=None, points=None, start_point=None, end_point=None, color=None):  # noqa: E501
+    def __init__(self, description=None, start_point=None, end_point=None, color=None, points=None):  # noqa: E501
         """PathCreate - a model defined in Swagger"""  # noqa: E501
         self._description = None
-        self._points = None
         self._start_point = None
         self._end_point = None
         self._color = None
+        self._points = None
         self.discriminator = None
         if description is not None:
             self.description = description
-        if points is not None:
-            self.points = points
         if start_point is not None:
             self.start_point = start_point
         if end_point is not None:
             self.end_point = end_point
         if color is not None:
             self.color = color
+        if points is not None:
+            self.points = points
 
     @property
     def description(self):
@@ -82,27 +82,6 @@ class PathCreate(object):
         """
 
         self._description = description
-
-    @property
-    def points(self):
-        """Gets the points of this PathCreate.  # noqa: E501
-
-
-        :return: The points of this PathCreate.  # noqa: E501
-        :rtype: list[Point]
-        """
-        return self._points
-
-    @points.setter
-    def points(self, points):
-        """Sets the points of this PathCreate.
-
-
-        :param points: The points of this PathCreate.  # noqa: E501
-        :type: list[Point]
-        """
-
-        self._points = points
 
     @property
     def start_point(self):
@@ -166,6 +145,27 @@ class PathCreate(object):
         """
 
         self._color = color
+
+    @property
+    def points(self):
+        """Gets the points of this PathCreate.  # noqa: E501
+
+
+        :return: The points of this PathCreate.  # noqa: E501
+        :rtype: list[Point]
+        """
+        return self._points
+
+    @points.setter
+    def points(self, points):
+        """Sets the points of this PathCreate.
+
+
+        :param points: The points of this PathCreate.  # noqa: E501
+        :type: list[Point]
+        """
+
+        self._points = points
 
     def to_dict(self):
         """Returns the model properties as a dict"""

@@ -32,17 +32,16 @@ class SessionWithQoSAPIApi(object):
             api_client = ApiClient()
         self.api_client = api_client
 
-    def create_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post(self, body, scs_as_id, **kwargs):  # noqa: E501
-        """Create Item  # noqa: E501
+    def create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post(self, body, scs_as_id, **kwargs):  # noqa: E501
+        """Create Subscription  # noqa: E501
 
-        Create new subscription.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.create_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post(body, scs_as_id, async_req=True)
+        >>> thread = api.create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post(body, scs_as_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
-        :param AsSessionWithQoSSubscription body: (required)
+        :param AsSessionWithQoSSubscriptionCreate body: (required)
         :param str scs_as_id: (required)
         :return: object
                  If the method is called asynchronously,
@@ -50,22 +49,21 @@ class SessionWithQoSAPIApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.create_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(body, scs_as_id, **kwargs)  # noqa: E501
+            return self.create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(body, scs_as_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.create_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(body, scs_as_id, **kwargs)  # noqa: E501
+            (data) = self.create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(body, scs_as_id, **kwargs)  # noqa: E501
             return data
 
-    def create_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(self, body, scs_as_id, **kwargs):  # noqa: E501
-        """Create Item  # noqa: E501
+    def create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(self, body, scs_as_id, **kwargs):  # noqa: E501
+        """Create Subscription  # noqa: E501
 
-        Create new subscription.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.create_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(body, scs_as_id, async_req=True)
+        >>> thread = api.create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(body, scs_as_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
-        :param AsSessionWithQoSSubscription body: (required)
+        :param AsSessionWithQoSSubscriptionCreate body: (required)
         :param str scs_as_id: (required)
         :return: object
                  If the method is called asynchronously,
@@ -83,18 +81,18 @@ class SessionWithQoSAPIApi(object):
             if key not in all_params:
                 raise TypeError(
                     "Got an unexpected keyword argument '%s'"
-                    " to method create_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post" % key
+                    " to method create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post" % key
                 )
             params[key] = val
         del params['kwargs']
         # verify the required parameter 'body' is set
         if ('body' not in params or
                 params['body'] is None):
-            raise ValueError("Missing the required parameter `body` when calling `create_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post`")  # noqa: E501
+            raise ValueError("Missing the required parameter `body` when calling `create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post`")  # noqa: E501
         # verify the required parameter 'scs_as_id' is set
         if ('scs_as_id' not in params or
                 params['scs_as_id'] is None):
-            raise ValueError("Missing the required parameter `scs_as_id` when calling `create_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post`")  # noqa: E501
+            raise ValueError("Missing the required parameter `scs_as_id` when calling `create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post`")  # noqa: E501
 
         collection_formats = {}
 
@@ -139,42 +137,42 @@ class SessionWithQoSAPIApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def delete_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
-        """Delete Item  # noqa: E501
+    def delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
+        """Delete Subscription  # noqa: E501
 
         Delete a subscription  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.delete_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete(scs_as_id, subscription_id, async_req=True)
+        >>> thread = api.delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete(scs_as_id, subscription_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
         :param str scs_as_id: (required)
         :param str subscription_id: (required)
-        :return: object
+        :return: AsSessionWithQoSSubscription
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.delete_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(scs_as_id, subscription_id, **kwargs)  # noqa: E501
+            return self.delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(scs_as_id, subscription_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.delete_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(scs_as_id, subscription_id, **kwargs)  # noqa: E501
+            (data) = self.delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(scs_as_id, subscription_id, **kwargs)  # noqa: E501
             return data
 
-    def delete_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
-        """Delete Item  # noqa: E501
+    def delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
+        """Delete Subscription  # noqa: E501
 
         Delete a subscription  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.delete_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(scs_as_id, subscription_id, async_req=True)
+        >>> thread = api.delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(scs_as_id, subscription_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
         :param str scs_as_id: (required)
         :param str subscription_id: (required)
-        :return: object
+        :return: AsSessionWithQoSSubscription
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -190,18 +188,18 @@ class SessionWithQoSAPIApi(object):
             if key not in all_params:
                 raise TypeError(
                     "Got an unexpected keyword argument '%s'"
-                    " to method delete_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete" % key
+                    " to method delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete" % key
                 )
             params[key] = val
         del params['kwargs']
         # verify the required parameter 'scs_as_id' is set
         if ('scs_as_id' not in params or
                 params['scs_as_id'] is None):
-            raise ValueError("Missing the required parameter `scs_as_id` when calling `delete_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete`")  # noqa: E501
+            raise ValueError("Missing the required parameter `scs_as_id` when calling `delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete`")  # noqa: E501
         # verify the required parameter 'subscription_id' is set
         if ('subscription_id' not in params or
                 params['subscription_id'] is None):
-            raise ValueError("Missing the required parameter `subscription_id` when calling `delete_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete`")  # noqa: E501
+            raise ValueError("Missing the required parameter `subscription_id` when calling `delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete`")  # noqa: E501
 
         collection_formats = {}
 
@@ -234,7 +232,7 @@ class SessionWithQoSAPIApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='object',  # noqa: E501
+            response_type='AsSessionWithQoSSubscription',  # noqa: E501
             auth_settings=auth_settings,
             async_req=params.get('async_req'),
             _return_http_data_only=params.get('_return_http_data_only'),
@@ -245,7 +243,7 @@ class SessionWithQoSAPIApi(object):
     def read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get(self, scs_as_id, **kwargs):  # noqa: E501
         """Read Active Subscriptions  # noqa: E501
 
-        Read all active subscriptions  # noqa: E501
+        Get subscription by id  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get(scs_as_id, async_req=True)
@@ -253,9 +251,7 @@ class SessionWithQoSAPIApi(object):
 
         :param async_req bool
         :param str scs_as_id: (required)
-        :param int skip:
-        :param int limit:
-        :return: object
+        :return: list[AsSessionWithQoSSubscription]
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -269,7 +265,7 @@ class SessionWithQoSAPIApi(object):
     def read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get_with_http_info(self, scs_as_id, **kwargs):  # noqa: E501
         """Read Active Subscriptions  # noqa: E501
 
-        Read all active subscriptions  # noqa: E501
+        Get subscription by id  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get_with_http_info(scs_as_id, async_req=True)
@@ -277,14 +273,12 @@ class SessionWithQoSAPIApi(object):
 
         :param async_req bool
         :param str scs_as_id: (required)
-        :param int skip:
-        :param int limit:
-        :return: object
+        :return: list[AsSessionWithQoSSubscription]
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
-        all_params = ['scs_as_id', 'skip', 'limit']  # noqa: E501
+        all_params = ['scs_as_id']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -311,10 +305,6 @@ class SessionWithQoSAPIApi(object):
             path_params['scsAsId'] = params['scs_as_id']  # noqa: E501
 
         query_params = []
-        if 'skip' in params:
-            query_params.append(('skip', params['skip']))  # noqa: E501
-        if 'limit' in params:
-            query_params.append(('limit', params['limit']))  # noqa: E501
 
         header_params = {}
 
@@ -337,7 +327,7 @@ class SessionWithQoSAPIApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='object',  # noqa: E501
+            response_type='list[AsSessionWithQoSSubscription]',  # noqa: E501
             auth_settings=auth_settings,
             async_req=params.get('async_req'),
             _return_http_data_only=params.get('_return_http_data_only'),
@@ -345,42 +335,42 @@ class SessionWithQoSAPIApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def read_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
-        """Read Item  # noqa: E501
+    def read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
+        """Read Subscription  # noqa: E501
 
         Get subscription by id  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.read_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get(scs_as_id, subscription_id, async_req=True)
+        >>> thread = api.read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get(scs_as_id, subscription_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
         :param str scs_as_id: (required)
         :param str subscription_id: (required)
-        :return: object
+        :return: AsSessionWithQoSSubscription
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.read_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(scs_as_id, subscription_id, **kwargs)  # noqa: E501
+            return self.read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(scs_as_id, subscription_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.read_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(scs_as_id, subscription_id, **kwargs)  # noqa: E501
+            (data) = self.read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(scs_as_id, subscription_id, **kwargs)  # noqa: E501
             return data
 
-    def read_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
-        """Read Item  # noqa: E501
+    def read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
+        """Read Subscription  # noqa: E501
 
         Get subscription by id  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.read_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(scs_as_id, subscription_id, async_req=True)
+        >>> thread = api.read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(scs_as_id, subscription_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
         :param str scs_as_id: (required)
         :param str subscription_id: (required)
-        :return: object
+        :return: AsSessionWithQoSSubscription
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -396,18 +386,18 @@ class SessionWithQoSAPIApi(object):
             if key not in all_params:
                 raise TypeError(
                     "Got an unexpected keyword argument '%s'"
-                    " to method read_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get" % key
+                    " to method read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get" % key
                 )
             params[key] = val
         del params['kwargs']
         # verify the required parameter 'scs_as_id' is set
         if ('scs_as_id' not in params or
                 params['scs_as_id'] is None):
-            raise ValueError("Missing the required parameter `scs_as_id` when calling `read_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get`")  # noqa: E501
+            raise ValueError("Missing the required parameter `scs_as_id` when calling `read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get`")  # noqa: E501
         # verify the required parameter 'subscription_id' is set
         if ('subscription_id' not in params or
                 params['subscription_id'] is None):
-            raise ValueError("Missing the required parameter `subscription_id` when calling `read_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get`")  # noqa: E501
+            raise ValueError("Missing the required parameter `subscription_id` when calling `read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get`")  # noqa: E501
 
         collection_formats = {}
 
@@ -440,7 +430,7 @@ class SessionWithQoSAPIApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='object',  # noqa: E501
+            response_type='AsSessionWithQoSSubscription',  # noqa: E501
             auth_settings=auth_settings,
             async_req=params.get('async_req'),
             _return_http_data_only=params.get('_return_http_data_only'),
@@ -448,44 +438,44 @@ class SessionWithQoSAPIApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def update_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put(self, body, scs_as_id, subscription_id, **kwargs):  # noqa: E501
-        """Update Item  # noqa: E501
+    def update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put(self, body, scs_as_id, subscription_id, **kwargs):  # noqa: E501
+        """Update Subscription  # noqa: E501
 
-        Update/Replace an existing subscription resource  # noqa: E501
+        Update subscription by id  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.update_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put(body, scs_as_id, subscription_id, async_req=True)
+        >>> thread = api.update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put(body, scs_as_id, subscription_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
-        :param AsSessionWithQoSSubscription body: (required)
+        :param AsSessionWithQoSSubscriptionCreate body: (required)
         :param str scs_as_id: (required)
         :param str subscription_id: (required)
-        :return: object
+        :return: AsSessionWithQoSSubscription
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.update_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(body, scs_as_id, subscription_id, **kwargs)  # noqa: E501
+            return self.update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(body, scs_as_id, subscription_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.update_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(body, scs_as_id, subscription_id, **kwargs)  # noqa: E501
+            (data) = self.update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(body, scs_as_id, subscription_id, **kwargs)  # noqa: E501
             return data
 
-    def update_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(self, body, scs_as_id, subscription_id, **kwargs):  # noqa: E501
-        """Update Item  # noqa: E501
+    def update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(self, body, scs_as_id, subscription_id, **kwargs):  # noqa: E501
+        """Update Subscription  # noqa: E501
 
-        Update/Replace an existing subscription resource  # noqa: E501
+        Update subscription by id  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.update_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(body, scs_as_id, subscription_id, async_req=True)
+        >>> thread = api.update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(body, scs_as_id, subscription_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
-        :param AsSessionWithQoSSubscription body: (required)
+        :param AsSessionWithQoSSubscriptionCreate body: (required)
         :param str scs_as_id: (required)
         :param str subscription_id: (required)
-        :return: object
+        :return: AsSessionWithQoSSubscription
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -501,22 +491,22 @@ class SessionWithQoSAPIApi(object):
             if key not in all_params:
                 raise TypeError(
                     "Got an unexpected keyword argument '%s'"
-                    " to method update_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put" % key
+                    " to method update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put" % key
                 )
             params[key] = val
         del params['kwargs']
         # verify the required parameter 'body' is set
         if ('body' not in params or
                 params['body'] is None):
-            raise ValueError("Missing the required parameter `body` when calling `update_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put`")  # noqa: E501
+            raise ValueError("Missing the required parameter `body` when calling `update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put`")  # noqa: E501
         # verify the required parameter 'scs_as_id' is set
         if ('scs_as_id' not in params or
                 params['scs_as_id'] is None):
-            raise ValueError("Missing the required parameter `scs_as_id` when calling `update_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put`")  # noqa: E501
+            raise ValueError("Missing the required parameter `scs_as_id` when calling `update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put`")  # noqa: E501
         # verify the required parameter 'subscription_id' is set
         if ('subscription_id' not in params or
                 params['subscription_id'] is None):
-            raise ValueError("Missing the required parameter `subscription_id` when calling `update_item_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put`")  # noqa: E501
+            raise ValueError("Missing the required parameter `subscription_id` when calling `update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put`")  # noqa: E501
 
         collection_formats = {}
 
@@ -555,7 +545,7 @@ class SessionWithQoSAPIApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='object',  # noqa: E501
+            response_type='AsSessionWithQoSSubscription',  # noqa: E501
             auth_settings=auth_settings,
             async_req=params.get('async_req'),
             _return_http_data_only=params.get('_return_http_data_only'),
