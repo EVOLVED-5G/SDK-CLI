@@ -64,7 +64,7 @@ If left as default the key pair generated can be found in the /home/ubuntu/.ssh 
 
     cat ~/.ssh/id_rsa.pub
 
-#. Copy the output to your clipboard 
+#. Copy the output to your clipboard
 #. In your GitHub account go to "Settings" (up right) and then you will see a tab called "SSH and GPG Keys"
 
 .. image:: /docs/images/ssh_gpg.png
@@ -73,7 +73,7 @@ If left as default the key pair generated can be found in the /home/ubuntu/.ssh 
 
 .. image:: /docs/images/ssh_key_button.png
 
-#. Click on that button, and the following screen will appear: 
+#. Click on that button, and the following screen will appear:
 
 .. image:: /docs/images/ssh_key.png
 
@@ -216,7 +216,7 @@ If you access GitHub once you have seen that output in your terminal, you will s
 It will create a specific branch (evolved5g) which will be used by the CI/CD for verification purposes. A dummy example (nginx server) will be created in both branches (master and evolved5g) which allow to directly run a pipeline using such branch i.e., build (following TID instructions) and check that it works. You will see a Dockerfile and inside the src folder a dummy html file as an example. Below can see the file structure created.
 
 .. image:: /docs/images/repo_structure.png
-   
+
 
 .. image:: /docs/images/dummy_html_example.png
 
@@ -226,14 +226,14 @@ When the repository is created you will be at branch evolved5g, so the push must
 SDK - Pipelines
 ===============
 
-This feature enables to run the pipelines from the SDK CLI. 
+This feature enables to run the pipelines from the SDK CLI.
 Hereafter, the examples on how to usage will be described.
 
 Examples of usage
 -----------------
 
 .. code-block:: console
-    
+
     evolved5g run-pipeline --mode build --repo REPOSITORY_NAME
 
 .. code-block:: console
@@ -251,7 +251,7 @@ Examples of usage
 
 The pipelines build, deploy or destroy will return an **ID** which can be used with the command *check_pipeline* to see how the NetApp is performing.
 
-**IMPORTANT** 
+**IMPORTANT**
 -------------
 
 Please check your NetApp repository has a branch **evolved5g**, otherwise the pipelines will fail.
@@ -260,15 +260,19 @@ Please check your NetApp repository has a branch **evolved5g**, otherwise the pi
 SDK - Libraries
 ===============
 
-At the current release the SDK contains one class "**LocationSubscriber**"
-that allows you to track devices and retrieve updates about their location.
-You can use LocationSubscriber to create subscriptions, where each one of them can be used to track a device.
+At the current release the SDK contains two classes
+
+* **LocationSubscriber**: allows you to track devices and retrieve updates about their location.You can use LocationSubscriber to create subscriptions, where each one of them can be used to track a device.
+* **QosAwareness**: allows you to request QoS from a set of standardized values for better service experience (Ex. TCP_BASED / LIVE Streaming / CONVERSATIONAL_VOICE etc). You can create subscriptions where each one of them has specific QoS parameters. A notification is sent back to the net-app if the QoS targets can no longer be full-filled.
+
 
 Examples of usage /Have a look at the code
 ------------------------------------------
 Have a look at the examples folder for code samples on how to use the SDK Library.
 
-`Location subscriber example <https://github.com/EVOLVED-5G/SDK-CLI/blob/libraries/examples/location_subscriber_examples.py>`_
+`LocationSubscriber example <https://github.com/EVOLVED-5G/SDK-CLI/tree/master/examples/location_subscriber_examples.py>`_
+
+`QosAwareness example <https://github.com/EVOLVED-5G/SDK-CLI/tree/master/examples/qos_awereness_examples.py>`_
 
 Prerequisites / How to start
 ----------------------------
