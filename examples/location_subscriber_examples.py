@@ -28,17 +28,6 @@ def showcase_create_subscription_and_retrieve_call_backs():
     # Alternative you can find the ip of the HOST by running 'ip addr show | grep "\binet\b.*\bdocker0\b" | awk '{print $2}' | cut -d '/' -f 1'
     # See article for details: https://stackoverflow.com/questions/48546124/what-is-linux-equivalent-of-host-docker-internal/61001152
 
-    # subscription = location_subscriber.create_subscription(
-    #                                                netapp_id= netapp_id,
-    #                                                external_id= "123456789@domain.com",
-    #                                                misisdn= "918369110173",
-    #                                                ipv4_addr="10.0.0.3",
-    #                                                ipv6_addr="::1",
-    #                                                notification_destination ="http://172.17.0.1:5000/monitoring/callback",
-    #                                                maximum_number_of_reports=1000,
-    #                                                monitor_expire_time=expire_time
-    #                                            )
-
     subscription = location_subscriber.create_subscription(
         netapp_id=netapp_id,
         external_id=external_id,
