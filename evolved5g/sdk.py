@@ -133,7 +133,7 @@ class QosAwareness:
             This enum is used to describe what kind of user equipment identifier you are going to pass
             to the subscription creation endpoints
         """
-        IP_V4_ADDRESS = 1,
+        IP_V4_ADDRESS = 1
         IP_V6_ADDRESS = 2
         MAC_ADDRESS = 3
 
@@ -142,7 +142,7 @@ class QosAwareness:
             Non guaranteed bit rate Qos Reference values.
             NEF Emulator has an endpoint that explains these GET /api/v1/qosInfo/qosCharacteristics
         """
-        TCP_BASED = 9,
+        TCP_BASED = 9
         LIVE_STREAMING = 8
 
     class GBRQosReference(Enum):
@@ -150,20 +150,17 @@ class QosAwareness:
            Guaranteed bit rate Qos Reference values
            NEF Emulator has an endpoint that explains these GET /api/v1/qosInfo/qosCharacteristics
         """
-        CONVERSATIONAL_VOICE = 1,
-        CONVERSATIONAL_VIDEO = 2,
+        CONVERSATIONAL_VOICE = 1
+        CONVERSATIONAL_VIDEO = 2
         DISCRETE_AUTOMATION = 82
 
     class QosMonitoringParameter(Enum):
         """
             The type of QoS connection that you can monitor.
         """
-        UPLINK = RequestedQoSMonitoringParameters.UPLINK, #It's easier for the developer to use Enums in the code rather
-        # the swagger type RequestedQoSMonitoringParameters     which inherits from object.
-        #The mapping is done here, and QosAwareness uses this enum (QosMonitoringParameter) in method declarations
-        DOWNLINK = RequestedQoSMonitoringParameters.DOWNLINK,
-        ROUNDTRIP = RequestedQoSMonitoringParameters.ROUND_TRIP
-
+        UPLINK = "UPLINK"
+        DOWNLINK = "DOWNLINK"
+        ROUNDTRIP = "ROUND_TRIP"
 
 
     def __init__(self, host: str, bearer_access_token: str):
@@ -234,11 +231,11 @@ class QosAwareness:
         If you choose to pass a IP 6 address then the network_identified parameter should be set to NetworkIdentifier.IP_V6_ADDRESS
         If you choose to pass a MAC address then the network_identified parameter should be set to NetworkIdentifier.MAC_ADDRESS
         :param network_identifier: An enum that specifies what type of equipment_network_identifier you are passing as a parameters (IP4,IP6 or MAC address)
-        :param notification_destination: The url that you will notifications when QoS conditions change (for example up link threshold cannot be achieved)
+        :param notification_destination: The url that you will notifications when QoS conditions change (for example when usage threshold is exceeded)
         :param non_gbr_qos_reference: The type of Non Guaranteed QoS that you want to achieve (TCP based or Live Streaming)
         :param usage_threshold: Allows to set thresholds on time and volume. For example establish the Qos session, up to 10 gigabytes for the upcoming 48 hours.
         5 GB for downlink, 5gb for uplink
-        :return:
+        :return: :return: The subscription that will contain the identifier for this QoS session.
         """
         body = self.__create_subscription_request(equipment_network_identifier,
                                                   network_identifier,
@@ -272,11 +269,11 @@ class QosAwareness:
         If you choose to pass a IP 6 address then the network_identified parameter should be set to NetworkIdentifier.IP_V6_ADDRESS
         If you choose to pass a MAC address then the network_identified parameter should be set to NetworkIdentifier.MAC_ADDRESS
         :param network_identifier: An enum that specifies what type of equipment_network_identifier you are passing as a parameters (IP4,IP6 or MAC address)
-        :param notification_destination: The url that you will notifications when QoS conditions change (for example up link threshold cannot be achieved)
+        :param notification_destination: The url that you will notifications when QoS conditions change (for example when usage threshold is exceeded)
         :param non_gbr_qos_reference: The type of Non Guaranteed QoS that you want to achieve (TCP based or Live Streaming)
         :param usage_threshold: Allows to set thresholds on time and volume. For example establish the Qos session, up to 10 gigabytes for the upcoming 48 hours.
         5 GB for downlink, 5gb for uplink
-        :return:
+        :return: The subscription that will contain the identifier for this QoS session.
         """
         body = self.__create_subscription_request(equipment_network_identifier,
                                                   network_identifier,
@@ -303,17 +300,23 @@ class QosAwareness:
                                                 ) -> AsSessionWithQoSSubscription:
 
         """
+            Initializes a Guaranteed Bit Rate (NGBR) Quality of Service (QoS) subscription.
+            This is useful for Conversational Voice / Video or Discrete automation scenarios.
 
-        :param netapp_id:
-        :param equipment_network_identifier:
-        :param network_identifier:
-        :param notification_destination:
-        :param gbr_qos_reference:
-        :param usage_threshold:
-        :param qos_monitoring_parameter:
-        :param threshold:
-        :param wait_time_between_reports:
-        :return:
+            :param str netapp_id: string (The ID of the Netapp that creates a subscription)
+            :param equipment_network_identifier: The IP 4 address or IP 6 address or Mac address of the user device / equiment.
+                If you choose to pass a IP 4 address then the network_identified parameter should be set to NetworkIdentifier.IP_V4_ADDRESS
+                If you choose to pass a IP 6 address then the network_identified parameter should be set to NetworkIdentifier.IP_V6_ADDRESS
+                If you choose to pass a MAC address then the network_identified parameter should be set to NetworkIdentifier.MAC_ADDRESS
+            :param network_identifier: An enum that specifies what type of equipment_network_identifier you are passing as a parameters (IP4,IP6 or MAC address)
+            :param notification_destination: The url that you will receive notifications when QoS conditions change (for example when threshold cannot be achieved)
+            :param gbr_qos_reference:  The type of Guaranteed QoS that you want to achieve (CONVERSATIONAL_VOICE or CONVERSATIONAL_VIDEO or DISCRETE_AUTOMATION)
+            :param usage_threshold: Allows to set thresholds on time and volume. For example establish the Qos session, up to 10 gigabytes for the upcoming 48 hours.
+            5 GB for downlink, 5gb for uplink
+            :param qos_monitoring_parameter: The type of connection that will be monitored: UPLINK or DOWNLINK or ROUNDTRIP
+            :param threshold: The minimum delay of data package in milliseconds, during UPLINK or DOWNLINK or ROUNDTRIP
+            :param wait_time_between_reports: The minimum waiting time (seconds) between subsequent reports
+            :return: The subscription that will contain the identifier for this QoS session.
         """
         alt_qo_s_references, qos_monitoring_info = self.__create_gbr_request_qo_parameters(gbr_qos_reference,
                                                                                            qos_monitoring_parameter,
@@ -360,8 +363,8 @@ class QosAwareness:
     def update_guaranteed_bit_rate_subscription(self,
                                                 netapp_id: str,
                                                 subscription_id: str,
-                                                equipment_identifier: str,
-                                                identifier_type: NetworkIdentifier,
+                                                equipment_network_identifier: str,
+                                                network_identifier: NetworkIdentifier,
                                                 notification_destination: str,
                                                 gbr_qos_reference: GBRQosReference,
                                                 usage_threshold: UsageThreshold,
@@ -369,26 +372,31 @@ class QosAwareness:
                                                 threshold: int,
                                                 wait_time_between_reports: int) -> AsSessionWithQoSSubscription:
         """
+            Updates a given subscription.
 
-        :param netapp_id:
-        :param subscription_id:
-        :param equipment_identifier:
-        :param identifier_type:
-        :param notification_destination:
-        :param gbr_qos_reference:
-        :param usage_threshold:
-        :param qos_monitoring_parameter:
-        :param threshold:
-        :param wait_time_between_reports:
-        :return:
+            :param str netapp_id: string (The ID of the Netapp that creates a subscription)
+            :param str subscription_id: string (Identifier of the subscription resource)
+            :param equipment_network_identifier: The IP 4 address or IP 6 address or Mac address of the user device / equiment.
+                If you choose to pass a IP 4 address then the network_identified parameter should be set to NetworkIdentifier.IP_V4_ADDRESS
+                If you choose to pass a IP 6 address then the network_identified parameter should be set to NetworkIdentifier.IP_V6_ADDRESS
+                If you choose to pass a MAC address then the network_identified parameter should be set to NetworkIdentifier.MAC_ADDRESS
+            :param network_identifier: An enum that specifies what type of equipment_network_identifier you are passing as a parameters (IP4,IP6 or MAC address)
+            :param notification_destination: The url that you will receive notifications when QoS conditions change (for example when threshold cannot be achieved)
+            :param gbr_qos_reference:  The type of Guaranteed QoS that you want to achieve (CONVERSATIONAL_VOICE or CONVERSATIONAL_VIDEO or DISCRETE_AUTOMATION)
+            :param usage_threshold: Allows to set thresholds on time and volume. For example establish the Qos session, up to 10 gigabytes for the upcoming 48 hours.
+            5 GB for downlink, 5gb for uplink
+            :param qos_monitoring_parameter: The type of connection that will be monitored: UPLINK or DOWNLINK or ROUNDTRIP
+            :param threshold: The minimum delay of data package in milliseconds, during UPLINK or DOWNLINK or ROUNDTRIP
+            :param wait_time_between_reports: The minimum waiting time (seconds) between subsequent reports
+            :return: The subscription that will contain the identifier for this QoS session.
         """
         alt_qo_s_references, qos_monitoring_info = self.__create_gbr_request_qo_parameters(gbr_qos_reference,
                                                                                            qos_monitoring_parameter,
                                                                                            threshold,
                                                                                            wait_time_between_reports)
 
-        body = self.__create_subscription_request(equipment_identifier,
-                                                  identifier_type,
+        body = self.__create_subscription_request(equipment_network_identifier,
+                                                  network_identifier,
                                                   notification_destination,
                                                   qos_reference=gbr_qos_reference.value,
                                                   alt_qo_s_references=alt_qo_s_references,
@@ -399,20 +407,16 @@ class QosAwareness:
             body, netapp_id, subscription_id)
         pass
 
-    def get_all_subscriptions(self, netapp_id: str, skip: int = 0, limit: int = 100) -> List[
+    def get_all_subscriptions(self, netapp_id: str) -> List[
         AsSessionWithQoSSubscription]:
         """
               Reads all active subscriptions
 
-              :param skip: The number of subscriptions to skip
-              :param limit: The maximum number of transcriptions to return
               :param str netapp_id: string (The ID of the Netapp that creates a subscription)
         """
 
         return self.qos_api.read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get(
-            netapp_id,
-            skip=skip,
-            limit=limit)
+            netapp_id)
 
     def get_subscription(self, netapp_id: str, subscription_id: str) -> AsSessionWithQoSSubscription:
         """
