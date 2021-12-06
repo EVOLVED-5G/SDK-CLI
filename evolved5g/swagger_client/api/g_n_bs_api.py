@@ -116,7 +116,7 @@ class GNBsApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/api/v1/gNBs/', 'POST',
+            '/api/v1/gNBs', 'POST',
             path_params,
             query_params,
             header_params,
@@ -306,7 +306,7 @@ class GNBsApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/api/v1/gNBs/', 'GET',
+            '/api/v1/gNBs', 'GET',
             path_params,
             query_params,
             header_params,

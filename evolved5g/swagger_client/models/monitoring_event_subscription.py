@@ -29,48 +29,36 @@ class MonitoringEventSubscription(object):
     """
     swagger_types = {
         'external_id': 'str',
-        'msisdn': 'str',
-        'ipv4_addr': 'str',
-        'ipv6_addr': 'str',
         'notification_destination': 'str',
         'monitoring_type': 'MonitoringType',
         'maximum_number_of_reports': 'int',
         'monitor_expire_time': 'datetime',
-        'link': 'str'
+        'link': 'str',
+        'ipv4_addr': 'str'
     }
 
     attribute_map = {
         'external_id': 'externalId',
-        'msisdn': 'msisdn',
-        'ipv4_addr': 'ipv4Addr',
-        'ipv6_addr': 'ipv6Addr',
         'notification_destination': 'notificationDestination',
         'monitoring_type': 'monitoringType',
         'maximum_number_of_reports': 'maximumNumberOfReports',
         'monitor_expire_time': 'monitorExpireTime',
-        'link': 'link'
+        'link': 'link',
+        'ipv4_addr': 'ipv4Addr'
     }
 
-    def __init__(self, external_id='123456789@domain.com', msisdn='918369110173', ipv4_addr=None, ipv6_addr='0:0:0:0:0:0:0:1', notification_destination='http://localhost:80/api/v1/utils/monitoring/callback', monitoring_type=None, maximum_number_of_reports=None, monitor_expire_time=None, link='https://myresource.com'):  # noqa: E501
+    def __init__(self, external_id='123456789@domain.com', notification_destination='http://localhost:80/api/v1/utils/monitoring/callback', monitoring_type=None, maximum_number_of_reports=None, monitor_expire_time=None, link='https://myresource.com', ipv4_addr=None):  # noqa: E501
         """MonitoringEventSubscription - a model defined in Swagger"""  # noqa: E501
         self._external_id = None
-        self._msisdn = None
-        self._ipv4_addr = None
-        self._ipv6_addr = None
         self._notification_destination = None
         self._monitoring_type = None
         self._maximum_number_of_reports = None
         self._monitor_expire_time = None
         self._link = None
+        self._ipv4_addr = None
         self.discriminator = None
         if external_id is not None:
             self.external_id = external_id
-        if msisdn is not None:
-            self.msisdn = msisdn
-        if ipv4_addr is not None:
-            self.ipv4_addr = ipv4_addr
-        if ipv6_addr is not None:
-            self.ipv6_addr = ipv6_addr
         if notification_destination is not None:
             self.notification_destination = notification_destination
         self.monitoring_type = monitoring_type
@@ -80,6 +68,8 @@ class MonitoringEventSubscription(object):
             self.monitor_expire_time = monitor_expire_time
         if link is not None:
             self.link = link
+        if ipv4_addr is not None:
+            self.ipv4_addr = ipv4_addr
 
     @property
     def external_id(self):
@@ -105,78 +95,10 @@ class MonitoringEventSubscription(object):
         self._external_id = external_id
 
     @property
-    def msisdn(self):
-        """Gets the msisdn of this MonitoringEventSubscription.  # noqa: E501
-
-        Mobile Subscriber ISDN number that consists of Country Code, National Destination Code and Subscriber Number.  # noqa: E501
-
-        :return: The msisdn of this MonitoringEventSubscription.  # noqa: E501
-        :rtype: str
-        """
-        return self._msisdn
-
-    @msisdn.setter
-    def msisdn(self, msisdn):
-        """Sets the msisdn of this MonitoringEventSubscription.
-
-        Mobile Subscriber ISDN number that consists of Country Code, National Destination Code and Subscriber Number.  # noqa: E501
-
-        :param msisdn: The msisdn of this MonitoringEventSubscription.  # noqa: E501
-        :type: str
-        """
-
-        self._msisdn = msisdn
-
-    @property
-    def ipv4_addr(self):
-        """Gets the ipv4_addr of this MonitoringEventSubscription.  # noqa: E501
-
-        String identifying an Ipv4 address  # noqa: E501
-
-        :return: The ipv4_addr of this MonitoringEventSubscription.  # noqa: E501
-        :rtype: str
-        """
-        return self._ipv4_addr
-
-    @ipv4_addr.setter
-    def ipv4_addr(self, ipv4_addr):
-        """Sets the ipv4_addr of this MonitoringEventSubscription.
-
-        String identifying an Ipv4 address  # noqa: E501
-
-        :param ipv4_addr: The ipv4_addr of this MonitoringEventSubscription.  # noqa: E501
-        :type: str
-        """
-
-        self._ipv4_addr = ipv4_addr
-
-    @property
-    def ipv6_addr(self):
-        """Gets the ipv6_addr of this MonitoringEventSubscription.  # noqa: E501
-
-        String identifying an Ipv6 address. Default value ::1/128 (loopback)  # noqa: E501
-
-        :return: The ipv6_addr of this MonitoringEventSubscription.  # noqa: E501
-        :rtype: str
-        """
-        return self._ipv6_addr
-
-    @ipv6_addr.setter
-    def ipv6_addr(self, ipv6_addr):
-        """Sets the ipv6_addr of this MonitoringEventSubscription.
-
-        String identifying an Ipv6 address. Default value ::1/128 (loopback)  # noqa: E501
-
-        :param ipv6_addr: The ipv6_addr of this MonitoringEventSubscription.  # noqa: E501
-        :type: str
-        """
-
-        self._ipv6_addr = ipv6_addr
-
-    @property
     def notification_destination(self):
         """Gets the notification_destination of this MonitoringEventSubscription.  # noqa: E501
 
+        Reference resource (URL) identifying service consumer's endpoint, in order to receive the asynchronous notification.  # noqa: E501
 
         :return: The notification_destination of this MonitoringEventSubscription.  # noqa: E501
         :rtype: str
@@ -187,6 +109,7 @@ class MonitoringEventSubscription(object):
     def notification_destination(self, notification_destination):
         """Sets the notification_destination of this MonitoringEventSubscription.
 
+        Reference resource (URL) identifying service consumer's endpoint, in order to receive the asynchronous notification.  # noqa: E501
 
         :param notification_destination: The notification_destination of this MonitoringEventSubscription.  # noqa: E501
         :type: str
@@ -285,6 +208,29 @@ class MonitoringEventSubscription(object):
         """
 
         self._link = link
+
+    @property
+    def ipv4_addr(self):
+        """Gets the ipv4_addr of this MonitoringEventSubscription.  # noqa: E501
+
+        String identifying an Ipv4 address  # noqa: E501
+
+        :return: The ipv4_addr of this MonitoringEventSubscription.  # noqa: E501
+        :rtype: str
+        """
+        return self._ipv4_addr
+
+    @ipv4_addr.setter
+    def ipv4_addr(self, ipv4_addr):
+        """Sets the ipv4_addr of this MonitoringEventSubscription.
+
+        String identifying an Ipv4 address  # noqa: E501
+
+        :param ipv4_addr: The ipv4_addr of this MonitoringEventSubscription.  # noqa: E501
+        :type: str
+        """
+
+        self._ipv4_addr = ipv4_addr
 
     def to_dict(self):
         """Returns the model properties as a dict"""

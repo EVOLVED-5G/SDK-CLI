@@ -28,7 +28,6 @@ class UE(object):
                             and the value is json key in definition.
     """
     swagger_types = {
-        'supi': 'str',
         'name': 'str',
         'description': 'str',
         'g_nb_id': 'int',
@@ -40,16 +39,15 @@ class UE(object):
         'mcc': 'int',
         'mnc': 'int',
         'external_identifier': 'str',
-        'latitude': 'float',
-        'longitude': 'float',
         'speed': 'AllOfUESpeed',
         'path_id': 'int',
-        'owner_id': 'int',
-        'id': 'int'
+        'id': 'int',
+        'supi': 'str',
+        'latitude': 'float',
+        'longitude': 'float'
     }
 
     attribute_map = {
-        'supi': 'supi',
         'name': 'name',
         'description': 'description',
         'g_nb_id': 'gNB_id',
@@ -61,17 +59,16 @@ class UE(object):
         'mcc': 'mcc',
         'mnc': 'mnc',
         'external_identifier': 'external_identifier',
-        'latitude': 'latitude',
-        'longitude': 'longitude',
         'speed': 'speed',
         'path_id': 'path_id',
-        'owner_id': 'owner_id',
-        'id': 'id'
+        'id': 'id',
+        'supi': 'supi',
+        'latitude': 'latitude',
+        'longitude': 'longitude'
     }
 
-    def __init__(self, supi=None, name=None, description=None, g_nb_id=None, cell_id=None, ip_address_v4='169.254.46.5', ip_address_v6='fe80::349d:33ff:fe76:2cee', mac_address=None, dnn=None, mcc=None, mnc=None, external_identifier=None, latitude=None, longitude=None, speed=None, path_id=None, owner_id=None, id=None):  # noqa: E501
+    def __init__(self, name=None, description=None, g_nb_id=None, cell_id=None, ip_address_v4='10.0.0.0', ip_address_v6='0:0:0:0:0:0:0:0', mac_address='22-00-00-00-00-00', dnn='province1.mnc01.mcc202.gprs', mcc=202, mnc=1, external_identifier='123456789@domain.com', speed=None, path_id=None, id=None, supi='202010000000000', latitude=None, longitude=None):  # noqa: E501
         """UE - a model defined in Swagger"""  # noqa: E501
-        self._supi = None
         self._name = None
         self._description = None
         self._g_nb_id = None
@@ -83,15 +80,15 @@ class UE(object):
         self._mcc = None
         self._mnc = None
         self._external_identifier = None
-        self._latitude = None
-        self._longitude = None
         self._speed = None
         self._path_id = None
-        self._owner_id = None
         self._id = None
+        self._supi = None
+        self._latitude = None
+        self._longitude = None
         self.discriminator = None
-        self.supi = supi
-        self.name = name
+        if name is not None:
+            self.name = name
         if description is not None:
             self.description = description
         self.g_nb_id = g_nb_id
@@ -110,38 +107,18 @@ class UE(object):
             self.mnc = mnc
         if external_identifier is not None:
             self.external_identifier = external_identifier
-        self.latitude = latitude
-        self.longitude = longitude
         if speed is not None:
             self.speed = speed
         if path_id is not None:
             self.path_id = path_id
-        self.owner_id = owner_id
         if id is not None:
             self.id = id
-
-    @property
-    def supi(self):
-        """Gets the supi of this UE.  # noqa: E501
-
-
-        :return: The supi of this UE.  # noqa: E501
-        :rtype: str
-        """
-        return self._supi
-
-    @supi.setter
-    def supi(self, supi):
-        """Sets the supi of this UE.
-
-
-        :param supi: The supi of this UE.  # noqa: E501
-        :type: str
-        """
-        if supi is None:
-            raise ValueError("Invalid value for `supi`, must not be `None`")  # noqa: E501
-
-        self._supi = supi
+        if supi is not None:
+            self.supi = supi
+        if latitude is not None:
+            self.latitude = latitude
+        if longitude is not None:
+            self.longitude = longitude
 
     @property
     def name(self):
@@ -161,8 +138,6 @@ class UE(object):
         :param name: The name of this UE.  # noqa: E501
         :type: str
         """
-        if name is None:
-            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
 
         self._name = name
 
@@ -237,6 +212,7 @@ class UE(object):
     def ip_address_v4(self):
         """Gets the ip_address_v4 of this UE.  # noqa: E501
 
+        String identifying an Ipv4 address  # noqa: E501
 
         :return: The ip_address_v4 of this UE.  # noqa: E501
         :rtype: str
@@ -247,6 +223,7 @@ class UE(object):
     def ip_address_v4(self, ip_address_v4):
         """Sets the ip_address_v4 of this UE.
 
+        String identifying an Ipv4 address  # noqa: E501
 
         :param ip_address_v4: The ip_address_v4 of this UE.  # noqa: E501
         :type: str
@@ -258,6 +235,7 @@ class UE(object):
     def ip_address_v6(self):
         """Gets the ip_address_v6 of this UE.  # noqa: E501
 
+        String identifying an Ipv6 address. Default value ::1/128 (loopback)  # noqa: E501
 
         :return: The ip_address_v6 of this UE.  # noqa: E501
         :rtype: str
@@ -268,6 +246,7 @@ class UE(object):
     def ip_address_v6(self, ip_address_v6):
         """Sets the ip_address_v6 of this UE.
 
+        String identifying an Ipv6 address. Default value ::1/128 (loopback)  # noqa: E501
 
         :param ip_address_v6: The ip_address_v6 of this UE.  # noqa: E501
         :type: str
@@ -300,6 +279,7 @@ class UE(object):
     def dnn(self):
         """Gets the dnn of this UE.  # noqa: E501
 
+        String identifying the Data Network Name (i.e., Access Point Name in 4G). For more information check clause 9A of 3GPP TS 23.003  # noqa: E501
 
         :return: The dnn of this UE.  # noqa: E501
         :rtype: str
@@ -310,6 +290,7 @@ class UE(object):
     def dnn(self, dnn):
         """Sets the dnn of this UE.
 
+        String identifying the Data Network Name (i.e., Access Point Name in 4G). For more information check clause 9A of 3GPP TS 23.003  # noqa: E501
 
         :param dnn: The dnn of this UE.  # noqa: E501
         :type: str
@@ -321,6 +302,7 @@ class UE(object):
     def mcc(self):
         """Gets the mcc of this UE.  # noqa: E501
 
+        Mobile Country Code (MCC) part of the Public Land Mobile Network (PLMN), comprising 3 digits, as defined in clause 9.3.3.5 of 3GPP TS 38.413  # noqa: E501
 
         :return: The mcc of this UE.  # noqa: E501
         :rtype: int
@@ -331,6 +313,7 @@ class UE(object):
     def mcc(self, mcc):
         """Sets the mcc of this UE.
 
+        Mobile Country Code (MCC) part of the Public Land Mobile Network (PLMN), comprising 3 digits, as defined in clause 9.3.3.5 of 3GPP TS 38.413  # noqa: E501
 
         :param mcc: The mcc of this UE.  # noqa: E501
         :type: int
@@ -342,6 +325,7 @@ class UE(object):
     def mnc(self):
         """Gets the mnc of this UE.  # noqa: E501
 
+        Mobile Network Code (MNC) part of the Public Land Mobile Network (PLMN), comprising 2 or 3 digits, as defined in clause 9.3.3.5 of 3GPP TS 38.413  # noqa: E501
 
         :return: The mnc of this UE.  # noqa: E501
         :rtype: int
@@ -352,6 +336,7 @@ class UE(object):
     def mnc(self, mnc):
         """Sets the mnc of this UE.
 
+        Mobile Network Code (MNC) part of the Public Land Mobile Network (PLMN), comprising 2 or 3 digits, as defined in clause 9.3.3.5 of 3GPP TS 38.413  # noqa: E501
 
         :param mnc: The mnc of this UE.  # noqa: E501
         :type: int
@@ -363,6 +348,7 @@ class UE(object):
     def external_identifier(self):
         """Gets the external_identifier of this UE.  # noqa: E501
 
+        Globally unique identifier containing a Domain Identifier and a Local Identifier. \\<Local Identifier\\>@\\<Domain Identifier\\>  # noqa: E501
 
         :return: The external_identifier of this UE.  # noqa: E501
         :rtype: str
@@ -373,6 +359,7 @@ class UE(object):
     def external_identifier(self, external_identifier):
         """Sets the external_identifier of this UE.
 
+        Globally unique identifier containing a Domain Identifier and a Local Identifier. \\<Local Identifier\\>@\\<Domain Identifier\\>  # noqa: E501
 
         :param external_identifier: The external_identifier of this UE.  # noqa: E501
         :type: str
@@ -381,56 +368,10 @@ class UE(object):
         self._external_identifier = external_identifier
 
     @property
-    def latitude(self):
-        """Gets the latitude of this UE.  # noqa: E501
-
-
-        :return: The latitude of this UE.  # noqa: E501
-        :rtype: float
-        """
-        return self._latitude
-
-    @latitude.setter
-    def latitude(self, latitude):
-        """Sets the latitude of this UE.
-
-
-        :param latitude: The latitude of this UE.  # noqa: E501
-        :type: float
-        """
-        if latitude is None:
-            raise ValueError("Invalid value for `latitude`, must not be `None`")  # noqa: E501
-
-        self._latitude = latitude
-
-    @property
-    def longitude(self):
-        """Gets the longitude of this UE.  # noqa: E501
-
-
-        :return: The longitude of this UE.  # noqa: E501
-        :rtype: float
-        """
-        return self._longitude
-
-    @longitude.setter
-    def longitude(self, longitude):
-        """Sets the longitude of this UE.
-
-
-        :param longitude: The longitude of this UE.  # noqa: E501
-        :type: float
-        """
-        if longitude is None:
-            raise ValueError("Invalid value for `longitude`, must not be `None`")  # noqa: E501
-
-        self._longitude = longitude
-
-    @property
     def speed(self):
         """Gets the speed of this UE.  # noqa: E501
 
-        This value decribes UE's speed. Possible values are \"STATIONARY\" (e.g, IoT device), \"LOW(e.g, pedestrian)\" and \"HIGH (e.g., vehicle)\"  # noqa: E501
+        This value describes UE's speed. Possible values are \"STATIONARY\" (e.g, IoT device), \"LOW(e.g, pedestrian)\" and \"HIGH (e.g., vehicle)\"  # noqa: E501
 
         :return: The speed of this UE.  # noqa: E501
         :rtype: AllOfUESpeed
@@ -441,7 +382,7 @@ class UE(object):
     def speed(self, speed):
         """Sets the speed of this UE.
 
-        This value decribes UE's speed. Possible values are \"STATIONARY\" (e.g, IoT device), \"LOW(e.g, pedestrian)\" and \"HIGH (e.g., vehicle)\"  # noqa: E501
+        This value describes UE's speed. Possible values are \"STATIONARY\" (e.g, IoT device), \"LOW(e.g, pedestrian)\" and \"HIGH (e.g., vehicle)\"  # noqa: E501
 
         :param speed: The speed of this UE.  # noqa: E501
         :type: AllOfUESpeed
@@ -453,6 +394,7 @@ class UE(object):
     def path_id(self):
         """Gets the path_id of this UE.  # noqa: E501
 
+        This value correlates a UE with a pre-defined path. More information can be found at /api/v1/frontend/location  # noqa: E501
 
         :return: The path_id of this UE.  # noqa: E501
         :rtype: int
@@ -463,35 +405,13 @@ class UE(object):
     def path_id(self, path_id):
         """Sets the path_id of this UE.
 
+        This value correlates a UE with a pre-defined path. More information can be found at /api/v1/frontend/location  # noqa: E501
 
         :param path_id: The path_id of this UE.  # noqa: E501
         :type: int
         """
 
         self._path_id = path_id
-
-    @property
-    def owner_id(self):
-        """Gets the owner_id of this UE.  # noqa: E501
-
-
-        :return: The owner_id of this UE.  # noqa: E501
-        :rtype: int
-        """
-        return self._owner_id
-
-    @owner_id.setter
-    def owner_id(self, owner_id):
-        """Sets the owner_id of this UE.
-
-
-        :param owner_id: The owner_id of this UE.  # noqa: E501
-        :type: int
-        """
-        if owner_id is None:
-            raise ValueError("Invalid value for `owner_id`, must not be `None`")  # noqa: E501
-
-        self._owner_id = owner_id
 
     @property
     def id(self):
@@ -513,6 +433,71 @@ class UE(object):
         """
 
         self._id = id
+
+    @property
+    def supi(self):
+        """Gets the supi of this UE.  # noqa: E501
+
+        String identifying a Supi that shall contain either an IMSI, a network specific identifier, a Global Cable Identifier (GCI) or a Global Line Identifier (GLI) as specified in clause 2.2A of 3GPP TS 23.003.                                                                                          In the current version (v1.1.0) only IMSI is supported  # noqa: E501
+
+        :return: The supi of this UE.  # noqa: E501
+        :rtype: str
+        """
+        return self._supi
+
+    @supi.setter
+    def supi(self, supi):
+        """Sets the supi of this UE.
+
+        String identifying a Supi that shall contain either an IMSI, a network specific identifier, a Global Cable Identifier (GCI) or a Global Line Identifier (GLI) as specified in clause 2.2A of 3GPP TS 23.003.                                                                                          In the current version (v1.1.0) only IMSI is supported  # noqa: E501
+
+        :param supi: The supi of this UE.  # noqa: E501
+        :type: str
+        """
+
+        self._supi = supi
+
+    @property
+    def latitude(self):
+        """Gets the latitude of this UE.  # noqa: E501
+
+
+        :return: The latitude of this UE.  # noqa: E501
+        :rtype: float
+        """
+        return self._latitude
+
+    @latitude.setter
+    def latitude(self, latitude):
+        """Sets the latitude of this UE.
+
+
+        :param latitude: The latitude of this UE.  # noqa: E501
+        :type: float
+        """
+
+        self._latitude = latitude
+
+    @property
+    def longitude(self):
+        """Gets the longitude of this UE.  # noqa: E501
+
+
+        :return: The longitude of this UE.  # noqa: E501
+        :rtype: float
+        """
+        return self._longitude
+
+    @longitude.setter
+    def longitude(self, longitude):
+        """Sets the longitude of this UE.
+
+
+        :param longitude: The longitude of this UE.  # noqa: E501
+        :type: float
+        """
+
+        self._longitude = longitude
 
     def to_dict(self):
         """Returns the model properties as a dict"""
