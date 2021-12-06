@@ -11,7 +11,7 @@ def index():
 
 @app.route('/monitoring/callback', methods=['POST'])
 def location_reporter():
-    print("New location retrieved:")
+    print("New notification retrieved:")
     print(request.get_json())
     return request.get_json()
 
