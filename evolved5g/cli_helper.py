@@ -48,7 +48,7 @@ class  CLI_helper:
         resp = requests.post(self.url_curl, headers=self.header, data=data)
         echo(resp.json()["id"])
 
-    def check_pipeline(self, id):
+    def check_pipeline(self, id, pdf):
 
         """Check the status of the pipeline for the EVOLVED-5G NetApp"""
         self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
@@ -78,7 +78,8 @@ class  CLI_helper:
                     echo(element)
                     pdfoutput='\n'.join([pdfoutput, element])
 
-            self.generate_pdf(pdfoutput, mode)
+            if pdf:
+                self.generate_pdf(pdfoutput, mode)
         
     def generate_pdf (self, output, mode):
         doc = SimpleDocTemplate(mode+"_Report.pdf", pagesize=A4,
