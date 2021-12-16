@@ -5,9 +5,9 @@ name: Python package
 
 on:
   push:
-    branches: [ main ]
+    branches: [ develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ develop ]
 
 jobs:
   build:
@@ -38,7 +38,3 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
-    - name: Publish distribution 📦 to PyPI
-      uses: EVOLVED-5G/SDK-CLI@master
-      with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
