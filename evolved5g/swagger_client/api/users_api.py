@@ -116,7 +116,7 @@ class UsersApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/api/v1/users/', 'POST',
+            '/api/v1/users', 'POST',
             path_params,
             query_params,
             header_params,
@@ -492,7 +492,7 @@ class UsersApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/api/v1/users/', 'GET',
+            '/api/v1/users', 'GET',
             path_params,
             query_params,
             header_params,

@@ -29,38 +29,33 @@ class Path(object):
     """
     swagger_types = {
         'description': 'str',
-        'points': 'list[Point]',
         'start_point': 'Point',
         'end_point': 'Point',
         'color': 'str',
         'id': 'int',
-        'owner_id': 'int'
+        'points': 'list[Point]'
     }
 
     attribute_map = {
         'description': 'description',
-        'points': 'points',
         'start_point': 'start_point',
         'end_point': 'end_point',
         'color': 'color',
         'id': 'id',
-        'owner_id': 'owner_id'
+        'points': 'points'
     }
 
-    def __init__(self, description=None, points=None, start_point=None, end_point=None, color=None, id=None, owner_id=None):  # noqa: E501
+    def __init__(self, description=None, start_point=None, end_point=None, color=None, id=None, points=None):  # noqa: E501
         """Path - a model defined in Swagger"""  # noqa: E501
         self._description = None
-        self._points = None
         self._start_point = None
         self._end_point = None
         self._color = None
         self._id = None
-        self._owner_id = None
+        self._points = None
         self.discriminator = None
         if description is not None:
             self.description = description
-        if points is not None:
-            self.points = points
         if start_point is not None:
             self.start_point = start_point
         if end_point is not None:
@@ -68,7 +63,8 @@ class Path(object):
         if color is not None:
             self.color = color
         self.id = id
-        self.owner_id = owner_id
+        if points is not None:
+            self.points = points
 
     @property
     def description(self):
@@ -90,27 +86,6 @@ class Path(object):
         """
 
         self._description = description
-
-    @property
-    def points(self):
-        """Gets the points of this Path.  # noqa: E501
-
-
-        :return: The points of this Path.  # noqa: E501
-        :rtype: list[Point]
-        """
-        return self._points
-
-    @points.setter
-    def points(self, points):
-        """Sets the points of this Path.
-
-
-        :param points: The points of this Path.  # noqa: E501
-        :type: list[Point]
-        """
-
-        self._points = points
 
     @property
     def start_point(self):
@@ -199,27 +174,25 @@ class Path(object):
         self._id = id
 
     @property
-    def owner_id(self):
-        """Gets the owner_id of this Path.  # noqa: E501
+    def points(self):
+        """Gets the points of this Path.  # noqa: E501
 
 
-        :return: The owner_id of this Path.  # noqa: E501
-        :rtype: int
+        :return: The points of this Path.  # noqa: E501
+        :rtype: list[Point]
         """
-        return self._owner_id
+        return self._points
 
-    @owner_id.setter
-    def owner_id(self, owner_id):
-        """Sets the owner_id of this Path.
+    @points.setter
+    def points(self, points):
+        """Sets the points of this Path.
 
 
-        :param owner_id: The owner_id of this Path.  # noqa: E501
-        :type: int
+        :param points: The points of this Path.  # noqa: E501
+        :type: list[Point]
         """
-        if owner_id is None:
-            raise ValueError("Invalid value for `owner_id`, must not be `None`")  # noqa: E501
 
-        self._owner_id = owner_id
+        self._points = points
 
     def to_dict(self):
         """Returns the model properties as a dict"""
