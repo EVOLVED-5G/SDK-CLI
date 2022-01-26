@@ -3,8 +3,11 @@ import requests
 import json
 import json.decoder
 from click import echo
-
-
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.enums import TA_JUSTIFY
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import cm
 
 class  CLI_helper:
 
@@ -41,31 +44,56 @@ class  CLI_helper:
     def run_pipeline(self, mode, repo):
         """Run the build pipeline for the EVOLVED-5G NetApp"""
         self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
-        # repo = input("Please write down your repo:\n")
         data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "dummy-netapp/'+ mode +'", "parameters": { "VERSION": "1.0", "GIT_URL": "https://github.com/EVOLVED-5G/' + repo +'", "GIT_BRANCH": "' + self.branch + '"} }'
         resp = requests.post(self.url_curl, headers=self.header, data=data)
         echo(resp.json()["id"])
 
-    def check_pipeline(self, id):
+    def check_pipeline(self, id, pdf):
 
         """Check the status of the pipeline for the EVOLVED-5G NetApp"""
         self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
-        # pipelineid = input("Please write down the pipeline ID you want to check:\n")
         resp = requests.get(f"{self.url_curl}/{id}", headers=self.header)
         result = resp.json()
+        pdfoutput=""
 
         if result["status"] == "QUEUED":
             echo(result)
         else:
             console = (json.dumps(result["console_log"]).split('\\n'))
-
+            
             for element in console:
                 if "] { (" in element:
                     echo(element)
+                    pdfoutput='\n'.join([pdfoutput, element])
                 elif "[Pipeline]" not in element:
-                    echo(element)
+                    if "Lanzada" in element:
+                        pass
+                    else:
+                        echo (element)
+                        pdfoutput='\n'.join([pdfoutput, element])
+                        if ".groovy" in element:
+                            first_word = element.split("-")[1]
+                            mode = first_word.split(".")[0]
                 elif "] stage" in element:
                     echo(element)
-                    
+                    pdfoutput='\n'.join([pdfoutput, element])
 
+            if pdf:
+                self.generate_pdf(pdfoutput, mode)
+        
+    def generate_pdf (self, output, mode):
+        doc = SimpleDocTemplate(mode+"_Report.pdf", pagesize=A4,
+                            rightMargin=20, leftMargin=20,
+                            topMargin=5, bottomMargin=20)
 
+        Story = []
+        styles = getSampleStyleSheet()
+        styles.add(ParagraphStyle(name='Justify', alignment=TA_JUSTIFY))
+        logo = "https://evolved-5g.eu/wp-content/uploads/2021/01/site-logo_2.png"
+        im = Image(logo, 8 * cm, 4 * cm)
+        Story.append(im)
+        Story.append(Paragraph("This is a "+mode+" report.", styles['Heading3']))
+        Story.append(Spacer(0,5))
+        Story.append(Paragraph(output.replace("\n", "<br />"), styles["Normal"]))
+
+        doc.build(Story)
