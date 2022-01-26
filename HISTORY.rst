@@ -3,6 +3,11 @@ History
 =======
 
 
+0.6.1 (2022-01-26)
+------------------
+
+* Added Pypi functionality to automate generate a new SDK pip package
+
 0.6.0 (2021-06-12)
 ------------------
 
