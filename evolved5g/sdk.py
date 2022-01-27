@@ -6,8 +6,8 @@ from enum import Enum
 from evolved5g.swagger_client import MonitoringEventAPIApi, \
     MonitoringEventSubscriptionCreate, MonitoringEventSubscription, SessionWithQoSAPIApi, \
     AsSessionWithQoSSubscriptionCreate, Snssai, UsageThreshold, AsSessionWithQoSSubscription, QosMonitoringInformation, \
-    RequestedQoSMonitoringParameters, ReportingFrequency
-
+    RequestedQoSMonitoringParameters, ReportingFrequency, MonitoringEventReport
+import datetime
 
 class LocationSubscriber:
 
@@ -39,12 +39,34 @@ class LocationSubscriber:
                                                  maximum_number_of_reports,
                                                  monitor_expire_time)
 
+    def get_location_information(self,netapp_id: str,
+                                 external_id) -> MonitoringEventReport:
+        """
+             Returns the location of a specific device.
+             This is equivalent to creating a subscription with maximum_number_of_reports = 1
+             :param str netapp_id: string (The ID of the Netapp that creates a subscription)
+             :param str external_id: Globally unique identifier containing a Domain Identifier and a Local Identifier. <Local Identifier>@<Domain Identifier>
+       """
+
+        # create a dummy expiration time. Since we are requesting for only 1 report, we will get the location information back instantly
+        monitor_expire_time = (datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).isoformat() + "Z"
+        body = self.__create_subscription_request(external_id,
+                                                  None,
+                                                  maximum_number_of_reports=1,
+                                                  monitor_expire_time=monitor_expire_time)
+
+        # a monitoring event report
+        response = self.monitoring_event_api.create_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(
+            body,
+            netapp_id)
+        return response
+
     def create_subscription(self,
                             netapp_id: str,
                             external_id,
                             notification_destination,
                             maximum_number_of_reports,
-                            monitor_expire_time):
+                            monitor_expire_time) -> MonitoringEventSubscription:
         """
               Creates a subscription that will be used to retrieve Location information about a device.
 

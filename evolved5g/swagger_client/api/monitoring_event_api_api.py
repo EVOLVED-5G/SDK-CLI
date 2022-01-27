@@ -131,13 +131,19 @@ class MonitoringEventAPIApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='MonitoringEventSubscription',  # noqa: E501
+            response_type=self.get_response_type(body_params),  # noqa: E501
             auth_settings=auth_settings,
             async_req=params.get('async_req'),
             _return_http_data_only=params.get('_return_http_data_only'),
             _preload_content=params.get('_preload_content', True),
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
+
+    def get_response_type(self,body_params):
+        if body_params.maximum_number_of_reports ==1:
+            return "MonitoringEventReport"
+        else:
+            return "MonitoringEventSubscription"
 
     def delete_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_delete(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
         """Delete Subscription  # noqa: E501
