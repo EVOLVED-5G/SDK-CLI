@@ -2,6 +2,18 @@
 History
 =======
 
+0.6.2 (2022-01-28)
+------------------
+
+* Improvements on LocationSubscriber.
+A new method has been implemented with name
+``get_location_information``
+
+With the new method the net app developer has the option to request for location information for a device just once. No need to create subscriptions or maintain a local web server in order to get notified for location changes.
+When a call to ``get_location_information`` is made, the 5G-API responds instantly with the location information (the cell id the device, that is being monitored, is connected to)
+
+* Examples of usages have been updated
+File location_subscriber_examples.py now showcases how the new method can be called
 
 0.6.1 (2022-01-26)
 ------------------
