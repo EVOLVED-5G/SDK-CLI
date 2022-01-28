@@ -1,7 +1,10 @@
+from evolved5g.swagger_client.rest import ApiException
+
 from evolved5g.sdk import LocationSubscriber
 import emulator_utils
 import datetime
-import uuid
+import time
+
 
 
 def showcase_create_subscription_and_retrieve_call_backs():
@@ -35,6 +38,7 @@ def showcase_create_subscription_and_retrieve_call_backs():
         maximum_number_of_reports=1000,
         monitor_expire_time=expire_time
     )
+
     # From now on we should retrieve POST notifications to http://172.17.0.1:5000/monitoring/callback
 
     print(subscription)
@@ -48,6 +52,58 @@ def showcase_create_subscription_and_retrieve_call_backs():
     subscription_info = location_subscriber.get_subscription(netapp_id, id)
     print(subscription_info)
 
+def showcase_create_single_request_for_location_info():
+    """
+   This example showcases how you can request the device location via the 5G-API
+   In order to run this example you need to follow the instructions in  readme.md in order to run the NEF emulator
+   """
+
+    netapp_id = "myNetapp"
+    host = emulator_utils.get_host_of_the_nef_emulator()
+    token = emulator_utils.get_token()
+    location_subscriber = LocationSubscriber(host, token.access_token)
+    # The following external identifier was copy pasted by the NEF emulator. Go to the Map and click on a User icon. There you can retrieve the id
+    external_id = "10003@domain.com"
+
+    location_info = location_subscriber.get_location_information(
+        netapp_id=netapp_id,
+        external_id=external_id
+    )
+    print(location_info)
+    #wait for 3 seconds and ask again
+    time.sleep(3)
+    location_info = location_subscriber.get_location_information(
+        netapp_id=netapp_id,
+        external_id=external_id
+    )
+    print(location_info)
+
+
+def read_and_delete_all_existing_subscriptions():
+    # How to get all subscriptions
+    netapp_id = "myNetapp"
+    host = emulator_utils.get_host_of_the_nef_emulator()
+    token = emulator_utils.get_token()
+    location_subscriber = LocationSubscriber(host, token.access_token)
+
+    try:
+        all_subscriptions = location_subscriber.get_all_subscriptions(netapp_id, 0, 100)
+        print(all_subscriptions)
+
+        for subscription in all_subscriptions:
+            id = subscription.link.split("/")[-1]
+            print("Deleting subscription with id: " + id)
+            location_subscriber.delete_subscription(netapp_id, id)
+    except ApiException as ex:
+        if ex.status == 404:
+            print("No active transcriptions found")
+        else: #something else happened, re-throw the exception
+            raise
+
+
 
 if __name__ == "__main__":
+    read_and_delete_all_existing_subscriptions()
     showcase_create_subscription_and_retrieve_call_backs()
+    read_and_delete_all_existing_subscriptions()
+    showcase_create_single_request_for_location_info()
