@@ -38,6 +38,7 @@ setup(
     install_requires=INSTALL_REQUIERES,
     license="Apache Software License 2.0",
     long_description=readme + '\n\n' + history,
+    long_description_content_type='text/markdown',
     include_package_data=True,
     keywords='evolved5g',
     name='evolved5g',
