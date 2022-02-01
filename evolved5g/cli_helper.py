@@ -30,7 +30,7 @@ class  CLI_helper:
         # if template:
         #     cookiecutter_generate(template,no_input=no_input,extra_context=extra)
         #     return
-        location = "gh:EVOLVED-5G/template" 
+        location = "gh:EVOLVED-5G/NetApp-template" 
         directory = "template"
         cookiecutter_generate(location, directory) #extra_context=extra)
 
