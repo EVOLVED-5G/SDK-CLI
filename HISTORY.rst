@@ -2,6 +2,9 @@
 History
 =======
 
+0.6.6 (2022-02-02)
+------------------
+* Remove two packages in requirement.txt: Pillow and Repotlab
 
 0.6.5 (2022-02-02)
 ------------------
