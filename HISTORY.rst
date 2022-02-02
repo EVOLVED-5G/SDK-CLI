@@ -3,6 +3,10 @@ History
 =======
 
 
+0.6.5 (2022-02-02)
+------------------
+* New libraries are need it. Specify in readme file.
+
 0.6.4 (2022-02-02)
 ------------------
 * Security bug fixed. 
