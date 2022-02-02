@@ -10,6 +10,8 @@ History
 * Update on the NEF endpoints for monitoring event api and session with Qos.
  This ensures compatibility with latest NEF release
 
+* Solve problem with Pypi
+
 
 0.6.2 (2022-01-28)
 ------------------
