@@ -124,7 +124,7 @@ class MonitoringEventAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions', 'POST',
+            '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions', 'POST',
             path_params,
             query_params,
             header_params,
@@ -233,7 +233,7 @@ class MonitoringEventAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}', 'DELETE',
+            '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}', 'DELETE',
             path_params,
             query_params,
             header_params,
@@ -336,7 +336,7 @@ class MonitoringEventAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions', 'GET',
+            '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions', 'GET',
             path_params,
             query_params,
             header_params,
@@ -439,7 +439,7 @@ class MonitoringEventAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}', 'GET',
+            '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}', 'GET',
             path_params,
             query_params,
             header_params,
@@ -554,7 +554,7 @@ class MonitoringEventAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}', 'PUT',
+            '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}', 'PUT',
             path_params,
             query_params,
             header_params,
