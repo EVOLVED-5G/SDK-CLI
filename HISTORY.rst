@@ -2,6 +2,13 @@
 History
 =======
 
+0.6.3 (2022-02-02)
+------------------
+
+* Changed Template repository location fode to NetApp Template
+
+* Added two packages in requirement.txt: Pillow and Repotlab
+
 0.6.2 (2022-01-28)
 ------------------
 
