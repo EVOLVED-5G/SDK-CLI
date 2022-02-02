@@ -112,7 +112,7 @@ To install Evolved5G_CLI, run this command in your terminal:
 .. code-block:: console
 
     sudo apt update
-    sudo apt-get install zlib1g-dev libjpeg-dev python3
+    sudo apt install python3
     sudo apt install python3-pip python3-setuptools
     pip3 install evolved5g
 
