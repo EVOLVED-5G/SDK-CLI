@@ -3,11 +3,6 @@ import requests
 import json
 import json.decoder
 from click import echo
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.enums import TA_JUSTIFY
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import cm
 
 class  CLI_helper:
 
@@ -60,40 +55,3 @@ class  CLI_helper:
             echo(result)
         else:
             console = (json.dumps(result["console_log"]).split('\\n'))
-            
-            for element in console:
-                if "] { (" in element:
-                    echo(element)
-                    pdfoutput='\n'.join([pdfoutput, element])
-                elif "[Pipeline]" not in element:
-                    if "Lanzada" in element:
-                        pass
-                    else:
-                        echo (element)
-                        pdfoutput='\n'.join([pdfoutput, element])
-                        if ".groovy" in element:
-                            first_word = element.split("-")[1]
-                            mode = first_word.split(".")[0]
-                elif "] stage" in element:
-                    echo(element)
-                    pdfoutput='\n'.join([pdfoutput, element])
-
-            if pdf:
-                self.generate_pdf(pdfoutput, mode)
-        
-    def generate_pdf (self, output, mode):
-        doc = SimpleDocTemplate(mode+"_Report.pdf", pagesize=A4,
-                            rightMargin=20, leftMargin=20,
-                            topMargin=5, bottomMargin=20)
-
-        Story = []
-        styles = getSampleStyleSheet()
-        styles.add(ParagraphStyle(name='Justify', alignment=TA_JUSTIFY))
-        logo = "https://evolved-5g.eu/wp-content/uploads/2021/01/site-logo_2.png"
-        im = Image(logo, 8 * cm, 4 * cm)
-        Story.append(im)
-        Story.append(Paragraph("This is a "+mode+" report.", styles['Heading3']))
-        Story.append(Spacer(0,5))
-        Story.append(Paragraph(output.replace("\n", "<br />"), styles["Normal"]))
-
-        doc.build(Story)
