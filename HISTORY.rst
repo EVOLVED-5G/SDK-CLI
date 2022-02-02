@@ -2,24 +2,10 @@
 History
 =======
 
-0.6.6 (2022-02-02)
-------------------
-* Remove two packages in requirement.txt: Pillow and Repotlab
-
-0.6.5 (2022-02-02)
-------------------
-* New libraries are need it. Specify in readme file.
-
-0.6.4 (2022-02-02)
-------------------
-* Security bug fixed. 
-
 0.6.3 (2022-02-02)
 ------------------
 
 * Changed Template repository location fode to NetApp Template
-
-* Added two packages in requirement.txt: Pillow and Repotlab
 
 * Update on the NEF endpoints for monitoring event api and session with Qos.
  This ensures compatibility with latest NEF release
