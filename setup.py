@@ -46,6 +46,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/EVOLVED-5G/SDK-CLI',
-    version='0.6.4',
+    version='0.6.5',
     zip_safe=False,
 )
