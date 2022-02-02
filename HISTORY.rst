@@ -9,6 +9,10 @@ History
 
 * Added two packages in requirement.txt: Pillow and Repotlab
 
+* Update on the NEF endpoints for monitoring event api and session with Qos.
+ This ensures compatibility with latest NEF release
+
+
 0.6.2 (2022-01-28)
 ------------------
 
