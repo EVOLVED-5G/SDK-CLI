@@ -47,8 +47,7 @@ Contents
 --------
 
 .. toctree::
-   :maxdepth: 0
-   :caption: Contents:
+   :titlesonly:
 
    readme
    information
