@@ -13,7 +13,6 @@ Evolved5G CLI & SDK
 
 
 * Free software: Apache Software License 2.0
-* Documentation: https://evolved5g_cli.readthedocs.io.
 
 ========
 Features
@@ -42,4 +41,5 @@ First of all, in order to be able to work with Cookiecutter, it is mandatory to 
 
 This guide has been developed to work with Ubuntu OS, so all the commands have been only tested under Ubuntu, if other OS will be used, please have in mind some of this command will differ.
 
-To install and use the tool, please refer to https://evolved5g-cli.readthedocs.io/
+To install and use the tool, please refer to:
+* Documentation: https://evolved5g_cli.readthedocs.io.
