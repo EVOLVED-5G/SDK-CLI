@@ -1,7 +1,9 @@
-*******************
-Evolved5G CLI & SDK
-*******************
+Welcome to SDK EVOLVED-5G documentation!
+=========================================
 
+*******************
+Evolved-5G SDK
+*******************
 
 .. image:: https://img.shields.io/pypi/v/evolved5g.svg
         :target: https://pypi.python.org/pypi/evolved5g
@@ -10,7 +12,6 @@ Evolved5G CLI & SDK
 .. image:: https://readthedocs.org/projects/evolved5g_cli/badge/?version=latest
         :target: https://evolved5g_cli.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
-
 
 * Free software: Apache Software License 2.0
 
@@ -37,9 +38,23 @@ You will receive an invitation which you will have to accept in order to have ow
 
 Once the developer has access to the organisation, he will want to create a new repository from a template. To do this, a template repository has been created and will be visible in the organisation, which contains a tool called Cookiecutter along with some Python scripts. With such scripts, the developer will be asked to introduce some inputs necessary in order to create a new repository, such repository will contain all the necessary folder and files for the creation/development of a NetApp.
 
-First of all, in order to be able to work with Cookiecutter, it is mandatory to install it on your local computer or virtual machine. Below are the commands that should be executed to work with Cookiecutter (these commands have been tested under Ubuntu, but it is also possible to use this tool on Windows and Mac (to be checked)).
+First of all, in order to be able to work with Cookiecutter, it is mandatory to install it on your local computer or virtual machine. Below are the commands that should be executed to work with Cookiecutter (these commands have been tested under Ubuntu, but it is also possible to use this tool on Windows and Mac (to be checked).
 
 This guide has been developed to work with Ubuntu OS, so all the commands have been only tested under Ubuntu, if other OS will be used, please have in mind some of this command will differ.
 
-To install and use the tool, please refer to:
-* Documentation: https://evolved5g_cli.readthedocs.io.
+Contents
+--------
+
+.. toctree::
+   :titlesonly:
+
+   readme
+   information
+   pre_requisites
+   installation
+   cli
+   pipelines
+   libraries
+   contributing
+   history
+

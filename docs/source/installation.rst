@@ -3,22 +3,16 @@ Installation
 ============
 
 
-Stable release (NOT YET INTEGRATED)
------------------------------------
+Stable release 
+---------------
 
-To install Evolved5G_CLI, run this command in your terminal:
+To install Evolved5G_CLI, please check you fulfil the pre-requisetes. After, just run the following command in your terminal:
 
 .. code-block:: console
 
     $ pip install evolved5g
 
 This is the preferred method to install Evolved5G_CLI, as it will always install the most recent stable release.
-
-If you don't have `pip`_ installed, this `Python installation guide`_ can guide
-you through the process.
-
-.. _pip: https://pip.pypa.io
-.. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
 
 
 From sources
