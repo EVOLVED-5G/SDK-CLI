@@ -42,4 +42,4 @@ First of all, in order to be able to work with Cookiecutter, it is mandatory to 
 
 This guide has been developed to work with Ubuntu OS, so all the commands have been only tested under Ubuntu, if other OS will be used, please have in mind some of this command will differ.
 
-To install and use the tool, please refer to :ref:`https://evolved5g-cli.readthedocs.io/`
+To install and use the tool, please refer to https://evolved5g-cli.readthedocs.io/
