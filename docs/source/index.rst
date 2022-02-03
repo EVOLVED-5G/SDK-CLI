@@ -31,11 +31,11 @@ Useful Information
 
 The purpose of this guide is to help developers, in the EVOLVED-5G project scope, to develop a NetApp.
 
-First, the partner to be interested in developing a NetApp must send an email to `evolved5g@gmail.com` to receive access to the GitHub organization.
+First, the partner to be interested in developing a NetApp must send an email to :ref:`evolved5g@gmail.com` to receive access to the GitHub organization.
 
 The email must contain the GitHub username to be added to the GitHub organization.
 
-You will receive an invitation which you will have to accept in order to have owner permissions in this organisation, which can be found here: `https://github.com/EVOLVED-5G`
+You will receive an invitation which you will have to accept in order to have owner permissions in this organisation, which can be found here: :ref:`https://github.com/EVOLVED-5G`
 
 Once the developer has access to the organisation, he will want to create a new repository from a template. To do this, a template repository has been created and will be visible in the organisation, which contains a tool called Cookiecutter along with some Python scripts. With such scripts, the developer will be asked to introduce some inputs necessary in order to create a new repository, such repository will contain all the necessary folder and files for the creation/development of a NetApp.
 
