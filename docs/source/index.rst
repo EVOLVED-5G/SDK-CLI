@@ -14,7 +14,6 @@ Evolved-5G SDK
         :alt: Documentation Status
 
 * Free software: Apache Software License 2.0
-* Documentation: https://evolved5g_cli.readthedocs.io
 
 ========
 Features
