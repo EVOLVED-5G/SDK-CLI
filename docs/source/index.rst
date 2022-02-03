@@ -42,3 +42,19 @@ Once the developer has access to the organisation, he will want to create a new 
 First of all, in order to be able to work with Cookiecutter, it is mandatory to install it on your local computer or virtual machine. Below are the commands that should be executed to work with Cookiecutter (these commands have been tested under Ubuntu, but it is also possible to use this tool on Windows and Mac (to be checked)).
 
 This guide has been developed to work with Ubuntu OS, so all the commands have been only tested under Ubuntu, if other OS will be used, please have in mind some of this command will differ.
+
+Contents
+--------
+
+.. toctree::
+
+   readme
+   information
+   pre_requisites
+   installation
+   cli
+   pipelines
+   libraries
+   contributing
+   history
+
