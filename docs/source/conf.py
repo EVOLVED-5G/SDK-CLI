@@ -1,19 +1,13 @@
 # Configuration file for the Sphinx documentation builder.
 
-import os
-import sys
-sys.path.insert(0, os.path.abspath('..'))
-
-import evolved5g
-
 # -- Project information
 
 project = 'EVOLVED-5G SDK'
 copyright = '2021, EVOLVED-5G'
 author = 'EVOLVED-5G'
 
-release = evolved5g.__version__
-version = evolved5g.__release__
+version = "0.6.4"
+release = "1.0.0"
 
 
 # -- General configuration
