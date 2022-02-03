@@ -13,11 +13,8 @@ Evolved-5G SDK
         :target: https://evolved5g_cli.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
 
-Evolved5G CLI prototype
-
-
 * Free software: Apache Software License 2.0
-* Documentation: https://evolved5g_cli.readthedocs.io.
+* Documentation: https://evolved5g_cli.readthedocs.io
 
 ========
 Features
@@ -57,9 +54,3 @@ This guide has been developed to work with Ubuntu OS, so all the commands have b
    libraries
    contributing
    history
-
-Indices and tables
-==================
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

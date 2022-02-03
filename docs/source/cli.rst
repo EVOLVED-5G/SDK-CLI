@@ -9,6 +9,10 @@ Run the following command to access the documentation/help page and read about t
 
     $ evolved5g
 
+.. code-block:: console
+
+   (.venv) $ pip install lumache
+
 Generate
 ------------
 
