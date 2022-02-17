@@ -4,7 +4,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
-import evolved5g
+#import evolved5g
 
 # -- Project information
 
@@ -17,8 +17,8 @@ version = evolved5g.__version__
 # The full version, including alpha/beta/rc tags.
 release = evolved5g.__version__
 
-#version = "0.6.4"
-#release = "1.0.0"
+version = "0.1.4"
+release = "0.0.1"
 
 
 # -- General configuration
