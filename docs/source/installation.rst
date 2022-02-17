@@ -2,15 +2,22 @@
 Installation
 ============
 
-
 Stable release 
 ---------------
 
-To install Evolved5G_CLI, please check you fulfil the pre-requisetes. After, just run the following command in your terminal:
+To install Evolved5G_CLI, please check you comply with the pre-requisites. Also, before running the installation command, please be sure to have the following software packages installed:
 
 .. code-block:: console
 
-    $ pip install evolved5g
+    sudo apt update
+    sudo apt install python3
+    sudo apt install python3-pip python3-setuptools
+
+Once you comply with the pre-requisites and the previous software packages, just run the following command in your terminal:
+
+.. code-block:: console
+
+    $ pip3 install evolved5g
 
 This is the preferred method to install Evolved5G_CLI, as it will always install the most recent stable release.
 
