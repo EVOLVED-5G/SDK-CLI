@@ -49,7 +49,6 @@ class  CLI_helper:
         self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
         resp = requests.get(f"{self.url_curl}/{id}", headers=self.header)
         result = resp.json()
-        pdfoutput=""
 
         if result["status"] == "QUEUED":
             echo(result)
