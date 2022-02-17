@@ -13,9 +13,9 @@ copyright = '2021, EVOLVED-5G'
 author = 'EVOLVED-5G'
 
 # The short X.Y version.
-version = evolved5g.__version__
+#version = evolved5g.__version__
 # The full version, including alpha/beta/rc tags.
-release = evolved5g.__version__
+#release = evolved5g.__version__
 
 version = "0.1.4"
 release = "0.0.1"
