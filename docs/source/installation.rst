@@ -43,7 +43,7 @@ Once you have a copy of the source, you can install it with:
 
 .. code-block:: console
 
-    $ python setup.py install
+    $ python3 setup.py install
 
 Once it is installed you will be able to generate (create) a repository for your NetApp.
 
