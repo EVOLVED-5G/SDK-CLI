@@ -36,8 +36,8 @@ def run_pipeline(ctx, mode, repo):
 
 @cli.command()
 @click.option('--id',type=int, help='Enter pipeline id')
-@click.option('--pdf', type=bool, is_flag=True, default=False)
+#@click.option('--pdf', type=bool, is_flag=True, default=False)
 @click.pass_context
-def check_pipeline(ctx, id, pdf):
+def check_pipeline(ctx, id):
     """Check the status of a pipeline"""
-    ctx.obj["helper"].check_pipeline(id, pdf)
+    ctx.obj["helper"].check_pipeline(id)
