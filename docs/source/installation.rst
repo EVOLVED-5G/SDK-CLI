@@ -2,23 +2,24 @@
 Installation
 ============
 
+Stable release 
+---------------
 
-Stable release (NOT YET INTEGRATED)
------------------------------------
-
-To install Evolved5G_CLI, run this command in your terminal:
+To install Evolved5G_CLI, please check you comply with the pre-requisites. Also, before running the installation command, please be sure to have the following software packages installed:
 
 .. code-block:: console
 
-    $ pip install evolved5g
+    sudo apt update
+    sudo apt install python3
+    sudo apt install python3-pip python3-setuptools
+
+Once you comply with the pre-requisites and the previous software packages, just run the following command in your terminal:
+
+.. code-block:: console
+
+    $ pip3 install evolved5g
 
 This is the preferred method to install Evolved5G_CLI, as it will always install the most recent stable release.
-
-If you don't have `pip`_ installed, this `Python installation guide`_ can guide
-you through the process.
-
-.. _pip: https://pip.pypa.io
-.. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
 
 
 From sources
@@ -42,7 +43,7 @@ Once you have a copy of the source, you can install it with:
 
 .. code-block:: console
 
-    $ python setup.py install
+    $ python3 setup.py install
 
 Once it is installed you will be able to generate (create) a repository for your NetApp.
 
