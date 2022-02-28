@@ -2,6 +2,7 @@ from .utils import cookiecutter_generate
 import requests
 import json
 import json.decoder
+import logging
 from click import echo
 
 class  CLI_helper:
@@ -38,27 +39,35 @@ class  CLI_helper:
 
     def run_pipeline(self, mode, repo):
         """Run the build pipeline for the EVOLVED-5G NetApp"""
-        self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
-        data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "dummy-netapp/'+ mode +'", "parameters": { "VERSION": "1.0", "GIT_URL": "https://github.com/EVOLVED-5G/' + repo +'", "GIT_BRANCH": "' + self.branch + '"} }'
-        resp = requests.post(self.url_curl, headers=self.header, data=data)
-        echo(resp.json()["id"])
+        try:
+            self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
+            data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "dummy-netapp/'+ mode +'", "parameters": { "VERSION": "1.0", "GIT_URL": "https://github.com/EVOLVED-5G/' + repo +'", "GIT_BRANCH": "' + self.branch + '"} }'
+            resp = requests.post(self.url_curl, headers=self.header, data=data)
+            echo(resp.json()["id"])
+        except TypeError:
+            echo("Please enter the correct command: evolved5g run_pipeline --mode build --repo REPOSITORY_NAME")
 
     def check_pipeline(self, id):
 
         """Check the status of the pipeline for the EVOLVED-5G NetApp"""
-        self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
-        resp = requests.get(f"{self.url_curl}/{id}", headers=self.header)
-        result = resp.json()
 
-        if result["status"] == "QUEUED":
-            echo(result)
-        else:
-            console = (json.dumps(result["console_log"]).split('\\n'))
+        try:
+            self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
+            resp = requests.get(f"{self.url_curl}/{id}", headers=self.header)
+            result = resp.json()
 
-            for element in console:
-                if "] { (" in element:
-                    echo(element)
-                elif "[Pipeline]" not in element:
-                    echo(element)
-                elif "] stage" in element:
-                    echo(element)
+            if result["status"] == "QUEUED":
+                echo(result)
+            else:
+                console = (json.dumps(result["console_log"]).split('\\n'))
+
+                for element in console:
+                    if "] { (" in element:
+                        echo(element)
+                    elif "[Pipeline]" not in element:
+                        echo(element)
+                    elif "] stage" in element:
+                        echo(element)
+        except ValueError as e:
+            echo("Please add the ID: evolved5g check-pipeline --id <yourID>")
+
