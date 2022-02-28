@@ -2,6 +2,12 @@
 History
 =======
 
+
+0.7.0  (2022-02-28)
+-------------------
+* Adding manage exceptions features and documentation update.
+
+
 0.6.9  (2022-02-23)
 ------------------
 
