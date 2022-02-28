@@ -23,7 +23,7 @@ Examples of usage
 
     evolved5g check-pipeline --id YOUR_ID
 
-The pipelines build, deploy or destroy will return an **ID** which can be used with the command :py:func:`check_pipeline` to see how the NetApp is performing.
+The pipelines build, deploy or destroy will return an **ID** which can be used with the command :py:func:`check-pipeline` to see how the NetApp is performing.
 
 Very important 
 ^^^^^^^^^^^^^^
