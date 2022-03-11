@@ -41,7 +41,7 @@ class  CLI_helper:
     def run_pipeline(self, mode, repo):
         """Run the build pipeline for the EVOLVED-5G NetApp"""
         try:
-            if mode == self.branch:
+            if mode == "build":
                 self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
                 data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "dummy-netapp/'+ mode +'", "parameters": { "VERSION": "1.0", "GIT_URL": "https://github.com/EVOLVED-5G/' + repo +'", "GIT_BRANCH": "' + self.branch + '"} }'
                 resp = requests.post(self.url_curl, headers=self.header, data=data)
