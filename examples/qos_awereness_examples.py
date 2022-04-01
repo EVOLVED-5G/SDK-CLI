@@ -22,10 +22,10 @@ def showcase_create_quaranteed_bit_rate_subscription_for_conversational_voice():
     qos_awereness = QosAwareness(host, token.access_token)
     # The following external identifier was copy pasted by the NEF emulator.
     # Go to the Map and hover over a User icon.There you can retrieve the id address.
-    # Notice that the MEF emulator is able to establish a guaranteed bit rate only if one and only one user is connected to a shell
+    # Notice that the NEF emulator is able to establish a guaranteed bit rate only if one and only one user is connected to a shell
     # This is done in purpose in the NEF emulator, to allow testing the lost of guaranteed connectivity to your code
-    # in the MEF if a user "10.0.0.3" is connected to Cell only by her self (she is the only connection within range)
-    # the MEF guarantees the connection. If another user walks by, within the same Cell range then the connection is no
+    # in the NEF if a user "10.0.0.3" is connected to Cell only by her self (she is the only connection within range)
+    # the NEF guarantees the connection. If another user walks by, within the same Cell range then the connection is no
     # more guaranteed and a callback notification will be retrieved.
     equipment_network_identifier = "10.0.0.3"
     network_identifier = QosAwareness.NetworkIdentifier.IP_V4_ADDRESS

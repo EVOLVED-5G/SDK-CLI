@@ -6,7 +6,7 @@ from enum import Enum
 from evolved5g.swagger_client import MonitoringEventAPIApi, \
     MonitoringEventSubscriptionCreate, MonitoringEventSubscription, SessionWithQoSAPIApi, \
     AsSessionWithQoSSubscriptionCreate, Snssai, UsageThreshold, AsSessionWithQoSSubscription, QosMonitoringInformation, \
-    RequestedQoSMonitoringParameters, ReportingFrequency, MonitoringEventReport
+    RequestedQoSMonitoringParameters, ReportingFrequency, MonitoringEventReport, CellsApi, Cell
 import datetime
 
 class LocationSubscriber:
@@ -26,6 +26,7 @@ class LocationSubscriber:
         configuration.access_token = bearer_access_token
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.monitoring_event_api = MonitoringEventAPIApi(api_client)
+        self.cell_api = CellsApi(api_client)
 
     def __create_subscription_request(self,
                                       external_id,
@@ -60,6 +61,14 @@ class LocationSubscriber:
             body,
             netapp_id)
         return response
+
+    def get_coordinates_of_cell(self,cell_id:str)->Cell:
+        """
+             Returns information about a specific cell
+
+             :param str cell_id: string (The ID of the cell)
+       """
+        return self.cell_api.read_cell_api_v1_cells_cell_id_get(cell_id)
 
     def create_subscription(self,
                             netapp_id: str,
