@@ -1,6 +1,10 @@
 =======
 History
 =======
+0.7.2  (2022-04-01)
+-------------------
+* LocationSubscriber now has a new method get_coordinates_of_cell() that allows a developer to retrieve the location of a cell, given the cell id.
+
 
 0.7.1  (2022-03-14)
 -------------------
