@@ -470,3 +470,9 @@ class QosAwareness:
         return self.qos_api.delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete(
             netapp_id,
             subscription_id)
+
+class RobotFramework: 
+
+    def init(self):
+        ""
+    
