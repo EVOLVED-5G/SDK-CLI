@@ -1,6 +1,11 @@
 =======
 History
 =======
+0.7.3  (2022-05-09)
+-------------------
+* Bug fix on value LIVE_STREAMING of enum  NonGBRQosReference.
+* Rename method at examples>api.py
+
 0.7.2  (2022-04-01)
 -------------------
 * LocationSubscriber now has a new method get_coordinates_of_cell() that allows a developer to retrieve the location of a cell, given the cell id.
