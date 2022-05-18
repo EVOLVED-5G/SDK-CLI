@@ -10,7 +10,7 @@ def index():
     return "evolved5G echo web-server started"
 
 @app.route('/monitoring/callback', methods=['POST'])
-def location_reporter():
+def handle_callback_notification():
     print("New notification retrieved:")
     print(request.get_json())
     return request.get_json()

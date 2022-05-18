@@ -174,7 +174,7 @@ class QosAwareness:
             NEF Emulator has an endpoint that explains these GET /api/v1/qosInfo/qosCharacteristics
         """
         TCP_BASED = 9
-        LIVE_STREAMING = 8
+        LIVE_STREAMING = 7
 
     class GBRQosReference(Enum):
         """
