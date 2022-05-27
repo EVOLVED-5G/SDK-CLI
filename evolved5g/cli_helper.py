@@ -79,7 +79,6 @@ class  CLI_helper:
         except ValueError as e:
             echo("Please add the ID: evolved5g check-pipeline --id <yourID>")
 
-
     def repository_exist(self,repo):
         r = requests.get(f"{self.repository}/{repo}")
         echo(r.json())       
