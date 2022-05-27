@@ -42,7 +42,7 @@ def check_pipeline(ctx, id):
     ctx.obj["helper"].check_pipeline(id)
 
 @cli.command()
-@click.option('repo',type=int, help='Enter repository')
+@click.option('--repo',type=str, help='Enter repository')
 @click.pass_context
 def repository_exist(ctx, repo):
     """Check if the repository exist"""
