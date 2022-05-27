@@ -16,6 +16,7 @@ class  CLI_helper:
         self.branch = "evolved5g"
         self.branch_develop = "develop"
         self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": None }
+        self.repository = "https://api.github.com/repos/EVOLVED-5G/FogusNetApp"
 
     def generate(self, repo_name, package_name, template):
         """Generate EVOLVED-5G compliant NetApp from template"""
@@ -77,4 +78,9 @@ class  CLI_helper:
                         echo(element)
         except ValueError as e:
             echo("Please add the ID: evolved5g check-pipeline --id <yourID>")
+
+
+    def repository_exist(self,repo):
+        r = requests.get(f"{self.repository}/{repo}")
+        echo(r.json())       
 
