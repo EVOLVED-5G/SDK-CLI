@@ -1,6 +1,12 @@
 =======
 History
 =======
+
+0.7.3  (2022-05-27)
+-------------------
+* Check if the NetApp repository on which you want to run the pipeline exists on GitHub.
+
+
 0.7.2  (2022-04-01)
 -------------------
 * LocationSubscriber now has a new method get_coordinates_of_cell() that allows a developer to retrieve the location of a cell, given the cell id.
