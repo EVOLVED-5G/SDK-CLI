@@ -1,6 +1,10 @@
 =======
 History
 =======
+0.7.4  (2022-05-27)
+-------------------
+* Check if the NetApp repository on which you want to run the pipeline exists on GitH
+
 0.7.3  (2022-05-09)
 -------------------
 * Bug fix on value LIVE_STREAMING of enum  NonGBRQosReference.

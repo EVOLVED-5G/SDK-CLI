@@ -40,3 +40,4 @@ def run_pipeline(ctx, mode, repo):
 def check_pipeline(ctx, id):
     """Check the status of a pipeline"""
     ctx.obj["helper"].check_pipeline(id)
+
