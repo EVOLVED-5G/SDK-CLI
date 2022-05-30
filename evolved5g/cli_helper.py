@@ -3,6 +3,7 @@ import requests
 import json
 import json.decoder
 import logging
+import git 
 from click import echo
 
 class  CLI_helper:
@@ -17,6 +18,7 @@ class  CLI_helper:
         self.branch_develop = "develop"
         self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": None }
         self.repository = "https://api.github.com/repos/EVOLVED-5G"
+        self.url_nef = "https://github.com/EVOLVED-5G/NEF_emulator.git"
 
     def generate(self, repo_name, package_name, template):
         """Generate EVOLVED-5G compliant NetApp from template"""
@@ -84,5 +86,7 @@ class  CLI_helper:
                         echo(element)
         except ValueError as e:
             echo("Please add the ID: evolved5g check-pipeline --id <yourID>")
-   
-
+            
+    def deploy_nef(self):
+        
+        git.Repo.clone_from("https://github.com/EVOLVED-5G/NEF_emulator.git", "./")
