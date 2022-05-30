@@ -40,11 +40,11 @@ def run_pipeline(ctx, mode, repo):
 def check_pipeline(ctx, id):
     """Check the status of a pipeline"""
     ctx.obj["helper"].check_pipeline(id)
+ 
     
 @cli.command()
-@click.option('--repo',type=str, help='Enter repo name')
 @click.pass_context
-def check_pipeline(ctx,repo):
+def deploy_nef(ctx):
     """Check the status of a pipeline"""
-    ctx.obj["helper"].deploy_nef(repo)
+    ctx.obj["helper"].deploy_nef()
 

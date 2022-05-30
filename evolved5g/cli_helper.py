@@ -1,4 +1,5 @@
 from .utils import cookiecutter_generate
+import os
 import requests
 import json
 import json.decoder
@@ -19,6 +20,8 @@ class  CLI_helper:
         self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": None }
         self.repository = "https://api.github.com/repos/EVOLVED-5G"
         self.url_nef = "https://github.com/EVOLVED-5G/NEF_emulator.git"
+        self.repo_dir = "repos"
+        self.repo_name_nef = "NEF_emulator"
 
     def generate(self, repo_name, package_name, template):
         """Generate EVOLVED-5G compliant NetApp from template"""
@@ -87,7 +90,11 @@ class  CLI_helper:
         except ValueError as e:
             echo("Please add the ID: evolved5g check-pipeline --id <yourID>")
             
-    def deploy_nef(self,repo):
-        
-        repo = repo
-        git.Repo.clone_from("https://github.com/EVOLVED-5G/NEF_emulator.git", "./")
+    def deploy_nef(self):
+        path = os.getcwd()
+        os.mkdir(f"{path}/{self.repo_dir}")
+        dir = (f"{path}/{self.repo_dir}")
+        os.mkdir(f"{dir}/{self.repo_name_nef}")
+        dir1 = (f"{dir}/{self.repo_name_nef}")
+        git.Repo.clone_from("https://github.com/EVOLVED-5G/NEF_emulator.git", f"{dir1}")
+        echo("Clone repository")
