@@ -87,6 +87,7 @@ class  CLI_helper:
         except ValueError as e:
             echo("Please add the ID: evolved5g check-pipeline --id <yourID>")
             
-    def deploy_nef(self):
+    def deploy_nef(self,repo):
         
+        repo = repo
         git.Repo.clone_from("https://github.com/EVOLVED-5G/NEF_emulator.git", "./")
