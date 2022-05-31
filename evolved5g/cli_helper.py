@@ -1,5 +1,6 @@
 from .utils import cookiecutter_generate
 import os
+import subprocess
 import requests
 import json
 import json.decoder
@@ -98,3 +99,8 @@ class  CLI_helper:
         dir1 = (f"{dir}/{self.repo_name_nef}")
         git.Repo.clone_from("https://github.com/EVOLVED-5G/NEF_emulator.git", f"{dir1}")
         echo("Clone repository")
+        subprocess.run(["make" , "prepare-dev-env"], cwd = "repos/NEF_emulator" )
+        subprocess.run(["make" , "build"], cwd = "repos/NEF_emulator" )
+        # print(directory_nef)
+
+        
