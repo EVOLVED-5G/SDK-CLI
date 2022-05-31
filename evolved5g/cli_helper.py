@@ -1,6 +1,7 @@
 from .utils import cookiecutter_generate
 import os
 import subprocess
+import shutil
 import requests
 import json
 import json.decoder
@@ -23,6 +24,7 @@ class  CLI_helper:
         self.url_nef = "https://github.com/EVOLVED-5G/NEF_emulator.git"
         self.repo_dir = "repos"
         self.repo_name_nef = "NEF_emulator"
+        self.repo_name_capif = "CAPIF_API_Services"
 
     def generate(self, repo_name, package_name, template):
         """Generate EVOLVED-5G compliant NetApp from template"""
@@ -101,6 +103,16 @@ class  CLI_helper:
         echo("Clone repository")
         subprocess.run(["make" , "prepare-dev-env"], cwd = "repos/NEF_emulator" )
         subprocess.run(["make" , "build"], cwd = "repos/NEF_emulator" )
-        # print(directory_nef)
-
+        subprocess.run(["make" , "up"], cwd = "repos/NEF_emulator" )
+        subprocess.run(["make" , "db-init"], cwd = "repos/NEF_emulator" )
+        # shutil.rmtree(f"{path}/{self.repo_dir}")
+        # subprocess.run(["rm", "-rf", "repos" ])
         
+    def deploy_capif(self):
+        path = os.getcwd()
+        dir_repos = (f"{path}/{self.repo_dir}")
+        os.mkdir(f"{dir_repos}/{self.repo_name_capif}")
+        dir_capif = (f"{dir_repos}/{self.repo_name_capif}")
+        git.Repo.clone_from("https://github.com/EVOLVED-5G/CAPIF_API_Services.git", f"{dir_capif}")
+        subprocess.run("./run.sh", cwd = "repos/CAPIF_API_Services/services" )
+        subprocess.run("./check_services_are_running.sh", cwd = "repos/CAPIF_API_Services/services" )

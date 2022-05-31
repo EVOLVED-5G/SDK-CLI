@@ -48,3 +48,14 @@ def deploy_nef(ctx):
     """Check the status of a pipeline"""
     ctx.obj["helper"].deploy_nef()
 
+@cli.command()
+@click.pass_context
+def deploy_nef(ctx):
+    """Check the status of a pipeline"""
+    ctx.obj["helper"].deploy_nef()
+    
+@cli.command()
+@click.pass_context
+def deploy_capif(ctx):
+    """Check the status of a pipeline"""
+    ctx.obj["helper"].deploy_capif()
