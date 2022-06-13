@@ -2,10 +2,10 @@
 Installation
 ============
 
-Stable release 
+Stable release
 ---------------
 
-To install Evolved5G_CLI, please check you comply with the pre-requisites. Also, before running the installation command, please be sure to have the following software packages installed:
+To install Evolved5G_CLI, please check that you comply with the pre-requisites. Also, before running the installation command, please be sure to have the following software packages installed:
 
 .. code-block:: console
 
@@ -13,7 +13,10 @@ To install Evolved5G_CLI, please check you comply with the pre-requisites. Also,
     sudo apt install python3
     sudo apt install python3-pip python3-setuptools
 
-Once you comply with the pre-requisites and the previous software packages, just run the following command in your terminal:
+Once you comply with the pre-requisites and the previous software packages, there are two ways of installation.just run the following command in your terminal:
+
+From package manager
+------------
 
 .. code-block:: console
 
@@ -33,7 +36,7 @@ You can either clone the public repository:
 
     $ git clone git://github.com/EVOLVED-5G/SDK-CLI
 
-Or download the `tarball`_:
+Or download the `tarball`_.
 
 .. code-block:: console
 

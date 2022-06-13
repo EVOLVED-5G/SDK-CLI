@@ -1,14 +1,15 @@
 ============
-CLI
+SDK - usage
 ============
 
-
-Run the following command to access the documentation/help page and read about the various options
+Once the SDK is installed (TEST :ref:`Installation`) is installed you will be able to generate (create) a repository for your NetApp.
+To know how to perform the different options available in the SDK, run the following command:
 
 .. code-block:: console
 
     $ evolved5g
 
+A help message will be shown, explaining the commands to execute.
 
 Generate
 ------------
@@ -50,9 +51,8 @@ In Windows:
     > set PATH=%PATH%;C:\YOUR\PATH\
 
 Then run the following command ssh -vT git@github.com to check the SSH connection is up and running without any problem.
-If the command :py:func:`evolved5g generate` does not give you any problem, then automatically will start to ask you some inputs to create your NetApp repository. At some point you will be asked if you want to add a collaborator, if you choose **NO**, you will receive two more inputs regarding this, please just ignore it, press enter leaving it by default, no further action will be taken, no collaborator will be added, it is a bug which will be fixed any time soon.
 
-Finally, when this command is executed, you will see something like the following image, in which you have to enter the values requested, like the example you can see between brackets, for the execution to be completed:
+Now, you can execute :py:func:`evolved5g generate` and you will see something like the following image, in which you have to enter the values requested, like the example you can see between brackets, for the execution to be completed.
 
    .. image:: images/generate_execution.png
 
@@ -60,10 +60,10 @@ If you access GitHub once you have seen that output in your terminal, you will s
 
    .. image:: images/repo_creation.png
 
-It will create a specific branch (evolved5g) which will be used by the CI/CD for verification purposes. A dummy example (nginx server) will be created in both branches (master and evolved5g) which allow to directly run a pipeline using such branch. You will see a Dockerfile and inside the src folder a dummy html file as an example. Below can see the file structure created.
+It will create a specific branch (evolved5g) which will be used by the CI/CD for verification purposes. A dummy example will be created in both branches (master and evolved5g) which allow to directly run a pipeline using such branch. You will see a Dockerfile and inside the src folder a dummy html file as an example. Below can see the file structure created.
 
    .. image:: images/repo_structure.png
-   
+
 
    .. image:: images/dummy_html_example.png
 

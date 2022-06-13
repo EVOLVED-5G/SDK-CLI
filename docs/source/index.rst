@@ -8,7 +8,6 @@ Evolved-5G SDK
 .. image:: https://img.shields.io/pypi/v/evolved5g.svg
         :target: https://pypi.python.org/pypi/evolved5g
 
-
 .. image:: https://readthedocs.org/projects/evolved5g_cli/badge/?version=latest
         :target: https://evolved5g_cli.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
@@ -53,8 +52,7 @@ Contents
    pre_requisites
    installation
    cli
-   pipelines
    libraries
-   contributing
+   pipelines
    history
 
