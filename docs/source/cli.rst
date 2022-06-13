@@ -2,7 +2,7 @@
 SDK - usage
 ============
 
-Once the SDK is installed (TEST :ref:`Installation`) is installed you will be able to generate (create) a repository for your NetApp.
+Once the SDK is installed (`Installation`_) is installed you will be able to generate (create) a repository for your NetApp.
 To know how to perform the different options available in the SDK, run the following command:
 
 .. code-block:: console
