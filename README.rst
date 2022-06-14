@@ -43,4 +43,4 @@ This guide has been developed to work with Ubuntu OS, so all the commands have b
 
 To install and use the tool, please refer to:
 
-* Documentation: https://evolved5g_cli.readthedocs.io.
+* Documentation: https://evolved5g-cli.readthedocs.io
