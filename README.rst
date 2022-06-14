@@ -21,7 +21,7 @@ Features
 * Generate a new python NetApp from a template
 * Assist in connecting the new NetApp & repo with EVOLVED-5G CI/CD pipeline
 * SDK Libraries for interacting with the 5G-API
-* Assist in running pipelines for NetApps
+* Assist in running verification pipelines for NetApps
 
 ==================
 Useful Information
