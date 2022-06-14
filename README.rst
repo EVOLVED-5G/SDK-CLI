@@ -29,7 +29,7 @@ Useful Information
 
 The purpose of this guide is to help developers, in the EVOLVED-5G project scope, to develop a NetApp.
 
-First, the partner to be interested in developing a NetApp must send an email to evolved5g@gmail.com to receive access to the GitHub organization.
+First, the partner to be interested in developing a NetApp must send an email to approval@evolved-5g.eu to receive access to the GitHub organization.
 
 The email must contain the GitHub username to be added to the GitHub organization.
 
