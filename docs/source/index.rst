@@ -8,7 +8,6 @@ Evolved-5G SDK
 .. image:: https://img.shields.io/pypi/v/evolved5g.svg
         :target: https://pypi.python.org/pypi/evolved5g
 
-
 .. image:: https://readthedocs.org/projects/evolved5g_cli/badge/?version=latest
         :target: https://evolved5g_cli.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
@@ -22,7 +21,7 @@ Features
 * Generate a new python NetApp from a template
 * Assist in connecting the new NetApp & repo with EVOLVED-5G CI/CD pipeline
 * SDK Libraries for interacting with the 5G-API
-* Assist in running pipelines for NetApps
+* Assist in running verification pipelines for NetApps
 
 ==================
 Useful Information
@@ -30,7 +29,7 @@ Useful Information
 
 The purpose of this guide is to help developers, in the EVOLVED-5G project scope, to develop a NetApp.
 
-First, the partner to be interested in developing a NetApp must send an email to evolved5g@gmail.com to receive access to the GitHub organization.
+First, the partner to be interested in developing a NetApp must send an email to approval@evolved-5g.eu to receive access to the GitHub organization.
 
 The email must contain the GitHub username to be added to the GitHub organization.
 
@@ -53,8 +52,7 @@ Contents
    pre_requisites
    installation
    cli
-   pipelines
    libraries
-   contributing
+   pipelines
    history
 

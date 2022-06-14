@@ -21,7 +21,7 @@ Features
 * Generate a new python NetApp from a template
 * Assist in connecting the new NetApp & repo with EVOLVED-5G CI/CD pipeline
 * SDK Libraries for interacting with the 5G-API
-* Assist in running pipelines for NetApps
+* Assist in running verification pipelines for NetApps
 
 ==================
 Useful Information
@@ -29,7 +29,7 @@ Useful Information
 
 The purpose of this guide is to help developers, in the EVOLVED-5G project scope, to develop a NetApp.
 
-First, the partner to be interested in developing a NetApp must send an email to evolved5g@gmail.com to receive access to the GitHub organization.
+First, the partner to be interested in developing a NetApp must send an email to approval@evolved-5g.eu to receive access to the GitHub organization.
 
 The email must contain the GitHub username to be added to the GitHub organization.
 
@@ -42,4 +42,5 @@ First of all, in order to be able to work with Cookiecutter, it is mandatory to 
 This guide has been developed to work with Ubuntu OS, so all the commands have been only tested under Ubuntu, if other OS will be used, please have in mind some of this command will differ.
 
 To install and use the tool, please refer to:
-* Documentation: https://evolved5g_cli.readthedocs.io.
+
+* Documentation: https://evolved5g-cli.readthedocs.io
