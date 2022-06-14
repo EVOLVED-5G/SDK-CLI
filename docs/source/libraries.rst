@@ -12,9 +12,9 @@ Examples of usage /Have a look at the code
 ------------------------------------------
 Have a look at the examples folder for code samples on how to use the SDK Library.
 
-* `LocationSubscriber example <https://github.com/EVOLVED-5G/SDK-CLI/tree/master/examples/location_subscriber_examples.py>`_
+* `LocationSubscriber example <https://github.com/EVOLVED-5G/SDK-CLI/blob/master/examples/location_subscriber_examples.py>`_
 
-* `QosAwareness example <https://github.com/EVOLVED-5G/SDK-CLI/tree/master/examples/qos_awereness_examples.py>`_
+* `QosAwareness example <https://github.com/EVOLVED-5G/SDK-CLI/blob/master/examples/qos_awereness_examples.py>`_
 
 Prerequisites / How to start
 ----------------------------
@@ -46,5 +46,5 @@ Then run a webserver in order to capture the callback post requests from NEF EMU
 where FLASK_APP should point to the absolute path of the ``SDK-CLI/examples/api.py`` file.
 These commands will initialize a web server at :py:func:`http://127.0.0.1:5000/`
 
-Now you can run `Location subscriber example <https://github.com/EVOLVED-5G/SDK-CLI/blob/libraries/examples/location_subscriber_examples.py>`_
+Now you can run `Location subscriber example <https://github.com/EVOLVED-5G/SDK-CLI/blob/master/examples/location_subscriber_examples.py>`_
 You should be able to view the location updates, printed in the terminal that runs the FLASK webserver

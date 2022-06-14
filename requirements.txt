@@ -4,7 +4,7 @@ flake8==3.9.2
 coverage==4.5.4
 Click==8.0.1
 pytest==6.2.4
-cookiecutter==1.7.3
+cookiecutter==2.1.1
 invoke==1.6.0
 requests==2.26.0
 six~=1.16.0
