@@ -13,8 +13,8 @@ class  CLI_helper:
         self.url_token = "https://epg-api.tid.es/api/auth"
         self.username_token = "usu_Evolved5g"
         self.password_token = "evolved5g"
-        self.branch = "evolved5g"
-        self.branch_develop = "develop"
+        self.netapp_branch = "evolved5g"
+        self.branch_cicd_repo = "develop"
         self.header = { "Content-Type":"application/json", "accept": "application/json", "Authorization": None }
         self.repository = "https://api.github.com/repos/EVOLVED-5G"
         self.jenkinsjob = "003-NETAPPS/999-ToReview/"
@@ -48,12 +48,12 @@ class  CLI_helper:
             try:
                 if mode == "build":
                     self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
-                    data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'+self.jenkinsjob + mode+'", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'", "GIT_NETAPP_BRANCH": "' + self.branch + '", "GIT_CICD_BRANCH": "' + self.branch_develop + '"} }'
+                    data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'+self.jenkinsjob + mode+'", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'", "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '", "GIT_CICD_BRANCH": "' + self.branch_cicd_repo + '"} }'
                     resp = requests.post(self.url_curl, headers=self.header, data=data)
                     echo('Your pipeline ID is: %s' % resp.json()["id"])
                 else:
                     self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
-                    data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'+self.jenkinsjob + mode+'", "parameters": { "VERSION": "1.0", "GIT_URL": "https://github.com/EVOLVED-5G/' + repo +'", "GIT_NETAPP_BRANCH": "' + self.branch + '", "GIT_CICD_BRANCH": "' + self.branch_develop + '"} }'
+                    data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'+self.jenkinsjob + mode+'", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'", "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '", "GIT_CICD_BRANCH": "' + self.branch_cicd_repo + '"} }'
                     resp = requests.post(self.url_curl, headers=self.header, data=data)
                     echo('Your pipeline ID is: %s' % resp.json()["id"])
             except TypeError as e:
