@@ -22,3 +22,19 @@ Features
 * Assist in connecting the new NetApp & repo with EVOLVED-5G CI/CD pipeline
 * SDK Libraries for interacting with the 5G-API
 * Assist in running verification pipelines for NetApps
+
+Contents
+--------
+
+.. toctree::
+   :titlesonly:
+
+   readme
+   information
+   pre_requisites
+   installation
+   cli
+   libraries
+   pipelines
+   history
+
