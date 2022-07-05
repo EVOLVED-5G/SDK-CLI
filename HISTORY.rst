@@ -1,6 +1,11 @@
 =======
 History
 =======
+0.7.6  (2022-07-04)
+-------------------
+* Documentation has been updated accordingly
+* Changes and optimizations for SDK pipeline integration
+
 0.7.5  (2022-06-14)
 -------------------
 * New build pipeline has been implemented
