@@ -85,5 +85,13 @@ class  CLI_helper:
                         echo(element)
         except ValueError as e:
             echo("Please add the ID: evolved5g check-pipeline --id <yourID>")
+            
+            
+    def sonarqube_pipeline(self):
+        pass
+    
+    def trivy_pipeline(self):
+        pass
+    
 
 
