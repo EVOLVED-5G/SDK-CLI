@@ -41,7 +41,7 @@ class  CLI_helper:
         return(resp.json()["access_token"])
 
     def run_pipeline(self, mode, repo):
-        """Run the build pipeline for the EVOLVED-5G NetApp"""
+        """Run the choose pipeline for the EVOLVED-5G NetApp"""
         r = requests.get(f"{self.repository}/{repo}")
         repo_exist = r.json()
         if "message" not in repo_exist:
@@ -51,11 +51,17 @@ class  CLI_helper:
                     data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'+self.jenkinsjob + mode+'", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'", "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '", "GIT_CICD_BRANCH": "' + self.branch_cicd_repo + '"} }'
                     resp = requests.post(self.url_curl, headers=self.header, data=data)
                     echo('Your pipeline ID is: %s' % resp.json()["id"])
-                else:
+                elif mode == "deploy" or mode == "destroy":
                     self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
                     data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'+self.jenkinsjob + mode+'", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'", "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '", "GIT_CICD_BRANCH": "' + self.branch_cicd_repo + '"} }'
                     resp = requests.post(self.url_curl, headers=self.header, data=data)
-                    echo('Your pipeline ID is: %s' % resp.json()["id"])
+                    echo('Your pipeline ID is: %s' % resp.json()["id"])     
+                elif mode == "sonarqube":
+                    self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
+                    data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/001-Static Code Analysis/'+ mode+ '", "parameters": { "GIT_NETAPP_URL": https://github.com/EVOLVED-5G/' + repo +',"GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" + "REPORTING": "true" + GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
+                    resp = requests.post(self.url_curl, headers=self.header, data=data)
+                    echo(resp)
+                    
             except TypeError as e:
                 echo("Please enter the correct command: evolved5g run_pipeline --mode build --repo REPOSITORY_NAME")
         else:
@@ -87,11 +93,25 @@ class  CLI_helper:
             echo("Please add the ID: evolved5g check-pipeline --id <yourID>")
             
             
-    def sonarqube_pipeline(self):
-        pass
+    # def sonarqube_pipeline(self, repo):
+    #     r = requests.get(f"{self.repository}/{repo}")
+    #     repo_exist = r.json()
+    #     if "message" not in repo_exist:
+    #         try:
+
+    #             self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
+    #             data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/001-Static Code Analysis/'+'", "parameters": { "GIT_NETAPP_URL": https://github.com/EVOLVED-5G/' + repo +',"GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" + "REPORTING": "true" + GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
+    #             resp = requests.post(self.url_curl, headers=self.header, data=data)
+    #             echo(resp)
+    #             # echo('Your pipeline ID is: %s' % resp.json()["id"])
+
+    #         except TypeError as e:
+    #             echo("Please enter the correct command: evolved5g run_pipeline --mode build --repo REPOSITORY_NAME")
+    #     else:
+    #         echo(f"The {repo} repository you have chosen does not exist, please check the name you typed and try again.")
     
-    def trivy_pipeline(self):
-        pass
+    # def trivy_pipeline(self, repo):
+    #     pass
     
 
 
