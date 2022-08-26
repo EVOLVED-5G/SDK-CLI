@@ -1,0 +1,11 @@
+default_context:
+    git_email: "paula.encinar@atos.net"
+    repo_name: "test1"
+    remote_username: "pencinarsanz-atos"
+    token_repo: "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"
+    netapp_name: "test"
+    netapp_app: "test"
+    netapp_service: "test"
+    netapp_port: "8080"
+    netapp_target_port: "8080"
+

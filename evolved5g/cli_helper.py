@@ -31,7 +31,9 @@ class  CLI_helper:
         #     return
         location = "gh:EVOLVED-5G/NetApp-template"
         directory = "template"
-        cookiecutter_generate(location, directory) #extra_context=extra)
+        config_file="SDK-CLI/evolved5g/my-custom-config.yaml"
+        no_input= True
+        cookiecutter_generate(location, directory, no_input ,config_file) #extra_context=extra)
 
     def generate_token(self):
 
