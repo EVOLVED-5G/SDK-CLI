@@ -160,4 +160,5 @@ def read_and_delete_all_existing_subscriptions():
 if __name__ == "__main__":
     read_and_delete_all_existing_subscriptions()
     showcase_create_quaranteed_bit_rate_subscription_for_conversational_voice()
+    read_and_delete_all_existing_subscriptions()
     showcase_create_non_quaranteed_bit_rate_subscription_for_live_streaming()
