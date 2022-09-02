@@ -1,3 +1,4 @@
+from re import template
 from .utils import cookiecutter_generate
 import requests
 import json
@@ -19,19 +20,12 @@ class  CLI_helper:
         self.repository = "https://api.github.com/repos/EVOLVED-5G"
         self.jenkinsjob = "003-NETAPPS/999-ToReview/"
 
-    def generate(self, repo_name, package_name, template):
+    def generate(self, config_file):
         """Generate EVOLVED-5G compliant NetApp from template"""
-        # extra = {}
-        # if repo_name:
-        #     extra['repoName'] = repo_name
-        # if package_name:
-        #     extra['packageName'] = package_name
-        # if template:
-        #     cookiecutter_generate(template,no_input=no_input,extra_context=extra)
-        #     return
         location = "gh:EVOLVED-5G/NetApp-template"
         directory = "template"
-        cookiecutter_generate(location, directory) #extra_context=extra)
+        cookiecutter_generate(location, config_file, directory, no_input=True)
+        
 
     def generate_token(self):
 

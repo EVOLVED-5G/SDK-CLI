@@ -14,16 +14,11 @@ def cli(ctx):
 
 
 @cli.command()
-# @click.option('--no-input', type=bool, is_flag=True,
-#               help='Enables no prompt from the CLI during template generation', default=False)
-# @click.option('--directory', type=str, help='Directory within repo that holds cookiecutter.json file for advanced repositories  with multi templates in it', default=False)
-@click.option('-r', '--repo-name', type=str, help='Enter Repository name')
-@click.option('-p', '--package-name', type=str, help='Enter package name')
-@click.option('-t', '--template', type=str, help="Provide template location for custom package")
+@click.option('--config-file', type=str, help="Provide User config location for custom package")
 @click.pass_context
-def generate(ctx, repo_name, package_name, template):
+def generate(ctx,config_file):
     """Generate EVOLVED-5G compliant NetApp from template"""
-    ctx.obj["helper"].generate(repo_name, package_name, template) 
+    ctx.obj["helper"].generate(config_file) 
 
 @cli.command()
 @click.option('--mode',type=click.Choice(['build', 'deploy','destroy'], case_sensitive=False))
