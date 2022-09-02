@@ -1,6 +1,11 @@
 =======
 History
 =======
+
+0.7.7  (2022-07-04)
+-------------------
+* Updates on documentation
+
 0.7.6  (2022-07-04)
 -------------------
 * Documentation has been updated accordingly
