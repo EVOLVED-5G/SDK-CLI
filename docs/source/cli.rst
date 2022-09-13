@@ -18,7 +18,7 @@ To generate a new NetApp project run the following command. You will be asked fo
 
 .. code-block:: console
 
-    $ evolved5g generate
+    $ evolved5g generate --config-file <path to the user configuration file>
 
 or to learn more about the available options
 
