@@ -20,11 +20,7 @@ To generate a new NetApp repository run the following command.
 
     $ evolved5g generate --config-file <path to the user configuration file>
 
-You will need to pass a config (yaml) file with some inputs. You have to create your own yaml file as same as the one found `here`_ 
-
-.. code-block:: console
-
-    $ curl -OJL https://github.com/EVOLVED-5G/SDK-CLI/blob/master/evolved5g/my-custom-config.yaml
+You will need to pass a config (yaml) file with some inputs. You have to create your own yaml file as same as the one in the SDK-CLI repository, that can be found here: https://github.com/EVOLVED-5G/SDK-CLI/blob/master/evolved5g/my-custom-config.yaml
 
 The help command, will show you how other available options
 
@@ -58,9 +54,11 @@ In Windows:
 
 Then run the following command ssh -vT git@github.com to check the SSH connection is up and running without any problem.
 
-Now, you can execute :py:func:`evolved5g generate` and you will see something like the following image, in which you have to enter the values requested, like the example you can see between brackets, for the execution to be completed.
+Now, you can execute ``evolved5g generate --config-file <path-to-your-config.yaml>`` providing the path of your yaml file.
 
-   .. image:: images/generate_execution.png
+.. only:: html
+
+   .. figure:: images/generate.gif
 
 If you access GitHub once you have seen that output in your terminal, you will see that the repository has been successfully created:
 
@@ -68,13 +66,9 @@ If you access GitHub once you have seen that output in your terminal, you will s
 
 It will create a specific branch (evolved5g) which will be used by the CI/CD for verification purposes. A dummy example will be created in both branches (master and evolved5g) which allow to directly run a pipeline using such branch. You will see a Dockerfile and inside the src folder a dummy html file as an example. Below can see the file structure created.
 
-.. only:: html
-
-   .. figure:: images/generate.gif
-
    .. image:: images/repo_structure.png
 
 
    .. image:: images/dummy_html_example.png
 
-When the repository is created you will be at branch evolved5g, so the push must be done there, in case you want to work with master (branch) you have to execute git checkout master and then do the push :py:func:`git push -u origin master`, to know in which branch you are, just execute git branch.
+When the repository is created you will be at branch evolved5g, so the push must be done there, in case you want to work with master (branch) you have to execute git checkout master and then do the push ``git push -u origin master``, to know in which branch you are, just execute git branch.
