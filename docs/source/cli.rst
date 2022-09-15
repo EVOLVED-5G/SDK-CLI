@@ -14,13 +14,19 @@ A help message will be shown, explaining the commands to execute.
 Generate
 ------------
 
-To generate a new NetApp project run the following command. You will be asked for some inputs such as the repoName, packageName etc
+To generate a new NetApp repository run the following command.
 
 .. code-block:: console
 
     $ evolved5g generate --config-file <path to the user configuration file>
 
-or to learn more about the available options
+You will need to pass a config (yaml) file with some inputs. You have to create your own yaml file as same as the one found `here`_ 
+
+.. code-block:: console
+
+    $ curl -OJL https://github.com/EVOLVED-5G/SDK-CLI/blob/master/evolved5g/my-custom-config.yaml
+
+The help command, will show you how other available options
 
 .. code-block:: console
 
@@ -61,6 +67,10 @@ If you access GitHub once you have seen that output in your terminal, you will s
    .. image:: images/repo_creation.png
 
 It will create a specific branch (evolved5g) which will be used by the CI/CD for verification purposes. A dummy example will be created in both branches (master and evolved5g) which allow to directly run a pipeline using such branch. You will see a Dockerfile and inside the src folder a dummy html file as an example. Below can see the file structure created.
+
+.. only:: html
+
+   .. figure:: images/generate.gif
 
    .. image:: images/repo_structure.png
 
