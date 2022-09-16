@@ -2,12 +2,14 @@
 from typing import List
 
 from evolved5g import swagger_client
+from abc import ABC, abstractmethod
 from enum import Enum
 from evolved5g.swagger_client import MonitoringEventAPIApi, \
     MonitoringEventSubscriptionCreate, MonitoringEventSubscription, SessionWithQoSAPIApi, \
     AsSessionWithQoSSubscriptionCreate, Snssai, UsageThreshold, AsSessionWithQoSSubscription, QosMonitoringInformation, \
     RequestedQoSMonitoringParameters, ReportingFrequency, MonitoringEventReport, CellsApi, Cell
 import datetime
+
 
 class LocationSubscriber:
 
@@ -40,7 +42,7 @@ class LocationSubscriber:
                                                  maximum_number_of_reports,
                                                  monitor_expire_time)
 
-    def get_location_information(self,netapp_id: str,
+    def get_location_information(self, netapp_id: str,
                                  external_id) -> MonitoringEventReport:
         """
              Returns the location of a specific device.
@@ -62,7 +64,7 @@ class LocationSubscriber:
             netapp_id)
         return response
 
-    def get_coordinates_of_cell(self,cell_id:str)->Cell:
+    def get_coordinates_of_cell(self, cell_id: str) -> Cell:
         """
              Returns information about a specific cell
 
@@ -193,6 +195,68 @@ class QosAwareness:
         DOWNLINK = "DOWNLINK"
         ROUNDTRIP = "ROUND_TRIP"
 
+    class GuaranteedBitRateReportingMode(ABC):
+        @abstractmethod
+        def get_reporting_mode(self):
+            pass
+
+        @abstractmethod
+        def get_reporting_configuration(self):
+            pass
+
+    class EventTriggeredReportingConfiguration(GuaranteedBitRateReportingMode):
+        """
+         Use this class to configure how you will receive reports (notification) from the 5G Network when
+         Quaranteed Bit Rate can be achieved (nor not achieved).
+         Consider a scenario were you want to monitor your UPLINK connection and make sure the delay
+         of data packages is always less than 20 milliseconds.
+
+         Use Event Triggered reporting if you want to retrieve an event every time the network changes:
+         For example:the QoS threshold (minimum delay of 20ms) cannot be achieved.
+         a) when the 20ms delay on UPLINK was established, but suddenly it can not be guaranteed, you will receive a notification.
+         a) when the 20ms delay on UPLINK was not established, but suddenly it can be guaranteed, you will receive a notification.
+
+        """
+
+        wait_time_in_seconds: int
+
+        def __init__(self, wait_time_in_seconds: int):
+            """
+            :param wait_time: Specifies the minimum amount of time we want to wait between two different notifications.
+            For example in a very unstable network you may not want to receive notifications every second.
+            Setting wait_time = 5 seconds, will mean that in case that the network is still unstable, you won't retrieve
+            more than one notification in a duration of 5 seconds.
+            """
+            self.wait_time_in_seconds = wait_time_in_seconds
+
+        def get_reporting_mode(self):
+            return ReportingFrequency.EVENT_TRIGGERED
+
+        def get_reporting_configuration(self):
+            return self.wait_time_in_seconds
+
+    class PeriodicReportConfiguration(GuaranteedBitRateReportingMode):
+        """
+        Use this class to configure how you will receive reports (notification) from the 5G Network when
+        Quaranted Bit Rate can be achieved (nor not achieved).
+        Consider a scenario were you want to monitor your UPLINK connection and make sure the delay
+        of data packages is always less than 20 milliseconds.
+
+        Use Periodic reporting if you want to retrieve an event about the status of the network every X seconds.
+        For example every X seconds get a report (notification) if the minimum delay of 20ms for your UPLINK connection
+        is guaranteed, or not!
+
+       """
+        repetition_period_in_seconds: int
+
+        def __init__(self, repetition_period_in_seconds: int):
+            self.repetition_period_in_seconds = repetition_period_in_seconds
+
+        def get_reporting_mode(self):
+            return ReportingFrequency.PERIODIC
+
+        def get_reporting_configuration(self):
+            return self.repetition_period_in_seconds
 
     def __init__(self, host: str, bearer_access_token: str):
         """
@@ -327,7 +391,7 @@ class QosAwareness:
                                                 usage_threshold: UsageThreshold,
                                                 qos_monitoring_parameter: QosMonitoringParameter,
                                                 threshold: int,
-                                                wait_time_between_reports: int
+                                                reporting_mode: GuaranteedBitRateReportingMode
                                                 ) -> AsSessionWithQoSSubscription:
 
         """
@@ -346,13 +410,14 @@ class QosAwareness:
             5 GB for downlink, 5gb for uplink
             :param qos_monitoring_parameter: The type of connection that will be monitored: UPLINK or DOWNLINK or ROUNDTRIP
             :param threshold: The minimum delay of data package in milliseconds, during UPLINK or DOWNLINK or ROUNDTRIP
-            :param wait_time_between_reports: The minimum waiting time (seconds) between subsequent reports
+            :param reporting_mode: Can be an instance of EventTriggeredReportingConfiguration or PeriodicReportConfiguration. These dictate how you will receive
+            notifications (reports) from the network.
             :return: The subscription that will contain the identifier for this QoS session.
         """
         alt_qo_s_references, qos_monitoring_info = self.__create_gbr_request_qo_parameters(gbr_qos_reference,
                                                                                            qos_monitoring_parameter,
                                                                                            threshold,
-                                                                                    wait_time_between_reports)
+                                                                                           reporting_mode)
 
         body = self.__create_subscription_request(equipment_network_identifier,
                                                   network_identifier,
@@ -368,8 +433,8 @@ class QosAwareness:
             netapp_id)
         return response
 
-
-    def __create_gbr_request_qo_parameters(self, gbr_qos_reference, qos_monitoring_parameter, threshold, wait_time_between_reports):
+    def __create_gbr_request_qo_parameters(self, gbr_qos_reference, qos_monitoring_parameter, threshold,
+                                           reporting_mode: GuaranteedBitRateReportingMode):
         # Contains the remaining Guaranted Qos references, as fallback
         alt_qo_s_references = []
         for qos_reference in QosAwareness.GBRQosReference:
@@ -379,15 +444,24 @@ class QosAwareness:
         lat_thresh_ul = threshold if qos_monitoring_parameter == QosAwareness.QosMonitoringParameter.UPLINK else None
         lat_thresh_dl = threshold if qos_monitoring_parameter == QosAwareness.QosMonitoringParameter.DOWNLINK else None
         lat_thresh_rp = threshold if qos_monitoring_parameter == QosAwareness.QosMonitoringParameter.ROUNDTRIP else None
-        # WaitTime since we are doing EVENT_TRIGGERED ONLY
+
+        reporting_freqs =[reporting_mode.get_reporting_mode()]
+        wait_time = None
+        rep_period = None
+
+        if isinstance(reporting_mode, QosAwareness.EventTriggeredReportingConfiguration):
+            wait_time = reporting_mode.get_reporting_configuration()
+        else:
+            rep_period = reporting_mode.get_reporting_configuration()
+
         qos_monitoring_info = QosMonitoringInformation(
             req_qos_mon_params=[qos_monitoring_parameter.value],
-            rep_freqs=[ReportingFrequency.EVENT_TRIGGERED],
+            rep_freqs=reporting_freqs,
             lat_thresh_dl=lat_thresh_dl,
             lat_thresh_ul=lat_thresh_ul,
             lat_thresh_rp=lat_thresh_rp,
-            wait_time=wait_time_between_reports,  # Has to specified in EVENT_TRIGGERED_ONLY
-            rep_period=None  # Has to specified in PERIODIC ONLY, currently not supported
+            wait_time=wait_time,
+            rep_period=rep_period
         )
         return alt_qo_s_references, qos_monitoring_info
 
@@ -399,11 +473,13 @@ class QosAwareness:
                                                 notification_destination: str,
                                                 gbr_qos_reference: GBRQosReference,
                                                 usage_threshold: UsageThreshold,
-                                                qos_monitoring_parameter:QosMonitoringParameter,
+                                                qos_monitoring_parameter: QosMonitoringParameter,
                                                 threshold: int,
-                                                wait_time_between_reports: int) -> AsSessionWithQoSSubscription:
+                                                reporting_mode: GuaranteedBitRateReportingMode
+                                                ) -> AsSessionWithQoSSubscription:
         """
             Updates a given subscription.
+
 
             :param str netapp_id: string (The ID of the Netapp that creates a subscription)
             :param str subscription_id: string (Identifier of the subscription resource)
@@ -418,13 +494,14 @@ class QosAwareness:
             5 GB for downlink, 5gb for uplink
             :param qos_monitoring_parameter: The type of connection that will be monitored: UPLINK or DOWNLINK or ROUNDTRIP
             :param threshold: The minimum delay of data package in milliseconds, during UPLINK or DOWNLINK or ROUNDTRIP
-            :param wait_time_between_reports: The minimum waiting time (seconds) between subsequent reports
+            :param reporting_mode: Can be an instance of EventTriggeredReportingConfiguration or PeriodicReportConfiguration. These dictate how you will receive
+            notifications (reports) from the network.
             :return: The subscription that will contain the identifier for this QoS session.
         """
         alt_qo_s_references, qos_monitoring_info = self.__create_gbr_request_qo_parameters(gbr_qos_reference,
                                                                                            qos_monitoring_parameter,
                                                                                            threshold,
-                                                                                           wait_time_between_reports)
+                                                                                           reporting_mode)
 
         body = self.__create_subscription_request(equipment_network_identifier,
                                                   network_identifier,
@@ -436,7 +513,6 @@ class QosAwareness:
                                                   )
         return self.qos_api.update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put(
             body, netapp_id, subscription_id)
-        pass
 
     def get_all_subscriptions(self, netapp_id: str) -> List[
         AsSessionWithQoSSubscription]:
