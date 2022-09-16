@@ -2,12 +2,15 @@
 History
 =======
 
+
+0.7.9  (2022-09-15)
+-------------------
+* The documentation about the usability has been updated.
+
 0.7.8  (2022-09-02)
 -------------------
 * It has been improved the usability. It has been added a configuration file to create the NetApp repository, rather than using a prompt input.
 * Cleaning up the code.
-
-
 
 0.7.7  (2022-07-04)
 -------------------
