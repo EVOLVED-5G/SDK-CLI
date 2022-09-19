@@ -20,17 +20,21 @@ class MonitoringSubscriber(ABC):
         self.monitoring_event_api = MonitoringEventAPIApi(api_client)
         self.cell_api = CellsApi(api_client)
 
-    def __create_subscription_request(self,
+    def create_subscription_request(self,
                                       monitoring_type,
                                       external_id,
                                       notification_destination,
                                       maximum_number_of_reports,
-                                      monitor_expire_time) -> MonitoringEventSubscriptionCreate:
+                                      monitor_expire_time,
+                                      maximum_detection_time,
+                                      reachability_type) -> MonitoringEventSubscriptionCreate:
         return MonitoringEventSubscriptionCreate(external_id,
                                                  notification_destination,
                                                  monitoring_type,
                                                  maximum_number_of_reports,
-                                                 monitor_expire_time)
+                                                 monitor_expire_time,
+                                                 maximum_detection_time,
+                                                 reachability_type)
 
     def get_all_subscriptions(self, netapp_id: str, skip: int = 0, limit: int = 100):
         """
@@ -97,11 +101,13 @@ class LocationSubscriber(MonitoringSubscriber):
 
         # create a dummy expiration time. Since we are requesting for only 1 report, we will get the location information back instantly
         monitor_expire_time = (datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).isoformat() + "Z"
-        body = self.__create_subscription_request(external_id,
+        body = self.create_subscription_request(external_id,
                                                   self.__get_monitoring_type(),
                                                   None,
                                                   maximum_number_of_reports=1,
-                                                  monitor_expire_time=monitor_expire_time)
+                                                  monitor_expire_time=monitor_expire_time,
+                                                  maximum_detection_time = None,
+                                                  reachability_type = None)
 
         # a monitoring event report
         response = self.monitoring_event_api.create_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(
@@ -132,11 +138,13 @@ class LocationSubscriber(MonitoringSubscriber):
               :param maximum_number_of_reports: Identifies the maximum number of event reports to be generated. Value 1 makes the Monitoring Request a One-time Request
               :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
         """
-        body = self.__create_subscription_request(self.__get_monitoring_type(),
+        body = self.create_subscription_request(self.__get_monitoring_type(),
                                                   external_id,
                                                   notification_destination,
                                                   maximum_number_of_reports,
-                                                  monitor_expire_time)
+                                                  monitor_expire_time,
+                                                  None,
+                                                  None)
 
         # a monitoring event report
         response = self.monitoring_event_api.create_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(
@@ -161,11 +169,13 @@ class LocationSubscriber(MonitoringSubscriber):
              :param maximum_number_of_reports: Identifies the maximum number of event reports to be generated. Value 1 makes the Monitoring Request a One-time Request
              :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
        """
-        body = self.__create_subscription_request(self.__get_monitoring_type(),
+        body = self.create_subscription_request(self.__get_monitoring_type(),
                                                   external_id,
                                                   notification_destination,
                                                   maximum_number_of_reports,
-                                                  monitor_expire_time)
+                                                  monitor_expire_time,
+                                                  None,
+                                                  None)
 
         return self.monitoring_event_api.update_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_put(
             body, netapp_id, subscription_id)
@@ -224,18 +234,19 @@ class ConnectionMonitor(MonitoringSubscriber):
               :param maximum_number_of_reports: Identifies the maximum number of event reports to be generated. Value 1 makes the Monitoring Request a One-time Request
               :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
         """
-        body = self.__create_subscription_request(self.__get_monitoring_type(monitoring_type),
+        body = self.create_subscription_request(self.__get_monitoring_type(monitoring_type),
                                                   external_id,
                                                   notification_destination,
                                                   maximum_number_of_reports,
-                                                  monitor_expire_time)
+                                                  monitor_expire_time,
+                                                  maximum_detection_time_in_seconds,
+                                                  "DATA")
 
         # a monitoring event report
         response = self.monitoring_event_api.create_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(
             body,
             netapp_id)
         return response
-
 
     def update_subscription(self,
                             netapp_id: str,
@@ -260,11 +271,13 @@ class ConnectionMonitor(MonitoringSubscriber):
               :param maximum_number_of_reports: Identifies the maximum number of event reports to be generated. Value 1 makes the Monitoring Request a One-time Request
               :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
        """
-        body = self.__create_subscription_request(monitoring_type,
+        body = self.create_subscription_request(monitoring_type,
                                                   external_id,
                                                   notification_destination,
                                                   maximum_number_of_reports,
-                                                  monitor_expire_time)
+                                                  monitor_expire_time,
+                                                  maximum_detection_time_in_seconds,
+                                                  "DATA")
 
         return self.monitoring_event_api.update_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_put(
             body, netapp_id, subscription_id)
@@ -386,7 +399,7 @@ class QosAwareness:
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.qos_api = SessionWithQoSAPIApi(api_client)
 
-    def __create_subscription_request(self,
+    def create_subscription_request(self,
                                       equipment_network_identifier: str,
                                       network_identifier: NetworkIdentifier,
                                       notification_destination: str,
@@ -442,7 +455,7 @@ class QosAwareness:
         5 GB for downlink, 5gb for uplink
         :return: :return: The subscription that will contain the identifier for this QoS session.
         """
-        body = self.__create_subscription_request(equipment_network_identifier,
+        body = self.create_subscription_request(equipment_network_identifier,
                                                   network_identifier,
                                                   notification_destination,
                                                   non_gbr_qos_reference.value,
@@ -480,7 +493,7 @@ class QosAwareness:
         5 GB for downlink, 5gb for uplink
         :return: The subscription that will contain the identifier for this QoS session.
         """
-        body = self.__create_subscription_request(equipment_network_identifier,
+        body = self.create_subscription_request(equipment_network_identifier,
                                                   network_identifier,
                                                   notification_destination,
                                                   non_gbr_qos_reference.value,
@@ -529,7 +542,7 @@ class QosAwareness:
                                                                                            threshold,
                                                                                            reporting_mode)
 
-        body = self.__create_subscription_request(equipment_network_identifier,
+        body = self.create_subscription_request(equipment_network_identifier,
                                                   network_identifier,
                                                   notification_destination,
                                                   qos_reference=gbr_qos_reference.value,
@@ -613,7 +626,7 @@ class QosAwareness:
                                                                                            threshold,
                                                                                            reporting_mode)
 
-        body = self.__create_subscription_request(equipment_network_identifier,
+        body = self.create_subscription_request(equipment_network_identifier,
                                                   network_identifier,
                                                   notification_destination,
                                                   qos_reference=gbr_qos_reference.value,
