@@ -218,7 +218,7 @@ class ConnectionMonitor(MonitoringSubscriber):
                             external_id,
                             notification_destination,
                             monitoring_type: MonitoringType,
-                            maximum_detection_time_in_seconds: int,
+                            wait_time_before_sending_notification_in_seconds: int,
                             maximum_number_of_reports,
                             monitor_expire_time) -> MonitoringEventSubscription:
         """
@@ -229,8 +229,13 @@ class ConnectionMonitor(MonitoringSubscriber):
               :param notification_destination: The url that you will retrieve notifications when a device is connected or not connected for the past X seconds
               :param monitoring_type: If you choose MonitoringType.INFORM_WHEN_CONNECTED you will receive a notification every time the device is connected to the network
                If you choose MonitoringType.INFORM_WHEN_NOT_CONNECTED you will receive a notification every time the device is not connected to the network
-              :param maximum_detection_time_in_seconds: How long the network should wait before it sends you a notification. For example if you choose 5 seconds, the 5G API will inform
-              you every 5 seconds tha the device is connected or not connected (depending on what you choose at parameter monitoring_type).
+              :param wait_time_before_sending_notification_in_seconds: How long the network should wait before it sends you a notification.
+               This is usefull because in our netapp we may not care about small lasting disturbances/disconnections. For example consider the following scenario:
+                  a) We set monitoring_type to INFORM_WHEN_NOT_CONNECTED to get notification when the netapp looses connection
+                  b) We set wait_time_before_sending_notification_in_seconds =5 and
+                  c) the netapp loses connection at 12:00:00 and
+                  d) the netapp regains connection at 12:00:02
+                 because only 2 seconds have passed with no connection, we will not retrieve a notification from the network. At least 5 seconds must pass in order to get a notification
               :param maximum_number_of_reports: Identifies the maximum number of event reports to be generated. Value 1 makes the Monitoring Request a One-time Request
               :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
         """
@@ -239,7 +244,7 @@ class ConnectionMonitor(MonitoringSubscriber):
                                                   notification_destination,
                                                   maximum_number_of_reports,
                                                   monitor_expire_time,
-                                                  maximum_detection_time_in_seconds,
+                                                  wait_time_before_sending_notification_in_seconds,
                                                   "DATA")
 
         # a monitoring event report
@@ -254,7 +259,7 @@ class ConnectionMonitor(MonitoringSubscriber):
                             external_id,
                             notification_destination,
                             monitoring_type: MonitoringType,
-                            maximum_detection_time_in_seconds: int,
+                            wait_time_before_sending_notification_in_seconds: int,
                             maximum_number_of_reports,
                             monitor_expire_time) -> MonitoringEventSubscription:
         """
@@ -266,8 +271,13 @@ class ConnectionMonitor(MonitoringSubscriber):
               :param notification_destination: The url that you will retrieve notifications when a device is connected or not connected for the past X seconds
               :param monitoring_type: If you choose MonitoringType.INFORM_WHEN_CONNECTED you will receive a notification every time the device is connected to the network
                If you choose MonitoringType.INFORM_WHEN_NOT_CONNECTED you will receive a notification every time the device is not connected to the network
-              :param maximum_detection_time_in_seconds: How long the network should wait before it sends you a notification. For example if you choose 5 seconds, the 5G API will inform
-              you every 5 seconds tha the device is connected or not connected (depending on what you choose at parameter monitoring_type).
+              :param wait_time_before_sending_notification_in_seconds: How long the network should wait before it sends you a notification.
+               This is usefull because in our netapp we may not care about small lasting disturbances/disconnections. For example consider the following scenario:
+                  a) We set monitoring_type to INFORM_WHEN_NOT_CONNECTED to get notification when the netapp looses connection
+                  b) We set wait_time_before_sending_notification_in_seconds =5 and
+                  c) the netapp loses connection at 12:00:00 and
+                  d) the netapp regains connection at 12:00:02
+                 because only 2 seconds have passed with no connection, we will not retrieve a notification from the network. At least 5 seconds must pass in order to get a notification
               :param maximum_number_of_reports: Identifies the maximum number of event reports to be generated. Value 1 makes the Monitoring Request a One-time Request
               :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
        """
@@ -276,7 +286,7 @@ class ConnectionMonitor(MonitoringSubscriber):
                                                   notification_destination,
                                                   maximum_number_of_reports,
                                                   monitor_expire_time,
-                                                  maximum_detection_time_in_seconds,
+                                                  wait_time_before_sending_notification_in_seconds,
                                                   "DATA")
 
         return self.monitoring_event_api.update_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_put(

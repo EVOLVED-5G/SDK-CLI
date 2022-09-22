@@ -32,25 +32,43 @@ def showcase_create_subscription_and_retrieve_call_backs():
     # See article for details: https://stackoverflow.com/questions/48546124/what-is-linux-equivalent-of-host-docker-internal/61001152
 
     # Let's monitor device 10003@domain.com and retrieve a notification to http://172.17.0.1:5000/monitoring/callback
-    # everytime the device is not connected to the network
+    # everytime the device is not connected (has lost access) to the network.
+    # If connection has been lost, we want the network to inform us after 5 seconds.
+    # For this reason we set wait_time_before_sending_notification_in_seconds =5
+    # This is usefull because in our netapp we may not care about small lasting disturbances/disconnections.
+    # For example consider the following scenario::
+    # We
+    #  a) wait_time_before_sending_notification_in_seconds =5 and
+    #  b) the netapp loses connection at 12:00:00 and
+    #  c) the netapp regains connection at 12:00:02
+    # because only 2 seconds have passed with no connection, we will not retrieve a notification from the network.
     subscription_when_not_connected = connection_monitor.create_subscription(
         netapp_id=netapp_id,
         external_id=external_id,
         notification_destination="http://172.17.0.1:5000/monitoring/callback",
         monitoring_type= ConnectionMonitor.MonitoringType.INFORM_WHEN_NOT_CONNECTED,
-        maximum_detection_time_in_seconds=5,
+        wait_time_before_sending_notification_in_seconds=5,
         maximum_number_of_reports=1000,
         monitor_expire_time=expire_time
     )
 
     # Let's monitor device 10003@domain.com and retrieve a notification to http://172.17.0.1:5000/monitoring/callback
-    # everytime the device is connected to the network
+    # everytime the device is connected to (has gained access to) the network
+    # If connection is alive and active, we want the network to inform us after 5 seconds.
+    # For this reason we set wait_time_before_sending_notification_in_seconds =5
+    # This is usefull because in our netapp we may not care about small lasting disturbances/changes in the connectivity
+    # For example consider the following scenario::
+    # We
+    #  a) wait_time_before_sending_notification_in_seconds =5 and
+    #  b) a net that was previously disconnected, connects to the network at 12:00:00 and
+    #  c) the netapp disconnects again at 12:00:02
+    # because only 2 seconds have passed with connection, we will not retrieve a notification from the network.
     subscription_when_connected = connection_monitor.create_subscription(
         netapp_id=netapp_id,
         external_id=external_id,
         notification_destination="http://172.17.0.1:5000/monitoring/callback",
         monitoring_type= ConnectionMonitor.MonitoringType.INFORM_WHEN_CONNECTED,
-        maximum_detection_time_in_seconds=5,
+        wait_time_before_sending_notification_in_seconds=5,
         maximum_number_of_reports=1000,
         monitor_expire_time=expire_time
     )
