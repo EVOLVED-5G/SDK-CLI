@@ -2,9 +2,9 @@
 History
 =======
 
-0.8.0  (2022-09-21)
+0.8.0  (2022-09-22)
 -------------------
-* Improvement at QosAwareness, for Guaranteed Bit Rate. Up to now, you could ask the 5G Network to send you notification when specific parameters of the QoS session cannot be guaranteed. For example a minimum 5ms delay at uplink. This notification was sent exactly once, when the environment has changed: For example wen a minimum 5ms delay at uplink cannot be guaranteed, or when the a minimum 5ms delay at uplink has been established and can be guaranteed. Method create_guaranteed_bit_rate_subscription() has breaking changes. See below the change:
+* Improvement at QosAwareness, for Guaranteed Bit Rate. Up to now, you could ask the 5G Network to send you notification when specific parameters of the QoS session cannot be guaranteed. For example a minimum 5ms delay at uplink. This notification was sent exactly once, when the environment has changed: For example when a minimum 5ms delay at uplink cannot be guaranteed, or when the a minimum 5ms delay at uplink has been established and can be guaranteed. Method create_guaranteed_bit_rate_subscription() has breaking changes. See below the change:
 
     .. code-block::
        :caption: Method signature create_guaranteed_bit_rate_subscription should be changed

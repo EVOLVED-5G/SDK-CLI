@@ -35,10 +35,10 @@ def showcase_create_subscription_and_retrieve_call_backs():
     # everytime the device is not connected (has lost access) to the network.
     # If connection has been lost, we want the network to inform us after 5 seconds.
     # For this reason we set wait_time_before_sending_notification_in_seconds =5
-    # This is usefull because in our netapp we may not care about small lasting disturbances/disconnections.
-    # For example consider the following scenario::
+    # This is useful because in our netapp we may not care about "small lasting" disturbances/disconnections.
+    # For example consider the following scenario:
     # We
-    #  a) wait_time_before_sending_notification_in_seconds =5 and
+    #  a) set wait_time_before_sending_notification_in_seconds =5 in the code below and
     #  b) the netapp loses connection at 12:00:00 and
     #  c) the netapp regains connection at 12:00:02
     # because only 2 seconds have passed with no connection, we will not retrieve a notification from the network.
@@ -56,10 +56,10 @@ def showcase_create_subscription_and_retrieve_call_backs():
     # everytime the device is connected to (has gained access to) the network
     # If connection is alive and active, we want the network to inform us after 5 seconds.
     # For this reason we set wait_time_before_sending_notification_in_seconds =5
-    # This is usefull because in our netapp we may not care about small lasting disturbances/changes in the connectivity
-    # For example consider the following scenario::
+    # This is useful because in our netapp we may not care about small lasting disturbances/changes in the connectivity
+    # For example consider the following scenario:
     # We
-    #  a) wait_time_before_sending_notification_in_seconds =5 and
+    #  a) set wait_time_before_sending_notification_in_seconds =5 and
     #  b) a net that was previously disconnected, connects to the network at 12:00:00 and
     #  c) the netapp disconnects again at 12:00:02
     # because only 2 seconds have passed with connection, we will not retrieve a notification from the network.
