@@ -21,18 +21,18 @@ def generate(ctx,config_file):
     ctx.obj["helper"].generate(config_file) 
 
 @cli.command()
-@click.option('--mode',type=click.Choice(['build', 'deploy','destroy'], case_sensitive=False))
+@click.option('--mode',type=click.Choice(['build', 'deploy','destroy', 'code_analysis', 'security_scan'], case_sensitive=False))
 @click.option('--repo',type=str, help='Enter repo name')
 
 @click.pass_context
-def run_pipeline(ctx, mode, repo):
-    """Launch a pipeline (build, deploy or destroy)"""
-    ctx.obj["helper"].run_pipeline(mode,repo) 
+def run_verification_tests(ctx, mode, repo):
+    """Launch a pipeline (build, deploy, destroy, code_analysis, security_scan)"""
+    ctx.obj["helper"].run_verification_tests(mode,repo) 
 
 @cli.command()
 @click.option('--id',type=int, help='Enter pipeline id')
 @click.pass_context
-def check_pipeline(ctx, id):
+def check_job(ctx, id):
     """Check the status of a pipeline"""
-    ctx.obj["helper"].check_pipeline(id)
+    ctx.obj["helper"].check_job(id)
 
