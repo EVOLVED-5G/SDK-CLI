@@ -32,14 +32,14 @@ def generate(ctx, repo_name, package_name, template):
 @click.pass_context
 def run_pipeline(ctx, mode, repo):
     """Launch a pipeline (build, deploy, destroy)"""
-    ctx.obj["helper"].run_pipeline(mode,repo) 
+    ctx.obj["helper"].run_verification_tests(mode,repo) 
 
 @cli.command()
 @click.option('--id',type=int, help='Enter pipeline id')
 @click.pass_context
 def check_pipeline(ctx, id):
     """Check the status of a pipeline"""
-    ctx.obj["helper"].check_pipeline(id)
+    ctx.obj["helper"].check_job(id)
     
     
 @cli.command()

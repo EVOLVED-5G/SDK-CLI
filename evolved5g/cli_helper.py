@@ -40,7 +40,7 @@ class  CLI_helper:
         resp = requests.post(self.url_token, headers=self.header, data=data)
         return(resp.json()["access_token"])
 
-    def run_pipeline(self, mode, repo):
+    def run_verification_tests(self, mode, repo):
         """Run the build pipeline for the EVOLVED-5G NetApp"""
         r = requests.get(f"{self.repository}/{repo}")
         repo_exist = r.json()
@@ -61,8 +61,7 @@ class  CLI_helper:
                     data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/001-Static Code Analysis", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
                     resp = requests.post(self.url_curl, headers=self.header, data=data)
                     echo(resp)
-                    echo('Your pipeline ID is: %s' % resp.json()["id"])
-                    
+                    echo('Your pipeline ID is: %s' % resp.json()["id"])       
                 elif mode == "security_scan":
                     self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
                     data1 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/002-Security Scan Code", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'  
@@ -84,7 +83,7 @@ class  CLI_helper:
             echo(f"The {repo} repository you have chosen does not exist, please check the name you typed and try again.")
 
 
-    def check_pipeline(self, id):
+    def check_job(self, id):
 
         """Check the status of the pipeline for the EVOLVED-5G NetApp"""
 
