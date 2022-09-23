@@ -2,6 +2,11 @@
 History
 =======
 
+0.8.0 (2022-09-23)
+-------------------
+* New verification tests have been implemented. Such verification tests are related to NetApp code and NetApp container image analysis.
+* The execution of the verification tests has been also simplify
+
 0.7.9  (2022-09-22)
 -------------------
 * Improvement at QosAwareness, for Guaranteed Bit Rate. Up to now, you could ask the 5G Network to send you notification when specific parameters of the QoS session cannot be guaranteed. For example a minimum 5ms delay at uplink. This notification was sent exactly once, when the environment has changed: For example when a minimum 5ms delay at uplink cannot be guaranteed, or when the a minimum 5ms delay at uplink has been established and can be guaranteed. Method create_guaranteed_bit_rate_subscription() has breaking changes. See below the change:
