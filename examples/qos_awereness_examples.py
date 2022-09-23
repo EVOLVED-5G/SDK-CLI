@@ -50,6 +50,7 @@ def showcase_create_quaranteed_bit_rate_subscription_for_conversational_voice():
     # See article for details: https://stackoverflow.com/questions/48546124/what-is-linux-equivalent-of-host-docker-internal/61001152
     notification_destination="http://172.17.0.1:5000/monitoring/callback"
 
+
     subscription = qos_awereness.create_guaranteed_bit_rate_subscription(
         netapp_id=netapp_id,
         equipment_network_identifier=equipment_network_identifier,
@@ -59,7 +60,12 @@ def showcase_create_quaranteed_bit_rate_subscription_for_conversational_voice():
         usage_threshold=usage_threshold,
         qos_monitoring_parameter=uplink,
         threshold=uplink_threshold,
-        wait_time_between_reports=10
+        # BREAKING CHANGE. At version v0.8.0 this parameter is removed!
+        # wait_time_between_reports=10
+        # You need to declare it as the following
+        reporting_mode= QosAwareness.EventTriggeredReportingConfiguration(wait_time_in_seconds=10)
+        # You can now choose also the PeriodicReportConfiguration for reporting mode
+        #reporting_mode= QosAwareness.PeriodicReportConfiguration(repetition_period_in_seconds=10)
 
     )
     # From now on we should retrieve POST notifications to http://172.17.0.1:5000/monitoring/callback
@@ -160,4 +166,5 @@ def read_and_delete_all_existing_subscriptions():
 if __name__ == "__main__":
     read_and_delete_all_existing_subscriptions()
     showcase_create_quaranteed_bit_rate_subscription_for_conversational_voice()
+    read_and_delete_all_existing_subscriptions()
     showcase_create_non_quaranteed_bit_rate_subscription_for_live_streaming()

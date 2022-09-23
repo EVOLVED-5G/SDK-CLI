@@ -21,14 +21,6 @@ class  CLI_helper:
 
     def generate(self, repo_name, package_name, template):
         """Generate EVOLVED-5G compliant NetApp from template"""
-        # extra = {}
-        # if repo_name:
-        #     extra['repoName'] = repo_name
-        # if package_name:
-        #     extra['packageName'] = package_name
-        # if template:
-        #     cookiecutter_generate(template,no_input=no_input,extra_context=extra)
-        #     return
         location = "gh:EVOLVED-5G/NetApp-template"
         directory = "template"
         cookiecutter_generate(location, directory) #extra_context=extra)
