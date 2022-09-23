@@ -19,11 +19,11 @@ class  CLI_helper:
         self.repository = "https://api.github.com/repos/EVOLVED-5G"
         self.jenkinsjob = "003-NETAPPS/999-ToReview/"
 
-    def generate(self, repo_name, package_name, template):
+    def generate(self, config_file):
         """Generate EVOLVED-5G compliant NetApp from template"""
         location = "gh:EVOLVED-5G/NetApp-template"
         directory = "template"
-        cookiecutter_generate(location, directory) #extra_context=extra)
+        cookiecutter_generate(location, config_file, directory, no_input=True)
 
     def generate_token(self):
 
