@@ -2,7 +2,7 @@
 History
 =======
 
-0.8.0  (2022-09-22)
+0.7.9  (2022-09-22)
 -------------------
 * Improvement at QosAwareness, for Guaranteed Bit Rate. Up to now, you could ask the 5G Network to send you notification when specific parameters of the QoS session cannot be guaranteed. For example a minimum 5ms delay at uplink. This notification was sent exactly once, when the environment has changed: For example when a minimum 5ms delay at uplink cannot be guaranteed, or when the a minimum 5ms delay at uplink has been established and can be guaranteed. Method create_guaranteed_bit_rate_subscription() has breaking changes. See below the change:
 
@@ -23,10 +23,6 @@ History
 
 * New SDK Class, ConnectionMonitor: Consider a scenario where a NetApp wants to monitor 100 devices in the 5G Network. The netapp wants to track, at any given time how many NetApps are connected to the 5G Network and how many netApps are disconnected.Using ConnectionMonitor the NetApp can retrieve notifications by the 5G Network for individual devices when Connection is lost (for example the user device has not been connected to the 5G network for the past 10 seconds) Connection is alive (for example the user device has been connected to the 5G network for the past 10 seconds)
 
-
-
-0.7.9  (2022-09-15)
--------------------
 * The documentation about the usability has been updated.
 
 0.7.8  (2022-09-02)
