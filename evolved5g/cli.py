@@ -26,7 +26,7 @@ def generate(ctx,config_file):
 
 @click.pass_context
 def run_verification_tests(ctx, mode, repo):
-    """Launch a pipeline (build, deploy, destroy, code_analysis, security_scan)"""
+    """Launch different verification tests"""
     ctx.obj["helper"].run_verification_tests(mode,repo) 
 
 @cli.command()
