@@ -6,6 +6,8 @@ At the current release the SDK contains two classes
 
 * **LocationSubscriber**: allows you to track devices and retrieve updates about their location.You can use LocationSubscriber to create subscriptions, where each one of them can be used to track a device.
 * **QosAwareness**: allows you to request QoS from a set of standardized values for better service experience (Ex. TCP_BASED / LIVE Streaming / CONVERSATIONAL_VOICE etc). You can create subscriptions where each one of them has specific QoS parameters. A notification is sent back to the net-app if the QoS targets can no longer be full-filled.
+* **ConnectionMonitor**: allows you to monitor devices in the 5G Network. You this class to p can retrieve notifications by the 5G Network for individual devices when connection is lost (for example the user device has not been connected to the 5G network for the past 10 seconds) or when connection is alive (for example the user device has been connected to the 5G network for the past 10 seconds).
+
 
 
 Examples of usage /Have a look at the code
@@ -15,6 +17,8 @@ Have a look at the examples folder for code samples on how to use the SDK Librar
 * `LocationSubscriber example <https://github.com/EVOLVED-5G/SDK-CLI/blob/master/examples/location_subscriber_examples.py>`_
 
 * `QosAwareness example <https://github.com/EVOLVED-5G/SDK-CLI/blob/master/examples/qos_awereness_examples.py>`_
+
+* `ConnectionMonitor example <https://github.com/EVOLVED-5G/SDK-CLI/blob/master/examples/connection_monitor_examples.py>`_
 
 Prerequisites / How to start
 ----------------------------
@@ -52,3 +56,5 @@ Now you can run the
 or the
 `QosAwereness example <https://github.com/EVOLVED-5G/SDK-CLI/blob/master/examples/qos_awereness_examples.py>`_
 (you should be able to retrieve notifications when the QoS thresholds can not be achieved, or have been restored)
+or the  `ConnectionMonitor example <https://github.com/EVOLVED-5G/SDK-CLI/blob/master/examples/connection_monitor_examples.py>`_
+(you should be able to retrieve notifications when user devices connect or disconnect to the netowrk,  printed in the terminal that runs the FLASK webserver)

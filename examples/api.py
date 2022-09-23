@@ -15,6 +15,9 @@ def handle_callback_notification():
     print(request.get_json())
     return request.get_json()
 
+#  for loss of connectivity if we want to
+
+
 if __name__ == '__main__':
     print("initiating")
     app.run(host='0.0.0.0')

@@ -2,6 +2,7 @@
 from typing import List
 
 from evolved5g import swagger_client
+from abc import ABC, abstractmethod
 from enum import Enum
 from evolved5g.swagger_client import MonitoringEventAPIApi, \
     MonitoringEventSubscriptionCreate, MonitoringEventSubscription, SessionWithQoSAPIApi, \
@@ -9,18 +10,9 @@ from evolved5g.swagger_client import MonitoringEventAPIApi, \
     RequestedQoSMonitoringParameters, ReportingFrequency, MonitoringEventReport, CellsApi, Cell
 import datetime
 
-class LocationSubscriber:
 
+class MonitoringSubscriber(ABC):
     def __init__(self, host: str, bearer_access_token: str):
-        """
-            Initializes class LocationSubscriber.
-            This SKD class allows you to track devices and retrieve updates about their location.
-            You can create subscriptions where each one of them can be used to track a device.
-            A notification is sent to a callback url you will provide, everytime the user device changes Cell
-
-             :param str host: The url of the 5G-API
-             :param str bearer_access_token: The bearer access token that will be used to authenticate with the 5G-API
-        """
         configuration = swagger_client.Configuration()
         configuration.host = host
         configuration.access_token = bearer_access_token
@@ -28,98 +20,21 @@ class LocationSubscriber:
         self.monitoring_event_api = MonitoringEventAPIApi(api_client)
         self.cell_api = CellsApi(api_client)
 
-    def __create_subscription_request(self,
+    def create_subscription_request(self,
+                                      monitoring_type,
                                       external_id,
                                       notification_destination,
                                       maximum_number_of_reports,
-                                      monitor_expire_time) -> MonitoringEventSubscriptionCreate:
-        monitoring_type = "LOCATION_REPORTING"
+                                      monitor_expire_time,
+                                      maximum_detection_time,
+                                      reachability_type) -> MonitoringEventSubscriptionCreate:
         return MonitoringEventSubscriptionCreate(external_id,
                                                  notification_destination,
                                                  monitoring_type,
                                                  maximum_number_of_reports,
-                                                 monitor_expire_time)
-
-    def get_location_information(self,netapp_id: str,
-                                 external_id) -> MonitoringEventReport:
-        """
-             Returns the location of a specific device.
-             This is equivalent to creating a subscription with maximum_number_of_reports = 1
-             :param str netapp_id: string (The ID of the Netapp that creates a subscription)
-             :param str external_id: Globally unique identifier containing a Domain Identifier and a Local Identifier. <Local Identifier>@<Domain Identifier>
-       """
-
-        # create a dummy expiration time. Since we are requesting for only 1 report, we will get the location information back instantly
-        monitor_expire_time = (datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).isoformat() + "Z"
-        body = self.__create_subscription_request(external_id,
-                                                  None,
-                                                  maximum_number_of_reports=1,
-                                                  monitor_expire_time=monitor_expire_time)
-
-        # a monitoring event report
-        response = self.monitoring_event_api.create_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(
-            body,
-            netapp_id)
-        return response
-
-    def get_coordinates_of_cell(self,cell_id:str)->Cell:
-        """
-             Returns information about a specific cell
-
-             :param str cell_id: string (The ID of the cell)
-       """
-        return self.cell_api.read_cell_api_v1_cells_cell_id_get(cell_id)
-
-    def create_subscription(self,
-                            netapp_id: str,
-                            external_id,
-                            notification_destination,
-                            maximum_number_of_reports,
-                            monitor_expire_time) -> MonitoringEventSubscription:
-        """
-              Creates a subscription that will be used to retrieve Location information about a device.
-
-              :param str netapp_id: string (The ID of the Netapp that creates a subscription)
-              :param str external_id: Globally unique identifier containing a Domain Identifier and a Local Identifier. <Local Identifier>@<Domain Identifier>
-              :param notification_destination: The url that you will notifications about the location of the user
-              :param maximum_number_of_reports: Identifies the maximum number of event reports to be generated. Value 1 makes the Monitoring Request a One-time Request
-              :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
-        """
-        body = self.__create_subscription_request(external_id,
-                                                  notification_destination,
-                                                  maximum_number_of_reports,
-                                                  monitor_expire_time)
-
-        # a monitoring event report
-        response = self.monitoring_event_api.create_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(
-            body,
-            netapp_id)
-        return response
-
-    def update_subscription(self,
-                            netapp_id: str,
-                            subscription_id: str,
-                            external_id,
-                            notification_destination,
-                            maximum_number_of_reports,
-                            monitor_expire_time) -> MonitoringEventSubscription:
-        """
-             Creates a subscription that will be used to retrieve Location information about a device.
-
-             :param str netapp_id: string (The ID of the Netapp that creates a subscription)
-             :param str subscription_id: string (Identifier of the subscription resource)
-             :param str external_id: Globally unique identifier containing a Domain Identifier and a Local Identifier. <Local Identifier>@<Domain Identifier>
-             :param notification_destination: The url that you will notifications about the location of the user
-             :param maximum_number_of_reports: Identifies the maximum number of event reports to be generated. Value 1 makes the Monitoring Request a One-time Request
-             :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
-       """
-        body = self.__create_subscription_request(external_id,
-                                                  notification_destination,
-                                                  maximum_number_of_reports,
-                                                  monitor_expire_time)
-
-        return self.monitoring_event_api.update_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_put(
-            body, netapp_id, subscription_id)
+                                                 monitor_expire_time,
+                                                 maximum_detection_time,
+                                                 reachability_type)
 
     def get_all_subscriptions(self, netapp_id: str, skip: int = 0, limit: int = 100):
         """
@@ -158,6 +73,226 @@ class LocationSubscriber:
             subscription_id)
 
 
+class LocationSubscriber(MonitoringSubscriber):
+
+    def __init__(self, host: str, bearer_access_token: str):
+        """
+            Initializes class LocationSubscriber.
+            This SKD class allows you to track devices and retrieve updates about their location.
+            You can create subscriptions where each one of them can be used to track a device.
+            A notification is sent to a callback url you will provide, everytime the user device changes Cell
+
+             :param str host: The url of the 5G-API
+             :param str bearer_access_token: The bearer access token that will be used to authenticate with the 5G-API
+        """
+        super().__init__(host,bearer_access_token)
+
+    def __get_monitoring_type(self):
+        return "LOCATION_REPORTING"
+
+    def get_location_information(self, netapp_id: str,
+                                 external_id) -> MonitoringEventReport:
+        """
+             Returns the location of a specific device.
+             This is equivalent to creating a subscription with maximum_number_of_reports = 1
+             :param str netapp_id: string (The ID of the Netapp that creates a subscription)
+             :param str external_id: Globally unique identifier containing a Domain Identifier and a Local Identifier. <Local Identifier>@<Domain Identifier>
+       """
+
+        # create a dummy expiration time. Since we are requesting for only 1 report, we will get the location information back instantly
+        monitor_expire_time = (datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).isoformat() + "Z"
+        body = self.create_subscription_request(external_id,
+                                                  self.__get_monitoring_type(),
+                                                  None,
+                                                  maximum_number_of_reports=1,
+                                                  monitor_expire_time=monitor_expire_time,
+                                                  maximum_detection_time = None,
+                                                  reachability_type = None)
+
+        # a monitoring event report
+        response = self.monitoring_event_api.create_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(
+            body,
+            netapp_id)
+        return response
+
+    def get_coordinates_of_cell(self, cell_id: str) -> Cell:
+        """
+             Returns information about a specific cell
+
+             :param str cell_id: string (The ID of the cell)
+       """
+        return self.cell_api.read_cell_api_v1_cells_cell_id_get(cell_id)
+
+    def create_subscription(self,
+                            netapp_id: str,
+                            external_id,
+                            notification_destination,
+                            maximum_number_of_reports,
+                            monitor_expire_time) -> MonitoringEventSubscription:
+        """
+              Creates a subscription that will be used to retrieve Location information about a device.
+
+              :param str netapp_id: string (The ID of the Netapp that creates a subscription)
+              :param str external_id: Globally unique identifier containing a Domain Identifier and a Local Identifier. <Local Identifier>@<Domain Identifier>
+              :param notification_destination: The url that you will notifications about the location of the user
+              :param maximum_number_of_reports: Identifies the maximum number of event reports to be generated. Value 1 makes the Monitoring Request a One-time Request
+              :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
+        """
+        body = self.create_subscription_request(self.__get_monitoring_type(),
+                                                  external_id,
+                                                  notification_destination,
+                                                  maximum_number_of_reports,
+                                                  monitor_expire_time,
+                                                  None,
+                                                  None)
+
+        # a monitoring event report
+        response = self.monitoring_event_api.create_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(
+            body,
+            netapp_id)
+        return response
+
+    def update_subscription(self,
+                            netapp_id: str,
+                            subscription_id: str,
+                            external_id,
+                            notification_destination,
+                            maximum_number_of_reports,
+                            monitor_expire_time) -> MonitoringEventSubscription:
+        """
+             Creates a subscription that will be used to retrieve Location information about a device.
+
+             :param str netapp_id: string (The ID of the Netapp that creates a subscription)
+             :param str subscription_id: string (Identifier of the subscription resource)
+             :param str external_id: Globally unique identifier containing a Domain Identifier and a Local Identifier. <Local Identifier>@<Domain Identifier>
+             :param notification_destination: The url that you will notifications about the location of the user
+             :param maximum_number_of_reports: Identifies the maximum number of event reports to be generated. Value 1 makes the Monitoring Request a One-time Request
+             :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
+       """
+        body = self.create_subscription_request(self.__get_monitoring_type(),
+                                                  external_id,
+                                                  notification_destination,
+                                                  maximum_number_of_reports,
+                                                  monitor_expire_time,
+                                                  None,
+                                                  None)
+
+        return self.monitoring_event_api.update_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_put(
+            body, netapp_id, subscription_id)
+
+
+class ConnectionMonitor(MonitoringSubscriber):
+
+    class MonitoringType(Enum):
+        """
+            This enum is used to describe what the kind of monitoring you will apply to your devices.
+            If INFORM_WHEN_CONNECTED is selected then the 5G API will send you a notification is the device has not been connected to the 5G Network for the past X seconds
+            If INFORM_WHEN_NOT_CONNECTED is selected then the 5G API will send you a notification is the device has not been connected to the 5G Network for the past X seconds
+        """
+        INFORM_WHEN_CONNECTED = 1
+        INFORM_WHEN_NOT_CONNECTED = 2
+
+    def __init__(self, host: str, bearer_access_token: str):
+        """
+            Initializes class ConnectionMonitor.
+            Consider a scenario where a NetApp wants to monitor 100 devices in the 5G Network.
+            The netapp wants to track, at any given time how many NetApps are connected to the 5G Network and how many netApps are disconnected.
+
+            Using ConnectionMonitor the NetApp can retrieve notifications by the 5G Network for individual devices when
+            Connection is lost (for example the user device has not been connected to the 5G network for the past 10 seconds)
+            Connection is alive (for example the user device has been connected to the 5G network for the past 10 seconds)
+
+            :param str host: The url of the 5G-API
+            :param str bearer_access_token: The bearer access token that will be used to authenticate with the 5G-API
+        """
+        super().__init__(host,bearer_access_token)
+
+    def __get_monitoring_type(self, monitoring_type: MonitoringType):
+        if monitoring_type == self.MonitoringType.INFORM_WHEN_CONNECTED:
+            return "UE_REACHABILITY"
+        else:
+            return "LOSS_OF_CONNECTIVITY"
+
+    def create_subscription(self,
+                            netapp_id: str,
+                            external_id,
+                            notification_destination,
+                            monitoring_type: MonitoringType,
+                            wait_time_before_sending_notification_in_seconds: int,
+                            maximum_number_of_reports,
+                            monitor_expire_time) -> MonitoringEventSubscription:
+        """
+              Creates a subscription that will be used to track the Network Connectivity about a device.
+
+              :param str netapp_id: string (The ID of the Netapp that creates a subscription)
+              :param str external_id: Globally unique identifier containing a Domain Identifier and a Local Identifier. <Local Identifier>@<Domain Identifier>
+              :param notification_destination: The url that you will retrieve notifications when a device is connected or not connected for the past X seconds
+              :param monitoring_type: If you choose MonitoringType.INFORM_WHEN_CONNECTED you will receive a notification every time the device is connected to the network
+               If you choose MonitoringType.INFORM_WHEN_NOT_CONNECTED you will receive a notification every time the device is not connected to the network
+              :param wait_time_before_sending_notification_in_seconds: How long the network should wait before it sends you a notification.
+               This is usefull because in our netapp we may not care about small lasting disturbances/disconnections. For example consider the following scenario:
+                  a) We set monitoring_type to INFORM_WHEN_NOT_CONNECTED to get notification when the netapp looses connection
+                  b) We set wait_time_before_sending_notification_in_seconds =5 and
+                  c) the netapp loses connection at 12:00:00 and
+                  d) the netapp regains connection at 12:00:02
+                 because only 2 seconds have passed with no connection, we will not retrieve a notification from the network. At least 5 seconds must pass in order to get a notification
+              :param maximum_number_of_reports: Identifies the maximum number of event reports to be generated. Value 1 makes the Monitoring Request a One-time Request
+              :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
+        """
+        body = self.create_subscription_request(self.__get_monitoring_type(monitoring_type),
+                                                  external_id,
+                                                  notification_destination,
+                                                  maximum_number_of_reports,
+                                                  monitor_expire_time,
+                                                  wait_time_before_sending_notification_in_seconds,
+                                                  "DATA")
+
+        # a monitoring event report
+        response = self.monitoring_event_api.create_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(
+            body,
+            netapp_id)
+        return response
+
+    def update_subscription(self,
+                            netapp_id: str,
+                            subscription_id: str,
+                            external_id,
+                            notification_destination,
+                            monitoring_type: MonitoringType,
+                            wait_time_before_sending_notification_in_seconds: int,
+                            maximum_number_of_reports,
+                            monitor_expire_time) -> MonitoringEventSubscription:
+        """
+             Creates a subscription that will be used to retrieve Location information about a device.
+
+             :param str netapp_id: string (The ID of the Netapp that creates a subscription)
+             :param str subscription_id: string (Identifier of the subscription resource)
+             :param str external_id: Globally unique identifier containing a Domain Identifier and a Local Identifier. <Local Identifier>@<Domain Identifier>
+              :param notification_destination: The url that you will retrieve notifications when a device is connected or not connected for the past X seconds
+              :param monitoring_type: If you choose MonitoringType.INFORM_WHEN_CONNECTED you will receive a notification every time the device is connected to the network
+               If you choose MonitoringType.INFORM_WHEN_NOT_CONNECTED you will receive a notification every time the device is not connected to the network
+              :param wait_time_before_sending_notification_in_seconds: How long the network should wait before it sends you a notification.
+               This is usefull because in our netapp we may not care about small lasting disturbances/disconnections. For example consider the following scenario:
+                  a) We set monitoring_type to INFORM_WHEN_NOT_CONNECTED to get notification when the netapp looses connection
+                  b) We set wait_time_before_sending_notification_in_seconds =5 and
+                  c) the netapp loses connection at 12:00:00 and
+                  d) the netapp regains connection at 12:00:02
+                 because only 2 seconds have passed with no connection, we will not retrieve a notification from the network. At least 5 seconds must pass in order to get a notification
+              :param maximum_number_of_reports: Identifies the maximum number of event reports to be generated. Value 1 makes the Monitoring Request a One-time Request
+              :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
+       """
+        body = self.create_subscription_request(monitoring_type,
+                                                  external_id,
+                                                  notification_destination,
+                                                  maximum_number_of_reports,
+                                                  monitor_expire_time,
+                                                  wait_time_before_sending_notification_in_seconds,
+                                                  "DATA")
+
+        return self.monitoring_event_api.update_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_put(
+            body, netapp_id, subscription_id)
+
+
 class QosAwareness:
     class NetworkIdentifier(Enum):
         """
@@ -193,6 +328,68 @@ class QosAwareness:
         DOWNLINK = "DOWNLINK"
         ROUNDTRIP = "ROUND_TRIP"
 
+    class GuaranteedBitRateReportingMode(ABC):
+        @abstractmethod
+        def get_reporting_mode(self):
+            pass
+
+        @abstractmethod
+        def get_reporting_configuration(self):
+            pass
+
+    class EventTriggeredReportingConfiguration(GuaranteedBitRateReportingMode):
+        """
+         Use this class to configure how you will receive reports (notification) from the 5G Network when
+         Quaranteed Bit Rate can be achieved (nor not achieved).
+         Consider a scenario were you want to monitor your UPLINK connection and make sure the delay
+         of data packages is always less than 20 milliseconds.
+
+         Use Event Triggered reporting if you want to retrieve an event every time the network changes:
+         For example:the QoS threshold (minimum delay of 20ms) cannot be achieved.
+         a) when the 20ms delay on UPLINK was established, but suddenly it can not be guaranteed, you will receive a notification.
+         a) when the 20ms delay on UPLINK was not established, but suddenly it can be guaranteed, you will receive a notification.
+
+        """
+
+        wait_time_in_seconds: int
+
+        def __init__(self, wait_time_in_seconds: int):
+            """
+            :param wait_time: Specifies the minimum amount of time we want to wait between two different notifications.
+            For example in a very unstable network you may not want to receive notifications every second.
+            Setting wait_time = 5 seconds, will mean that in case that the network is still unstable, you won't retrieve
+            more than one notification in a duration of 5 seconds.
+            """
+            self.wait_time_in_seconds = wait_time_in_seconds
+
+        def get_reporting_mode(self):
+            return ReportingFrequency.EVENT_TRIGGERED
+
+        def get_reporting_configuration(self):
+            return self.wait_time_in_seconds
+
+    class PeriodicReportConfiguration(GuaranteedBitRateReportingMode):
+        """
+        Use this class to configure how you will receive reports (notification) from the 5G Network when
+        Quaranted Bit Rate can be achieved (nor not achieved).
+        Consider a scenario were you want to monitor your UPLINK connection and make sure the delay
+        of data packages is always less than 20 milliseconds.
+
+        Use Periodic reporting if you want to retrieve an event about the status of the network every X seconds.
+        For example every X seconds get a report (notification) if the minimum delay of 20ms for your UPLINK connection
+        is guaranteed, or not!
+
+       """
+        repetition_period_in_seconds: int
+
+        def __init__(self, repetition_period_in_seconds: int):
+            self.repetition_period_in_seconds = repetition_period_in_seconds
+
+        def get_reporting_mode(self):
+            return ReportingFrequency.PERIODIC
+
+        def get_reporting_configuration(self):
+            return self.repetition_period_in_seconds
 
     def __init__(self, host: str, bearer_access_token: str):
         """
@@ -212,7 +409,7 @@ class QosAwareness:
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.qos_api = SessionWithQoSAPIApi(api_client)
 
-    def __create_subscription_request(self,
+    def create_subscription_request(self,
                                       equipment_network_identifier: str,
                                       network_identifier: NetworkIdentifier,
                                       notification_destination: str,
@@ -268,7 +465,7 @@ class QosAwareness:
         5 GB for downlink, 5gb for uplink
         :return: :return: The subscription that will contain the identifier for this QoS session.
         """
-        body = self.__create_subscription_request(equipment_network_identifier,
+        body = self.create_subscription_request(equipment_network_identifier,
                                                   network_identifier,
                                                   notification_destination,
                                                   non_gbr_qos_reference.value,
@@ -306,7 +503,7 @@ class QosAwareness:
         5 GB for downlink, 5gb for uplink
         :return: The subscription that will contain the identifier for this QoS session.
         """
-        body = self.__create_subscription_request(equipment_network_identifier,
+        body = self.create_subscription_request(equipment_network_identifier,
                                                   network_identifier,
                                                   notification_destination,
                                                   non_gbr_qos_reference.value,
@@ -327,7 +524,7 @@ class QosAwareness:
                                                 usage_threshold: UsageThreshold,
                                                 qos_monitoring_parameter: QosMonitoringParameter,
                                                 threshold: int,
-                                                wait_time_between_reports: int
+                                                reporting_mode: GuaranteedBitRateReportingMode
                                                 ) -> AsSessionWithQoSSubscription:
 
         """
@@ -346,15 +543,16 @@ class QosAwareness:
             5 GB for downlink, 5gb for uplink
             :param qos_monitoring_parameter: The type of connection that will be monitored: UPLINK or DOWNLINK or ROUNDTRIP
             :param threshold: The minimum delay of data package in milliseconds, during UPLINK or DOWNLINK or ROUNDTRIP
-            :param wait_time_between_reports: The minimum waiting time (seconds) between subsequent reports
+            :param reporting_mode: Can be an instance of EventTriggeredReportingConfiguration or PeriodicReportConfiguration. These dictate how you will receive
+            notifications (reports) from the network.
             :return: The subscription that will contain the identifier for this QoS session.
         """
         alt_qo_s_references, qos_monitoring_info = self.__create_gbr_request_qo_parameters(gbr_qos_reference,
                                                                                            qos_monitoring_parameter,
                                                                                            threshold,
-                                                                                    wait_time_between_reports)
+                                                                                           reporting_mode)
 
-        body = self.__create_subscription_request(equipment_network_identifier,
+        body = self.create_subscription_request(equipment_network_identifier,
                                                   network_identifier,
                                                   notification_destination,
                                                   qos_reference=gbr_qos_reference.value,
@@ -368,8 +566,8 @@ class QosAwareness:
             netapp_id)
         return response
 
-
-    def __create_gbr_request_qo_parameters(self, gbr_qos_reference, qos_monitoring_parameter, threshold, wait_time_between_reports):
+    def __create_gbr_request_qo_parameters(self, gbr_qos_reference, qos_monitoring_parameter, threshold,
+                                           reporting_mode: GuaranteedBitRateReportingMode):
         # Contains the remaining Guaranted Qos references, as fallback
         alt_qo_s_references = []
         for qos_reference in QosAwareness.GBRQosReference:
@@ -379,15 +577,24 @@ class QosAwareness:
         lat_thresh_ul = threshold if qos_monitoring_parameter == QosAwareness.QosMonitoringParameter.UPLINK else None
         lat_thresh_dl = threshold if qos_monitoring_parameter == QosAwareness.QosMonitoringParameter.DOWNLINK else None
         lat_thresh_rp = threshold if qos_monitoring_parameter == QosAwareness.QosMonitoringParameter.ROUNDTRIP else None
-        # WaitTime since we are doing EVENT_TRIGGERED ONLY
+
+        reporting_freqs =[reporting_mode.get_reporting_mode()]
+        wait_time = None
+        rep_period = None
+
+        if isinstance(reporting_mode, QosAwareness.EventTriggeredReportingConfiguration):
+            wait_time = reporting_mode.get_reporting_configuration()
+        else:
+            rep_period = reporting_mode.get_reporting_configuration()
+
         qos_monitoring_info = QosMonitoringInformation(
             req_qos_mon_params=[qos_monitoring_parameter.value],
-            rep_freqs=[ReportingFrequency.EVENT_TRIGGERED],
+            rep_freqs=reporting_freqs,
             lat_thresh_dl=lat_thresh_dl,
             lat_thresh_ul=lat_thresh_ul,
             lat_thresh_rp=lat_thresh_rp,
-            wait_time=wait_time_between_reports,  # Has to specified in EVENT_TRIGGERED_ONLY
-            rep_period=None  # Has to specified in PERIODIC ONLY, currently not supported
+            wait_time=wait_time,
+            rep_period=rep_period
         )
         return alt_qo_s_references, qos_monitoring_info
 
@@ -399,11 +606,13 @@ class QosAwareness:
                                                 notification_destination: str,
                                                 gbr_qos_reference: GBRQosReference,
                                                 usage_threshold: UsageThreshold,
-                                                qos_monitoring_parameter:QosMonitoringParameter,
+                                                qos_monitoring_parameter: QosMonitoringParameter,
                                                 threshold: int,
-                                                wait_time_between_reports: int) -> AsSessionWithQoSSubscription:
+                                                reporting_mode: GuaranteedBitRateReportingMode
+                                                ) -> AsSessionWithQoSSubscription:
         """
             Updates a given subscription.
+
 
             :param str netapp_id: string (The ID of the Netapp that creates a subscription)
             :param str subscription_id: string (Identifier of the subscription resource)
@@ -418,15 +627,16 @@ class QosAwareness:
             5 GB for downlink, 5gb for uplink
             :param qos_monitoring_parameter: The type of connection that will be monitored: UPLINK or DOWNLINK or ROUNDTRIP
             :param threshold: The minimum delay of data package in milliseconds, during UPLINK or DOWNLINK or ROUNDTRIP
-            :param wait_time_between_reports: The minimum waiting time (seconds) between subsequent reports
+            :param reporting_mode: Can be an instance of EventTriggeredReportingConfiguration or PeriodicReportConfiguration. These dictate how you will receive
+            notifications (reports) from the network.
             :return: The subscription that will contain the identifier for this QoS session.
         """
         alt_qo_s_references, qos_monitoring_info = self.__create_gbr_request_qo_parameters(gbr_qos_reference,
                                                                                            qos_monitoring_parameter,
                                                                                            threshold,
-                                                                                           wait_time_between_reports)
+                                                                                           reporting_mode)
 
-        body = self.__create_subscription_request(equipment_network_identifier,
+        body = self.create_subscription_request(equipment_network_identifier,
                                                   network_identifier,
                                                   notification_destination,
                                                   qos_reference=gbr_qos_reference.value,
@@ -436,7 +646,6 @@ class QosAwareness:
                                                   )
         return self.qos_api.update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put(
             body, netapp_id, subscription_id)
-        pass
 
     def get_all_subscriptions(self, netapp_id: str) -> List[
         AsSessionWithQoSSubscription]:
@@ -470,3 +679,4 @@ class QosAwareness:
         return self.qos_api.delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete(
             netapp_id,
             subscription_id)
+
