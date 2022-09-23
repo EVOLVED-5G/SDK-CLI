@@ -60,7 +60,6 @@ class  CLI_helper:
                     self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
                     data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/001-Static Code Analysis", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
                     resp = requests.post(self.url_curl, headers=self.header, data=data)
-                    echo(resp)
                     echo('Your pipeline ID is: %s' % resp.json()["id"])       
                 elif mode == "security_scan":
                     self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
@@ -70,12 +69,12 @@ class  CLI_helper:
                     resp1 = requests.post(self.url_curl, headers=self.header, data=data1)
                     resp2 = requests.post(self.url_curl, headers=self.header, data=data2)
                     resp3 = requests.post(self.url_curl, headers=self.header, data=data3)
-                    echo(resp1)
                     echo('Your pipeline ID is: %s' % resp1.json()["id"])
-                    echo(resp2)
                     echo('Your pipeline ID is: %s' % resp2.json()["id"])
-                    echo(resp3)
                     echo('Your pipeline ID is: %s' % resp3.json()["id"])
+                else: 
+                    
+                    echo(f"The {mode} you have chosen does not exist, please check the modes and try again")
                        
             except TypeError as e:
                 echo("Please enter the correct command: evolved5g run_pipeline --mode build --repo REPOSITORY_NAME")
@@ -106,44 +105,3 @@ class  CLI_helper:
                         echo(element)
         except ValueError as e:
             echo("Please add the ID: evolved5g check-pipeline --id <yourID>")
-            
-            
-    # def sonarqube_pipeline(self, repo):
-    #     r = requests.get(f"{self.repository}/{repo}")
-    #     repo_exist = r.json()
-    #     if "message" not in repo_exist:
-    #         try:
-
-    #             self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
-    #             data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/001-Static Code Analysis", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
-    #             resp = requests.post(self.url_curl, headers=self.header, data=data)
-    #             echo(resp)
-    #             echo('Your pipeline ID is: %s' % resp.json()["id"])
-
-    #         except TypeError as e:
-    #             echo("Please enter the correct command: evolved5g run_pipeline --mode build --repo REPOSITORY_NAME")
-    #     else:
-    #         echo(f"The {repo} repository you have chosen does not exist, please check the name you typed and try again.")
-    
-    # def trivy_pipeline(self, repo):
-    #     r = requests.get(f"{self.repository}/{repo}")
-    #     repo_exist = r.json()
-    #     if "message" not in repo_exist: 
-    #         try:
-    #             self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
-    #             data1 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/002-Security Scan Code", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'  
-    #             data2 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/003-Security Scan Secrets", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
-    #             data3 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/004-Security Scan Docker Images", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
-    #             resp1 = requests.post(self.url_curl, headers=self.header, data=data1)
-    #             resp2 = requests.post(self.url_curl, headers=self.header, data=data2)
-    #             resp3 = requests.post(self.url_curl, headers=self.header, data=data3)
-    #             echo(resp1)
-    #             echo('Your pipeline ID is: %s' % resp1.json()["id"])
-    #             echo(resp2)
-    #             echo('Your pipeline ID is: %s' % resp2.json()["id"])
-    #             echo(resp3)
-    #             echo('Your pipeline ID is: %s' % resp3.json()["id"])
-    #         except TypeError as e:
-    #             echo("Please enter the correct command: evolved5g run_pipeline --mode build --repo REPOSITORY_NAME")
-    #     else:
-    #         echo(f"The {repo} repository you have chosen does not exist, please check the name you typed and try again.")

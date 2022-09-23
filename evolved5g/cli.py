@@ -30,29 +30,14 @@ def generate(ctx, repo_name, package_name, template):
 @click.option('--repo',type=str, help='Enter repo name')
 
 @click.pass_context
-def run_pipeline(ctx, mode, repo):
-    """Launch a pipeline (build, deploy, destroy)"""
+def run_verification_tests(ctx, mode, repo):
+    """Launch a pipeline (build, deploy, destroy, code_analysis, security_scan)"""
     ctx.obj["helper"].run_verification_tests(mode,repo) 
 
 @cli.command()
 @click.option('--id',type=int, help='Enter pipeline id')
 @click.pass_context
-def check_pipeline(ctx, id):
+def check_job(ctx, id):
     """Check the status of a pipeline"""
     ctx.obj["helper"].check_job(id)
-    
-    
-@cli.command()
-@click.option('--repo',type=str, help='Enter repo name')
-@click.pass_context
-def sonarqube_pipeline(ctx, repo):
-    """Launch a sonarqube pipeline """
-    ctx.obj["helper"].sonarqube_pipeline(repo) 
-    
-@cli.command()
-@click.option('--repo',type=str, help='Enter repo name')
-@click.pass_context
-def trivy_pipeline(ctx, repo):
-    """Launch a trivy pipeline """
-    ctx.obj["helper"].trivy_pipeline(repo) 
 
