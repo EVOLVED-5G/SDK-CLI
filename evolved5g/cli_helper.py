@@ -3,6 +3,7 @@ import requests
 import json
 import json.decoder
 import logging
+import sys
 from click import echo
 
 class  CLI_helper:
@@ -23,7 +24,11 @@ class  CLI_helper:
         """Generate EVOLVED-5G compliant NetApp from template"""
         location = "gh:EVOLVED-5G/NetApp-template"
         directory = "template"
-        cookiecutter_generate(location, config_file, directory, no_input=True)
+        if config_file== None:
+            echo("Please specify the configuration file in which you specify the inputs required to generate the NetApp with the following command: evolved5g generate --config-file <path to the user configuration file>.")
+            sys.exit()
+        else:
+            cookiecutter_generate(location, config_file, directory, no_input=True)
 
     def generate_token(self):
 
