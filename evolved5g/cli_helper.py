@@ -4,6 +4,8 @@ import json
 import json.decoder
 import logging
 from click import echo
+from sdk import CAPIFConnector
+import traceback
 
 class  CLI_helper:
 
@@ -52,10 +54,10 @@ class  CLI_helper:
                     self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
                     data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/001-Static Code Analysis", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
                     resp = requests.post(self.url_curl, headers=self.header, data=data)
-                    echo('Your pipeline ID is: %s' % resp.json()["id"])       
+                    echo('Your pipeline ID is: %s' % resp.json()["id"])
                 elif mode == "security_scan":
                     self.header = { "content-Type":"application/json", "accept": "application/json", "Authorization": self.generate_token() }
-                    data1 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/002-Security Scan Code", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'  
+                    data1 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/002-Security Scan Code", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
                     data2 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/003-Security Scan Secrets", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
                     data3 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/004-Security Scan Docker Images", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo +'","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
                     resp1 = requests.post(self.url_curl, headers=self.header, data=data1)
@@ -64,15 +66,14 @@ class  CLI_helper:
                     echo('Your pipeline ID is: %s' % resp1.json()["id"])
                     echo('Your pipeline ID is: %s' % resp2.json()["id"])
                     echo('Your pipeline ID is: %s' % resp3.json()["id"])
-                else: 
-                    
+                else:
+
                     echo(f"The {mode} you have chosen does not exist, please check the modes and try again")
-                       
+
             except TypeError as e:
                 echo("Please enter the correct command: evolved5g run_pipeline --mode build --repo REPOSITORY_NAME")
         else:
             echo(f"The {repo} repository you have chosen does not exist, please check the name you typed and try again.")
-
 
     def check_job(self, id):
 
@@ -97,6 +98,41 @@ class  CLI_helper:
                         echo(element)
         except ValueError as e:
             echo("Please add the ID: evolved5g check-pipeline --id <yourID>")
+
+    def register_and_onboard_to_capif(self,  folder_to_store_certificates: str,
+                                      capif_url: str,
+                                      capif_netapp_username,
+                                      capif_netapp_password: str,
+                                      capif_callback_url: str,
+                                      description:str,
+                                      csr_common_name: str,
+                                      csr_organizational_unit: str,
+                                      csr_organization: str,
+                                      crs_locality: str,
+                                      csr_state_or_province_name,
+                                      csr_country_name,
+                                      csr_email_address)->None:
+
+        capif_connector = CAPIFConnector(folder_to_store_certificates,
+                                         capif_url,
+                                         capif_netapp_username,
+                                         capif_netapp_password,
+                                         capif_callback_url,
+                                         description,
+                                         csr_common_name,
+                                         csr_organizational_unit,
+                                         csr_organization,
+                                         crs_locality,
+                                         csr_state_or_province_name,
+                                         csr_country_name,
+                                         csr_email_address)
+        try:
+            capif_connector.register_and_onboard_netapp()
+            echo("Your netApp has been successfully registered and onboarded to the CAPIF server." +
+                 "You can now start using the evolved5G SDK!")
+        except Exception:
+            echo("An error occurred. Registration failed:")
+            traceback.print_exc()
 
 
 
