@@ -752,9 +752,9 @@ class CAPIFConnector:
         Using this method a NetApp can get onboarded to CAPIF.
         After calling this method the following should happen:
          a) A signed certificate should exist in folder folder_to_store_certificates
-         b) A json file 'api_invoker_id.json' should exist with the api_invoker_id
+         b) A json file 'capif_api_details.json' should exist with the api_invoker_id and the api discovery url
 
-        Both the certificate a) and the json file b) should be used when discovering services
+        These will be used  ServiceDiscoverer class in order to communicate with CAPIF and discover services
 
         """
         public_key =self._create_private_and_public_keys()
@@ -767,7 +767,7 @@ class CAPIFConnector:
                                                                                         capif_onboarding_url,
                                                                                         capif_access_token)
 
-        self._write_api_invoker_id_to_file(api_invoker_id,capif_discover_url)
+        self._write_to_file(self.csr_common_name,api_invoker_id,capif_discover_url)
 
     def _create_private_and_public_keys(self)->str:
         """
@@ -871,27 +871,32 @@ class CAPIFConnector:
         certification_file.close()
         return response_payload['apiInvokerId']
 
-    def _write_api_invoker_id_to_file(self, api_invoker_id, discover_services_url):
+    def _write_to_file(self,csr_common_name, api_invoker_id, discover_services_url):
+        json_object = json.dumps({
+            "csr_common_name": csr_common_name,
+            "api_invoker_id": api_invoker_id,
+            "discover_services_url":discover_services_url
+        })
 
-        with open(self.folder_to_store_certificates + "api_invoker", 'w') as f:
-            f.write(api_invoker_id)
+        with open(self.folder_to_store_certificates + "capif_api_details.json", "w") as outfile:
+            outfile.write(json_object)
 
 
 class ServiceDiscoverer:
     def __init__(self,
                  capif_host:str,
                  capif_https_port:str,
-                 folder_to_store_certificates_and_api_key: str):
+                 folder_path_for_certificates_and_api_key: str):
         self.capif_host = capif_host
         self.capif_https_port = capif_https_port
-        self.folder_to_store_certificates_and_api_key = folder_to_store_certificates_and_api_key
+        self.folder_to_store_certificates_and_api_key = folder_path_for_certificates_and_api_key
 
     def discover_service_apis(self):
         api_invoker_id = ""
         discover_services_url = ""
         url = "https://{}/{}{}".format(self.capif_host, discover_services_url, api_invoker_id)
         signed_key_path = 'dummy.crt'
-        private_key_path =  'private.key'
+        private_key_path = 'private.key'
         ca_root_path = 'ca.crt'
         response = requests.request("GET",
                                     url,
