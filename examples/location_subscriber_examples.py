@@ -103,7 +103,7 @@ def read_and_delete_all_existing_subscriptions():
 
 
 if __name__ == "__main__":
-   # read_and_delete_all_existing_subscriptions()
-    #showcase_create_subscription_and_retrieve_call_backs()
+    read_and_delete_all_existing_subscriptions()
+    showcase_create_subscription_and_retrieve_call_backs()
     read_and_delete_all_existing_subscriptions()
     showcase_create_single_request_for_location_info()
