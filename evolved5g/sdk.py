@@ -767,7 +767,7 @@ class CAPIFConnector:
                                                                                         capif_onboarding_url,
                                                                                         capif_access_token)
 
-        self._write_api_invoker_id_to_file(api_invoker_id)
+        self._write_api_invoker_id_to_file(api_invoker_id,capif_discover_url)
 
     def _create_private_and_public_keys(self)->str:
         """
@@ -871,14 +871,37 @@ class CAPIFConnector:
         certification_file.close()
         return response_payload['apiInvokerId']
 
-    def _write_api_invoker_id_to_file(self, api_invoker_id):
+    def _write_api_invoker_id_to_file(self, api_invoker_id, discover_services_url):
+
         with open(self.folder_to_store_certificates + "api_invoker", 'w') as f:
             f.write(api_invoker_id)
 
 
 class ServiceDiscoverer:
-    def __init__(self,folder_to_store_certificates_and_api_key: str):
-        self.folder_to_store_certificates_and_api_key= folder_to_store_certificates_and_api_key
+    def __init__(self,
+                 capif_host:str,
+                 capif_https_port:str,
+                 folder_to_store_certificates_and_api_key: str):
+        self.capif_host = capif_host
+        self.capif_https_port = capif_https_port
+        self.folder_to_store_certificates_and_api_key = folder_to_store_certificates_and_api_key
 
-    def discover_services(self):
-        pass
+    def discover_service_apis(self):
+        api_invoker_id = ""
+        discover_services_url = ""
+        url = "https://{}/{}{}".format(self.capif_host, discover_services_url, api_invoker_id)
+        signed_key_path = 'dummy.crt'
+        private_key_path =  'private.key'
+        ca_root_path = 'ca.crt'
+        response = requests.request("GET",
+                                    url,
+                                    headers={'Content-Type': 'application/json'},
+                                    data={},
+                                    files={},
+                                    cert=(signed_key_path, private_key_path),
+                                    verify=ca_root_path)
+        response.raise_for_status()
+        response_payload = json.loads(response.text)
+        return response_payload
+
+
