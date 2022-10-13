@@ -745,7 +745,6 @@ class CAPIFConnector:
     def _add_trailing_slash_to_url_if_missing(self, url):
         if url[len(url) - 1] != "/":
             url = url + "/"
-
         return url
     def register_and_onboard_netapp(self)->None:
         """
@@ -872,38 +871,47 @@ class CAPIFConnector:
         return response_payload['apiInvokerId']
 
     def _write_to_file(self,csr_common_name, api_invoker_id, discover_services_url):
-        json_object = json.dumps({
-            "csr_common_name": csr_common_name,
-            "api_invoker_id": api_invoker_id,
-            "discover_services_url":discover_services_url
-        })
-
         with open(self.folder_to_store_certificates + "capif_api_details.json", "w") as outfile:
-            outfile.write(json_object)
+            json.dump({
+                "csr_common_name": csr_common_name,
+                "api_invoker_id": api_invoker_id,
+                "discover_services_url":discover_services_url
+            }, outfile)
 
 
 class ServiceDiscoverer:
     def __init__(self,
+                 folder_path_for_certificates_and_api_key: str,
                  capif_host:str,
-                 capif_https_port:str,
-                 folder_path_for_certificates_and_api_key: str):
+                 capif_https_port:str
+                 ):
         self.capif_host = capif_host
         self.capif_https_port = capif_https_port
-        self.folder_to_store_certificates_and_api_key = folder_path_for_certificates_and_api_key
+        self.folder_to_store_certificates_and_api_key =  os.path.join(folder_path_for_certificates_and_api_key.strip(), '')
+
+    def _add_trailing_slash_to_url_if_missing(self, url):
+        if url[len(url) - 1] != "/":
+            url = url + "/"
+        return url
 
     def discover_service_apis(self):
-        api_invoker_id = ""
-        discover_services_url = ""
-        url = "https://{}/{}{}".format(self.capif_host, discover_services_url, api_invoker_id)
-        signed_key_path = 'dummy.crt'
-        private_key_path = 'private.key'
-        ca_root_path = 'ca.crt'
+
+        with open(self.folder_to_store_certificates_and_api_key + "capif_api_details.json", 'r') as openfile:
+            capif_api_details = json.load(openfile)
+
+        url = "https://{}/{}{}".format(self.capif_host,
+                                       capif_api_details["discover_services_url"],
+                                       capif_api_details["api_invoker_id"])
+
+        signed_key_crt_path = capif_api_details["csr_common_name"] + '.crt'
+        private_key_path = self.folder_to_store_certificates_and_api_key +'private.key'
+        ca_root_path = self.folder_to_store_certificates_and_api_key + 'ca.crt'
         response = requests.request("GET",
                                     url,
                                     headers={'Content-Type': 'application/json'},
                                     data={},
                                     files={},
-                                    cert=(signed_key_path, private_key_path),
+                                    cert=(signed_key_crt_path, private_key_path),
                                     verify=ca_root_path)
         response.raise_for_status()
         response_payload = json.loads(response.text)

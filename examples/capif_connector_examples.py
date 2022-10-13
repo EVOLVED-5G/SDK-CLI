@@ -1,4 +1,4 @@
-from evolved5g.sdk import CAPIFConnector
+from evolved5g.sdk import CAPIFConnector, ServiceDiscoverer
 
 
 def showcase_capif_connector():
@@ -25,6 +25,13 @@ def showcase_capif_connector():
                                      )
 
     capif_connector.register_and_onboard_netapp()
+
+    service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_api_key="/home/alex/Projects/test_certificate_folder",
+                                           capif_host="capifcore",
+                                           capif_https_port=443
+                                        )
+
+    endpoints = service_discoverer.discover_service_apis()
 
 
 if __name__ == "__main__":
