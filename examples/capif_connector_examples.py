@@ -8,8 +8,10 @@ def showcase_capif_connector():
         It is a low level class part of the SDK that is not required to use while creating NetApps
     """
     capif_connector = CAPIFConnector(folder_to_store_certificates= "/home/alex/Projects/test_certificate_folder",
-                                     capif_url="http://localhost:8080",
-                                     capif_netapp_username="test_netapp9",
+                                     capif_host="capifcore",
+                                     capif_http_port="8080",
+                                     capif_https_port="443",
+                                     capif_netapp_username="test_netapp16",
                                      capif_netapp_password="test_netapp_password",
                                      capif_callback_url="http://localhost:5000",
                                      description= "test_app_description",

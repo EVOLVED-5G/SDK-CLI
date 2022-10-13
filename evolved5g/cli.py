@@ -39,7 +39,9 @@ def check_job(ctx, id):
 
 @cli.command()
 @click.option('--folder_to_store_certificates',type=str, help='The folder where certificates and authorization files will be stored')
-@click.option('--capif_url',type=str, help='The url of the CAPIF Server (Ex. http://locahost:8080/ if you are running the docker container)')
+@click.option('--capif_host',type=str, help='The host of the CAPIF Server (Ex. capifcore if you are running the docker container)')
+@click.option('--capif_http_port',type=str, help='The http port of the CAPIF Server (Ex. 8080 if you are running the docker container)')
+@click.option('--capif_https_port',type=str, help='The https port of theCAPIF Server (Ex. 443 if you are running the docker container)')
 @click.option('--capif_netapp_username',type=str, help='The CAPIF username of your netapp')
 @click.option('--capif_netapp_password',type=str, help='The CAPIF password  of your netapp')
 @click.option('--capif_callback_url',type=str, help='A url provided by you that will be used to receive HTTP POST notifications from CAPIF.')
@@ -54,7 +56,9 @@ def check_job(ctx, id):
 @click.pass_context
 def register_and_onboard_to_capif(ctx,
                                   folder_to_store_certificates: str,
-                                  capif_url: str,
+                                  capif_host: str,
+                                  capif_http_port: str,
+                                  capif_https_port: str,
                                   capif_netapp_username,
                                   capif_netapp_password: str,
                                   capif_callback_url: str,
@@ -68,7 +72,9 @@ def register_and_onboard_to_capif(ctx,
                                   csr_email_address:str):
 
     ctx.obj["helper"].register_and_onboard_to_capif(folder_to_store_certificates,
-                                                    capif_url,
+                                                    capif_host,
+                                                    capif_http_port,
+                                                    capif_https_port,
                                                     capif_netapp_username,
                                                     capif_netapp_password,
                                                     capif_callback_url,

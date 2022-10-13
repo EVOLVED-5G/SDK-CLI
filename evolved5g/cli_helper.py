@@ -100,7 +100,9 @@ class  CLI_helper:
             echo("Please add the ID: evolved5g check-pipeline --id <yourID>")
 
     def register_and_onboard_to_capif(self,  folder_to_store_certificates: str,
-                                      capif_url: str,
+                                      capif_host,
+                                      capif_http_port,
+                                      capif_https_port,
                                       capif_netapp_username,
                                       capif_netapp_password: str,
                                       capif_callback_url: str,
@@ -114,7 +116,9 @@ class  CLI_helper:
                                       csr_email_address)->None:
 
         capif_connector = CAPIFConnector(folder_to_store_certificates,
-                                         capif_url,
+                                         capif_host,
+                                         capif_http_port,
+                                         capif_https_port,
                                          capif_netapp_username,
                                          capif_netapp_password,
                                          capif_callback_url,

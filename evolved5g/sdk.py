@@ -694,7 +694,9 @@ class CAPIFConnector:
 
     def __init__(self,
                  folder_to_store_certificates: str,
-                 capif_url: str,
+                 capif_host: str,
+                 capif_http_port: str,
+                 capif_https_port: str,
                  capif_netapp_username,
                  capif_netapp_password: str,
                  capif_callback_url: str,
@@ -726,7 +728,8 @@ class CAPIFConnector:
         """
         # add the trailing slash if it is not already there using os.path.join
         self.folder_to_store_certificates = os.path.join(folder_to_store_certificates.strip(), '')
-        self.capif_url = self._add_trailing_slash_to_url_if_missing(capif_url.strip())
+        self.capif_http_url = "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
+        self.capif_https_url = "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
         self.capif_callback_url = self._add_trailing_slash_to_url_if_missing(capif_callback_url.strip())
         self.capif_netapp_username = capif_netapp_username
         self.capif_netapp_password = capif_netapp_password
@@ -800,7 +803,7 @@ class CAPIFConnector:
 
     def _register_netapp_to_capif(self):
 
-        url = self.capif_url + "register"
+        url = self.capif_http_url + "register"
         payload = dict()
         payload['username'] = self.capif_netapp_username
         payload['password'] = self.capif_netapp_password
@@ -819,7 +822,7 @@ class CAPIFConnector:
 
     def _save_capif_ca_root_file_and_get_auth_token(self):
 
-        url = self.capif_url + "getauth"
+        url = self.capif_http_url + "getauth"
 
         payload = dict()
         payload['username'] = self.capif_netapp_username
@@ -837,19 +840,19 @@ class CAPIFConnector:
         return response_payload['access_token']
 
     def _onboard_netapp_to_capif_and_create_the_signed_certificate(self, public_key, capif_onboarding_url,capif_access_token):
-        url = self.capif_url.replace("http", "https") + capif_onboarding_url
+        url = self.capif_https_url + capif_onboarding_url
         payload_dict = {
             "notificationDestination": self.capif_callback_url,
             "supportedFeatures": "fffffff",
             "apiInvokerInformation": self.csr_common_name,
             "websockNotifConfig": {
-                "requestWebsocketUri" : "true",
+                "requestWebsocketUri" : True,
                 "websocketUri": "websocketUri"
             },
             "onboardingInformation": {
                 "apiInvokerPublicKey": str(public_key, "utf-8")
             },
-            "requestTestNotification": "true"
+            "requestTestNotification": True
         }
         payload = json.dumps(payload_dict)
         headers = {
@@ -871,3 +874,11 @@ class CAPIFConnector:
     def _write_api_invoker_id_to_file(self, api_invoker_id):
         with open(self.folder_to_store_certificates + "api_invoker", 'w') as f:
             f.write(api_invoker_id)
+
+
+class ServiceDiscoverer:
+    def __init__(self,folder_to_store_certificates_and_api_key: str):
+        self.folder_to_store_certificates_and_api_key= folder_to_store_certificates_and_api_key
+
+    def discover_services(self):
+        pass
