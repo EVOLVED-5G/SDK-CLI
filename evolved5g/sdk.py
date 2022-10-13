@@ -883,7 +883,7 @@ class ServiceDiscoverer:
     def __init__(self,
                  folder_path_for_certificates_and_api_key: str,
                  capif_host:str,
-                 capif_https_port:str
+                 capif_https_port:int
                  ):
         self.capif_host = capif_host
         self.capif_https_port = capif_https_port
@@ -903,7 +903,7 @@ class ServiceDiscoverer:
                                        capif_api_details["discover_services_url"],
                                        capif_api_details["api_invoker_id"])
 
-        signed_key_crt_path = capif_api_details["csr_common_name"] + '.crt'
+        signed_key_crt_path =self.folder_to_store_certificates_and_api_key + capif_api_details["csr_common_name"] + '.crt'
         private_key_path = self.folder_to_store_certificates_and_api_key +'private.key'
         ca_root_path = self.folder_to_store_certificates_and_api_key + 'ca.crt'
         response = requests.request("GET",
@@ -916,5 +916,9 @@ class ServiceDiscoverer:
         response.raise_for_status()
         response_payload = json.loads(response.text)
         return response_payload
+
+
+
+
 
 

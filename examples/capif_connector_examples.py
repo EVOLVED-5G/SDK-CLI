@@ -11,7 +11,7 @@ def showcase_capif_connector():
                                      capif_host="capifcore",
                                      capif_http_port="8080",
                                      capif_https_port="443",
-                                     capif_netapp_username="test_netapp17",
+                                     capif_netapp_username="test_netapp20",
                                      capif_netapp_password="test_netapp_password",
                                      capif_callback_url="http://localhost:5000",
                                      description= "test_app_description",
@@ -26,13 +26,14 @@ def showcase_capif_connector():
 
     capif_connector.register_and_onboard_netapp()
 
+def showcase_service_discovery():
     service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_api_key="/home/alex/Projects/test_certificate_folder",
                                            capif_host="capifcore",
                                            capif_https_port=443
-                                        )
-
+                                           )
     endpoints = service_discoverer.discover_service_apis()
-
+    print(endpoints)
 
 if __name__ == "__main__":
     showcase_capif_connector()
+    showcase_service_discovery()
