@@ -108,8 +108,8 @@ class LocationSubscriber(MonitoringSubscriber):
 
         # create a dummy expiration time. Since we are requesting for only 1 report, we will get the location information back instantly
         monitor_expire_time = (datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).isoformat() + "Z"
-        body = self.create_subscription_request(external_id,
-                                                self.__get_monitoring_type(),
+        body = self.create_subscription_request(self.__get_monitoring_type(),
+                                                external_id,
                                                 None,
                                                 maximum_number_of_reports=1,
                                                 monitor_expire_time=monitor_expire_time,
