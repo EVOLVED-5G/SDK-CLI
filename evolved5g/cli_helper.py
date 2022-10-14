@@ -4,7 +4,7 @@ import json
 import json.decoder
 import logging
 from click import echo
-from sdk import CAPIFConnector
+from evolved5g.sdk import CAPIFConnector
 import traceback
 
 class  CLI_helper:
