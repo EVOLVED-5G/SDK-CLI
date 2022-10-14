@@ -1,6 +1,11 @@
 =======
 History
 =======
+0.8.1 (2022-10-12)
+-------------------
+* New class at the Libraries: CAPIFConnector. Used in the CLI in order to onboard a netApp to CAPIF server
+* New class at the Libraries: ServiceDiscoverer. Used by developers in order to discover services (endpoints) via the CAPIF server
+* Bug fix on LocationSubscriber get_location_information()
 
 0.8.0 (2022-09-23)
 -------------------
