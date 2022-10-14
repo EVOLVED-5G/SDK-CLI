@@ -1,6 +1,12 @@
 =======
 History
 =======
+
+0.8.2 (2022-10-14)
+-------------------
+* Bug fix on import CAPIFConnector class from sdk
+
+
 0.8.1 (2022-10-12)
 -------------------
 * New class at the Libraries: CAPIFConnector. Used in the CLI in order to onboard a netApp to CAPIF server
