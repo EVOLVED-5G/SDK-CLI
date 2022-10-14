@@ -1,4 +1,5 @@
 """SDK module"""
+import os
 from typing import List
 
 from evolved5g import swagger_client
@@ -9,6 +10,12 @@ from evolved5g.swagger_client import MonitoringEventAPIApi, \
     AsSessionWithQoSSubscriptionCreate, Snssai, UsageThreshold, AsSessionWithQoSSubscription, QosMonitoringInformation, \
     RequestedQoSMonitoringParameters, ReportingFrequency, MonitoringEventReport, CellsApi, Cell
 import datetime
+
+from OpenSSL.SSL import FILETYPE_PEM
+from OpenSSL.crypto import (dump_certificate_request, dump_privatekey, load_publickey, PKey, TYPE_RSA, X509Req,
+                            dump_publickey)
+import requests
+import json
 
 
 class MonitoringSubscriber(ABC):
@@ -21,13 +28,13 @@ class MonitoringSubscriber(ABC):
         self.cell_api = CellsApi(api_client)
 
     def create_subscription_request(self,
-                                      monitoring_type,
-                                      external_id,
-                                      notification_destination,
-                                      maximum_number_of_reports,
-                                      monitor_expire_time,
-                                      maximum_detection_time,
-                                      reachability_type) -> MonitoringEventSubscriptionCreate:
+                                    monitoring_type,
+                                    external_id,
+                                    notification_destination,
+                                    maximum_number_of_reports,
+                                    monitor_expire_time,
+                                    maximum_detection_time,
+                                    reachability_type) -> MonitoringEventSubscriptionCreate:
         return MonitoringEventSubscriptionCreate(external_id,
                                                  notification_destination,
                                                  monitoring_type,
@@ -85,7 +92,7 @@ class LocationSubscriber(MonitoringSubscriber):
              :param str host: The url of the 5G-API
              :param str bearer_access_token: The bearer access token that will be used to authenticate with the 5G-API
         """
-        super().__init__(host,bearer_access_token)
+        super().__init__(host, bearer_access_token)
 
     def __get_monitoring_type(self):
         return "LOCATION_REPORTING"
@@ -101,13 +108,13 @@ class LocationSubscriber(MonitoringSubscriber):
 
         # create a dummy expiration time. Since we are requesting for only 1 report, we will get the location information back instantly
         monitor_expire_time = (datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).isoformat() + "Z"
-        body = self.create_subscription_request(external_id,
-                                                  self.__get_monitoring_type(),
-                                                  None,
-                                                  maximum_number_of_reports=1,
-                                                  monitor_expire_time=monitor_expire_time,
-                                                  maximum_detection_time = None,
-                                                  reachability_type = None)
+        body = self.create_subscription_request(self.__get_monitoring_type(),
+                                                external_id,
+                                                None,
+                                                maximum_number_of_reports=1,
+                                                monitor_expire_time=monitor_expire_time,
+                                                maximum_detection_time=None,
+                                                reachability_type=None)
 
         # a monitoring event report
         response = self.monitoring_event_api.create_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(
@@ -139,12 +146,12 @@ class LocationSubscriber(MonitoringSubscriber):
               :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
         """
         body = self.create_subscription_request(self.__get_monitoring_type(),
-                                                  external_id,
-                                                  notification_destination,
-                                                  maximum_number_of_reports,
-                                                  monitor_expire_time,
-                                                  None,
-                                                  None)
+                                                external_id,
+                                                notification_destination,
+                                                maximum_number_of_reports,
+                                                monitor_expire_time,
+                                                None,
+                                                None)
 
         # a monitoring event report
         response = self.monitoring_event_api.create_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(
@@ -170,19 +177,18 @@ class LocationSubscriber(MonitoringSubscriber):
              :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
        """
         body = self.create_subscription_request(self.__get_monitoring_type(),
-                                                  external_id,
-                                                  notification_destination,
-                                                  maximum_number_of_reports,
-                                                  monitor_expire_time,
-                                                  None,
-                                                  None)
+                                                external_id,
+                                                notification_destination,
+                                                maximum_number_of_reports,
+                                                monitor_expire_time,
+                                                None,
+                                                None)
 
         return self.monitoring_event_api.update_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_put(
             body, netapp_id, subscription_id)
 
 
 class ConnectionMonitor(MonitoringSubscriber):
-
     class MonitoringType(Enum):
         """
             This enum is used to describe what the kind of monitoring you will apply to your devices.
@@ -205,7 +211,7 @@ class ConnectionMonitor(MonitoringSubscriber):
             :param str host: The url of the 5G-API
             :param str bearer_access_token: The bearer access token that will be used to authenticate with the 5G-API
         """
-        super().__init__(host,bearer_access_token)
+        super().__init__(host, bearer_access_token)
 
     def __get_monitoring_type(self, monitoring_type: MonitoringType):
         if monitoring_type == self.MonitoringType.INFORM_WHEN_CONNECTED:
@@ -240,12 +246,12 @@ class ConnectionMonitor(MonitoringSubscriber):
               :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
         """
         body = self.create_subscription_request(self.__get_monitoring_type(monitoring_type),
-                                                  external_id,
-                                                  notification_destination,
-                                                  maximum_number_of_reports,
-                                                  monitor_expire_time,
-                                                  wait_time_before_sending_notification_in_seconds,
-                                                  "DATA")
+                                                external_id,
+                                                notification_destination,
+                                                maximum_number_of_reports,
+                                                monitor_expire_time,
+                                                wait_time_before_sending_notification_in_seconds,
+                                                "DATA")
 
         # a monitoring event report
         response = self.monitoring_event_api.create_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_post(
@@ -282,12 +288,12 @@ class ConnectionMonitor(MonitoringSubscriber):
               :param monitor_expire_time: Identifies the absolute time at which the related monitoring event request is considered to expire
        """
         body = self.create_subscription_request(monitoring_type,
-                                                  external_id,
-                                                  notification_destination,
-                                                  maximum_number_of_reports,
-                                                  monitor_expire_time,
-                                                  wait_time_before_sending_notification_in_seconds,
-                                                  "DATA")
+                                                external_id,
+                                                notification_destination,
+                                                maximum_number_of_reports,
+                                                monitor_expire_time,
+                                                wait_time_before_sending_notification_in_seconds,
+                                                "DATA")
 
         return self.monitoring_event_api.update_subscription_api_v13gpp_monitoring_event_v1_scs_as_id_subscriptions_subscription_id_put(
             body, netapp_id, subscription_id)
@@ -410,14 +416,14 @@ class QosAwareness:
         self.qos_api = SessionWithQoSAPIApi(api_client)
 
     def create_subscription_request(self,
-                                      equipment_network_identifier: str,
-                                      network_identifier: NetworkIdentifier,
-                                      notification_destination: str,
-                                      qos_reference: int,
-                                      alt_qo_s_references,
-                                      usage_threshold: UsageThreshold,
-                                      qos_mon_info
-                                      ) -> AsSessionWithQoSSubscriptionCreate:
+                                    equipment_network_identifier: str,
+                                    network_identifier: NetworkIdentifier,
+                                    notification_destination: str,
+                                    qos_reference: int,
+                                    alt_qo_s_references,
+                                    usage_threshold: UsageThreshold,
+                                    qos_mon_info
+                                    ) -> AsSessionWithQoSSubscriptionCreate:
         ip4_address_value = equipment_network_identifier if network_identifier == QosAwareness.NetworkIdentifier.IP_V4_ADDRESS else None
         ip6_address_value = equipment_network_identifier if network_identifier == QosAwareness.NetworkIdentifier.IP_V6_ADDRESS else None
         mac_address_value = equipment_network_identifier if network_identifier == QosAwareness.NetworkIdentifier.MAC_ADDRESS else None
@@ -466,13 +472,13 @@ class QosAwareness:
         :return: :return: The subscription that will contain the identifier for this QoS session.
         """
         body = self.create_subscription_request(equipment_network_identifier,
-                                                  network_identifier,
-                                                  notification_destination,
-                                                  non_gbr_qos_reference.value,
-                                                  alt_qo_s_references=None,
-                                                  usage_threshold=usage_threshold,
-                                                  qos_mon_info=None
-                                                  )
+                                                network_identifier,
+                                                notification_destination,
+                                                non_gbr_qos_reference.value,
+                                                alt_qo_s_references=None,
+                                                usage_threshold=usage_threshold,
+                                                qos_mon_info=None
+                                                )
 
         response = self.qos_api.create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post(
             body,
@@ -504,13 +510,13 @@ class QosAwareness:
         :return: The subscription that will contain the identifier for this QoS session.
         """
         body = self.create_subscription_request(equipment_network_identifier,
-                                                  network_identifier,
-                                                  notification_destination,
-                                                  non_gbr_qos_reference.value,
-                                                  alt_qo_s_references=None,
-                                                  usage_threshold=usage_threshold,
-                                                  qos_mon_info=None
-                                                  )
+                                                network_identifier,
+                                                notification_destination,
+                                                non_gbr_qos_reference.value,
+                                                alt_qo_s_references=None,
+                                                usage_threshold=usage_threshold,
+                                                qos_mon_info=None
+                                                )
 
         return self.qos_api.update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put(
             body, netapp_id, subscription_id)
@@ -553,13 +559,13 @@ class QosAwareness:
                                                                                            reporting_mode)
 
         body = self.create_subscription_request(equipment_network_identifier,
-                                                  network_identifier,
-                                                  notification_destination,
-                                                  qos_reference=gbr_qos_reference.value,
-                                                  alt_qo_s_references=alt_qo_s_references,
-                                                  usage_threshold=usage_threshold,
-                                                  qos_mon_info=qos_monitoring_info
-                                                  )
+                                                network_identifier,
+                                                notification_destination,
+                                                qos_reference=gbr_qos_reference.value,
+                                                alt_qo_s_references=alt_qo_s_references,
+                                                usage_threshold=usage_threshold,
+                                                qos_mon_info=qos_monitoring_info
+                                                )
 
         response = self.qos_api.create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post(
             body,
@@ -578,7 +584,7 @@ class QosAwareness:
         lat_thresh_dl = threshold if qos_monitoring_parameter == QosAwareness.QosMonitoringParameter.DOWNLINK else None
         lat_thresh_rp = threshold if qos_monitoring_parameter == QosAwareness.QosMonitoringParameter.ROUNDTRIP else None
 
-        reporting_freqs =[reporting_mode.get_reporting_mode()]
+        reporting_freqs = [reporting_mode.get_reporting_mode()]
         wait_time = None
         rep_period = None
 
@@ -637,13 +643,13 @@ class QosAwareness:
                                                                                            reporting_mode)
 
         body = self.create_subscription_request(equipment_network_identifier,
-                                                  network_identifier,
-                                                  notification_destination,
-                                                  qos_reference=gbr_qos_reference.value,
-                                                  alt_qo_s_references=alt_qo_s_references,
-                                                  usage_threshold=usage_threshold,
-                                                  qos_mon_info=qos_monitoring_info
-                                                  )
+                                                network_identifier,
+                                                notification_destination,
+                                                qos_reference=gbr_qos_reference.value,
+                                                alt_qo_s_references=alt_qo_s_references,
+                                                usage_threshold=usage_threshold,
+                                                qos_mon_info=qos_monitoring_info
+                                                )
         return self.qos_api.update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put(
             body, netapp_id, subscription_id)
 
@@ -679,4 +685,240 @@ class QosAwareness:
         return self.qos_api.delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete(
             netapp_id,
             subscription_id)
+
+
+class CAPIFConnector:
+    """
+        Τhis class is responsbile for onboarding to CAPIF
+    """
+
+    def __init__(self,
+                 folder_to_store_certificates: str,
+                 capif_host: str,
+                 capif_http_port: str,
+                 capif_https_port: str,
+                 capif_netapp_username,
+                 capif_netapp_password: str,
+                 capif_callback_url: str,
+                 description:str,
+                 csr_common_name: str,
+                 csr_organizational_unit: str,
+                 csr_organization: str,
+                 crs_locality: str,
+                 csr_state_or_province_name,
+                 csr_country_name,
+                 csr_email_address
+                 ):
+        """
+
+        :param folder_to_store_certificates: The folder where certificates will be stores. Your own certificate,
+         along with the certificate root that will be retrieved by the CAPIF server
+        :param capif_url: The url of the CAPIF Server (Ex. http://locahost:8080 if you are running the docker container)
+        :param capif_netapp_username: The CAPIF username of your netapp
+        :param capif_netapp_password: The CAPIF password  of your netapp
+        :param capif_callback_url: A url provided by you that will be used to receive HTTP POST notifications from CAPIF.
+        :param description: A short description of your netapp
+        :param csr_common_name: The CommonName that will be used in the generated X.509 certificate
+        :param csr_organizational_unit:The OrganizationalUnit that will be used in the generated X.509 certificate
+        :param csr_organization: The Organization that will be used in the generated X.509 certificate
+        :param crs_locality: The Locality that will be used in the generated X.509 certificate
+        :param csr_state_or_province_name: The StateOrProvinceName that will be used in the generated X.509 certificate
+        :param csr_country_name: The CountryName that will be used in the generated X.509 certificate
+        :param csr_email_address: The email that will be used in the generated X.509 certificate
+        """
+        # add the trailing slash if it is not already there using os.path.join
+        self.folder_to_store_certificates = os.path.join(folder_to_store_certificates.strip(), '')
+        self.capif_http_url = "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
+        self.capif_https_url = "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
+        self.capif_callback_url = self._add_trailing_slash_to_url_if_missing(capif_callback_url.strip())
+        self.capif_netapp_username = capif_netapp_username
+        self.capif_netapp_password = capif_netapp_password
+        self.description =description
+        self.csr_common_name = csr_common_name
+        self.csr_organizational_unit = csr_organizational_unit
+        self.csr_organization = csr_organization
+        self.crs_locality = crs_locality
+        self.csr_state_or_province_name = csr_state_or_province_name
+        self.csr_country_name = csr_country_name
+        self.csr_email_address = csr_email_address
+
+    def _add_trailing_slash_to_url_if_missing(self, url):
+        if url[len(url) - 1] != "/":
+            url = url + "/"
+        return url
+    def register_and_onboard_netapp(self)->None:
+        """
+        Using this method a NetApp can get onboarded to CAPIF.
+        After calling this method the following should happen:
+         a) A signed certificate should exist in folder folder_to_store_certificates
+         b) A json file 'capif_api_details.json' should exist with the api_invoker_id and the api discovery url
+
+        These will be used  ServiceDiscoverer class in order to communicate with CAPIF and discover services
+
+        """
+        public_key =self._create_private_and_public_keys()
+
+        net_app_id,capif_onboarding_url,capif_discover_url = self._register_netapp_to_capif()
+
+        capif_access_token = self._save_capif_ca_root_file_and_get_auth_token()
+
+        api_invoker_id= self._onboard_netapp_to_capif_and_create_the_signed_certificate(public_key,
+                                                                                        capif_onboarding_url,
+                                                                                        capif_access_token)
+
+        self._write_to_file(self.csr_common_name,api_invoker_id,capif_discover_url)
+
+    def _create_private_and_public_keys(self)->str:
+        """
+        Creates 2 keys in folder folder_to_store_certificates. A private.key and a cert_req.csr.
+        :return: The contents of the public key
+        """
+        private_key_path = self.folder_to_store_certificates + "private.key"
+        csr_file_path = self.folder_to_store_certificates + "cert_req.csr"
+
+        # create public/private key
+        key = PKey()
+        key.generate_key(TYPE_RSA, 2048)
+
+        # Generate CSR
+        req = X509Req()
+        req.get_subject().CN = self.csr_common_name
+        req.get_subject().O = self.csr_organization
+        req.get_subject().OU = self.csr_organizational_unit
+        req.get_subject().L = self.crs_locality
+        req.get_subject().ST = self.csr_state_or_province_name
+        req.get_subject().C = self.csr_country_name
+        req.get_subject().emailAddress = self.csr_email_address
+        req.set_pubkey(key)
+        req.sign(key, 'sha256')
+
+        with open(csr_file_path, 'wb+') as f:
+            f.write(dump_certificate_request(FILETYPE_PEM, req))
+            public_key = dump_certificate_request(FILETYPE_PEM, req)
+        with open(private_key_path, 'wb+') as f:
+            f.write(dump_privatekey(FILETYPE_PEM, key))
+
+        return public_key
+
+    def _register_netapp_to_capif(self):
+
+        url = self.capif_http_url + "register"
+        payload = dict()
+        payload['username'] = self.capif_netapp_username
+        payload['password'] = self.capif_netapp_password
+        payload['role'] = "invoker"
+        payload['description'] = self.description
+        payload['cn'] = self.csr_common_name
+
+        response = requests.request("POST",
+                                    url,
+                                    headers={'Content-Type': 'application/json'},
+                                    data=json.dumps(payload))
+        response.raise_for_status()
+
+        response_payload = json.loads(response.text)
+        return  response_payload['id'], response_payload['ccf_onboarding_url'], response_payload['ccf_discover_url'],
+
+    def _save_capif_ca_root_file_and_get_auth_token(self):
+
+        url = self.capif_http_url + "getauth"
+
+        payload = dict()
+        payload['username'] = self.capif_netapp_username
+        payload['password'] = self.capif_netapp_password
+        payload['role'] = "invoker"
+
+        response = requests.request("POST",
+                                    url,
+                                    headers={'Content-Type': 'application/json' },
+                                    data=json.dumps(payload))
+        response.raise_for_status()
+        response_payload = json.loads(response.text)
+        ca_root_file = open(self.folder_to_store_certificates + 'ca.crt', 'wb+')
+        ca_root_file.write(bytes(response_payload['ca_root'], 'utf-8'))
+        return response_payload['access_token']
+
+    def _onboard_netapp_to_capif_and_create_the_signed_certificate(self, public_key, capif_onboarding_url,capif_access_token):
+        url = self.capif_https_url + capif_onboarding_url
+        payload_dict = {
+            "notificationDestination": self.capif_callback_url,
+            "supportedFeatures": "fffffff",
+            "apiInvokerInformation": self.csr_common_name,
+            "websockNotifConfig": {
+                "requestWebsocketUri" : True,
+                "websocketUri": "websocketUri"
+            },
+            "onboardingInformation": {
+                "apiInvokerPublicKey": str(public_key, "utf-8")
+            },
+            "requestTestNotification": True
+        }
+        payload = json.dumps(payload_dict)
+        headers = {
+            'Authorization': 'Bearer {}'.format(capif_access_token),
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("POST",
+                                    url,
+                                    headers=headers,
+                                    data=payload,
+                                    verify=self.folder_to_store_certificates +'ca.crt')
+        response.raise_for_status()
+        response_payload = json.loads(response.text)
+        certification_file = open(self.folder_to_store_certificates + self.csr_common_name +".crt", 'wb')
+        certification_file.write(bytes(response_payload['onboardingInformation']['apiInvokerCertificate'], 'utf-8'))
+        certification_file.close()
+        return response_payload['apiInvokerId']
+
+    def _write_to_file(self,csr_common_name, api_invoker_id, discover_services_url):
+        with open(self.folder_to_store_certificates + "capif_api_details.json", "w") as outfile:
+            json.dump({
+                "csr_common_name": csr_common_name,
+                "api_invoker_id": api_invoker_id,
+                "discover_services_url":discover_services_url
+            }, outfile)
+
+
+class ServiceDiscoverer:
+    def __init__(self,
+                 folder_path_for_certificates_and_api_key: str,
+                 capif_host:str,
+                 capif_https_port:int
+                 ):
+        self.capif_host = capif_host
+        self.capif_https_port = capif_https_port
+        self.folder_to_store_certificates_and_api_key =  os.path.join(folder_path_for_certificates_and_api_key.strip(), '')
+
+    def _add_trailing_slash_to_url_if_missing(self, url):
+        if url[len(url) - 1] != "/":
+            url = url + "/"
+        return url
+
+    def discover_service_apis(self):
+
+        with open(self.folder_to_store_certificates_and_api_key + "capif_api_details.json", 'r') as openfile:
+            capif_api_details = json.load(openfile)
+
+        url = "https://{}/{}{}".format(self.capif_host,
+                                       capif_api_details["discover_services_url"],
+                                       capif_api_details["api_invoker_id"])
+
+        signed_key_crt_path =self.folder_to_store_certificates_and_api_key + capif_api_details["csr_common_name"] + '.crt'
+        private_key_path = self.folder_to_store_certificates_and_api_key +'private.key'
+        ca_root_path = self.folder_to_store_certificates_and_api_key + 'ca.crt'
+        response = requests.request("GET",
+                                    url,
+                                    headers={'Content-Type': 'application/json'},
+                                    data={},
+                                    files={},
+                                    cert=(signed_key_crt_path, private_key_path),
+                                    verify=ca_root_path)
+        response.raise_for_status()
+        response_payload = json.loads(response.text)
+        return response_payload
+
+
+
+
+
 
