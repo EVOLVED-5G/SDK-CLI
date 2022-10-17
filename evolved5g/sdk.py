@@ -886,7 +886,7 @@ class CAPIFExposerConnector:
     def __init__(self,
                  certificates_folder: str,
                  description: str,
-                 common_name: str,
+                 csr_common_name: str,
                  capif_host: str,
                  capif_http_port: str,
                  capif_https_port: str,
@@ -905,7 +905,7 @@ class CAPIFExposerConnector:
         # add the trailing slash if it is not already there using os.path.join
         self.certificates_folder = os.path.join(certificates_folder.strip(), '')
         self.description= description
-        self.common_name= common_name
+        self.csr_common_name= csr_common_name
         self.capif_http_url = "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
         self.capif_https_url = "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
         self.capif_netapp_username = capif_netapp_username
@@ -938,7 +938,7 @@ class CAPIFExposerConnector:
                                     url,
                                     headers=headers,
                                     data=json.dumps(payload),
-                                    cert=(self.certificates_folder+'exposer.crt',
+                                    cert=(self.certificates_folder+ self.csr_common_name+'.crt',
                                           self.certificates_folder + 'private.key'),
                                     verify= self.certificates_folder+'ca.crt')
 
@@ -955,7 +955,7 @@ class CAPIFExposerConnector:
         payload['password'] = self.capif_netapp_password
         payload['role'] = role
         payload['description'] = self.description
-        payload['cn'] = self.common_name
+        payload['cn'] = self.csr_common_name
 
         response = requests.request("POST",
                                     url,
@@ -982,7 +982,7 @@ class CAPIFExposerConnector:
         response.raise_for_status()
         response_payload = json.loads(response.text)
 
-        with open(self.certificates_folder + 'exposer.crt', 'wb+') as certification_file:
+        with open(self.certificates_folder + self.csr_common_name +'.crt', 'wb+') as certification_file:
             certification_file.write(bytes(response_payload['cert'], 'utf-8'))
 
         with open(self.certificates_folder + "private.key", 'wb+') as private_key_file:
@@ -1018,7 +1018,7 @@ class CAPIFExposerConnector:
                                         url,
                                         headers={'Content-Type': 'application/json'},
                                         data=payload,
-                                        cert=(self.certificates_folder + 'exposer.crt',
+                                        cert=(self.certificates_folder + self.csr_common_name +'.crt',
                                               self.certificates_folder + 'private.key'),
                                         verify=self.certificates_folder+'ca.crt')
             response.raise_for_status()
