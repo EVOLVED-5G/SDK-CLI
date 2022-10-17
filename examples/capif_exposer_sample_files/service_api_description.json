@@ -1,8 +1,8 @@
 {
-    "apiName": "dummy-aef",
+    "apiName": "THE_NAME_OF_API",
     "aefProfiles": [
       {
-        "aefId": "string",
+        "aefId": "UNIQUE_STRING",
         "versions": [
           {
             "apiVersion": "v1",

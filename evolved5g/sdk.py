@@ -893,8 +893,8 @@ class CAPIFExposerConnector:
                  capif_netapp_password: str,
                  ):
         """
-        :param certificates_folder: The folder where certificates will be stores. Your own certificate,
-         along with the certificate root that will be retrieved by the CAPIF server
+        :param certificates_folder: The folder where certificates will be created and stored.
+        :param description: A short description of the Exposer
         :param capif_host:
         :param capif_http_port:
         :param capif_https_port:
@@ -996,6 +996,9 @@ class CAPIFExposerConnector:
             }, outfile)
 
     def register_and_onboard_exposer(self, api_provider_domain_json_full_path)->None:
+        """
+        :param api_provider_domain_json_full_path: The full path of the api_provider_domain.json
+        """
         role = "exposer"
         self.__store_certificate_authority_file()
         registration_result = self.__register_to_capif(role)
@@ -1006,7 +1009,10 @@ class CAPIFExposerConnector:
         self.__write_to_file(ccf_publish_url)
 
     def publish_services(self,service_api_description_json_full_path)->None:
-
+        """
+        :param service_api_description_json_full_path: The full path fo the service_api_description.json that contains
+        the endpoints that will be published
+        """
         with open(self.certificates_folder + "capif_exposer_details.json", 'r') as openfile:
             file = json.load(openfile)
             publish_url = file["publish_url"]
@@ -1018,7 +1024,7 @@ class CAPIFExposerConnector:
            response = requests.request("POST",
                                         url,
                                         headers={'Content-Type': 'application/json'},
-                                        data=data,
+                                        data=json.dumps(data),
                                         cert=(self.certificates_folder + self.csr_common_name +'.crt',
                                               self.certificates_folder + 'private.key'),
                                         verify=self.certificates_folder+'ca.crt')
