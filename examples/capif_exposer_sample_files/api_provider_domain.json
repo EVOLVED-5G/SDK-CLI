@@ -1,0 +1,17 @@
+{
+    "regSec": "LEAVE_THIS_AS_EMPTY_IT_WILL_BE_AUTOMATICALLY_SET_DURING_CAPIF_REGISTRATION",
+    "apiProvFuncs": [
+      {
+        "apiProvFuncId": "string_2",
+        "regInfo": {
+          "apiProvPubKey": "string",
+          "apiProvCert": "string"
+        },
+        "apiProvFuncRole": "AEF",
+        "apiProvFuncInfo": "string"
+      }
+    ],
+    "apiProvDomInfo": "string",
+    "suppFeat": "fff",
+    "failReason": "string"
+  }

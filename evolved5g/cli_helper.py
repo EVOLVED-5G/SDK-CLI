@@ -4,7 +4,7 @@ import json
 import json.decoder
 import logging
 from click import echo
-from evolved5g.sdk import CAPIFConnector
+from evolved5g.sdk import CAPIFInvokerConnector
 import traceback
 
 class  CLI_helper:
@@ -115,21 +115,21 @@ class  CLI_helper:
                                       csr_country_name,
                                       csr_email_address)->None:
 
-        capif_connector = CAPIFConnector(folder_to_store_certificates,
-                                         capif_host,
-                                         capif_http_port,
-                                         capif_https_port,
-                                         capif_netapp_username,
-                                         capif_netapp_password,
-                                         capif_callback_url,
-                                         description,
-                                         csr_common_name,
-                                         csr_organizational_unit,
-                                         csr_organization,
-                                         crs_locality,
-                                         csr_state_or_province_name,
-                                         csr_country_name,
-                                         csr_email_address)
+        capif_connector = CAPIFInvokerConnector(folder_to_store_certificates,
+                                                capif_host,
+                                                capif_http_port,
+                                                capif_https_port,
+                                                capif_netapp_username,
+                                                capif_netapp_password,
+                                                capif_callback_url,
+                                                description,
+                                                csr_common_name,
+                                                csr_organizational_unit,
+                                                csr_organization,
+                                                crs_locality,
+                                                csr_state_or_province_name,
+                                                csr_country_name,
+                                                csr_email_address)
         try:
             capif_connector.register_and_onboard_netapp()
             echo("Your netApp has been successfully registered and onboarded to the CAPIF server." +
