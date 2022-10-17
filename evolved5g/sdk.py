@@ -730,7 +730,7 @@ class CAPIFInvokerConnector:
         self.folder_to_store_certificates = os.path.join(folder_to_store_certificates.strip(), '')
         self.capif_http_url = "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
         self.capif_https_url = "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
-        self.capif_callback_url = self._add_trailing_slash_to_url_if_missing(capif_callback_url.strip())
+        self.capif_callback_url = self.__add_trailing_slash_to_url_if_missing(capif_callback_url.strip())
         self.capif_netapp_username = capif_netapp_username
         self.capif_netapp_password = capif_netapp_password
         self.description =description
@@ -742,7 +742,7 @@ class CAPIFInvokerConnector:
         self.csr_country_name = csr_country_name
         self.csr_email_address = csr_email_address
 
-    def _add_trailing_slash_to_url_if_missing(self, url):
+    def __add_trailing_slash_to_url_if_missing(self, url):
         if url[len(url) - 1] != "/":
             url = url + "/"
         return url
@@ -756,18 +756,18 @@ class CAPIFInvokerConnector:
         These will be used  ServiceDiscoverer class in order to communicate with CAPIF and discover services
 
         """
-        public_key =self._create_private_and_public_keys()
+        public_key =self.__create_private_and_public_keys()
         role = "invoker"
-        registration_result = self._register_to_capif(role)
+        registration_result = self.__register_to_capif(role)
         capif_onboarding_url = registration_result['ccf_onboarding_url']
         capif_discover_url = registration_result['ccf_discover_url']
-        capif_access_token = self._save_capif_ca_root_file_and_get_auth_token(role)
-        api_invoker_id= self._onboard_netapp_to_capif_and_create_the_signed_certificate(public_key,
-                                                                                        capif_onboarding_url,
-                                                                                        capif_access_token)
-        self._write_to_file(self.csr_common_name,api_invoker_id,capif_discover_url)
+        capif_access_token = self.__save_capif_ca_root_file_and_get_auth_token(role)
+        api_invoker_id= self.__onboard_netapp_to_capif_and_create_the_signed_certificate(public_key,
+                                                                                         capif_onboarding_url,
+                                                                                         capif_access_token)
+        self.__write_to_file(self.csr_common_name, api_invoker_id, capif_discover_url)
 
-    def _create_private_and_public_keys(self)->str:
+    def __create_private_and_public_keys(self)->str:
         """
         Creates 2 keys in folder folder_to_store_certificates. A private.key and a cert_req.csr.
         :return: The contents of the public key
@@ -799,7 +799,7 @@ class CAPIFInvokerConnector:
 
         return public_key
 
-    def _register_to_capif(self, role):
+    def __register_to_capif(self, role):
 
         url = self.capif_http_url + "register"
         payload = dict()
@@ -818,7 +818,7 @@ class CAPIFInvokerConnector:
         response_payload = json.loads(response.text)
         return  response_payload
 
-    def _save_capif_ca_root_file_and_get_auth_token(self,role):
+    def __save_capif_ca_root_file_and_get_auth_token(self, role):
 
         url = self.capif_http_url + "getauth"
 
@@ -837,7 +837,7 @@ class CAPIFInvokerConnector:
         ca_root_file.write(bytes(response_payload['ca_root'], 'utf-8'))
         return response_payload['access_token']
 
-    def _onboard_netapp_to_capif_and_create_the_signed_certificate(self, public_key, capif_onboarding_url,capif_access_token):
+    def __onboard_netapp_to_capif_and_create_the_signed_certificate(self, public_key, capif_onboarding_url, capif_access_token):
         url = self.capif_https_url + capif_onboarding_url
         payload_dict = {
             "notificationDestination": self.capif_callback_url,
@@ -869,7 +869,7 @@ class CAPIFInvokerConnector:
         certification_file.close()
         return response_payload['apiInvokerId']
 
-    def _write_to_file(self,csr_common_name, api_invoker_id, discover_services_url):
+    def __write_to_file(self, csr_common_name, api_invoker_id, discover_services_url):
         with open(self.folder_to_store_certificates + "capif_api_details.json", "w") as outfile:
             json.dump({
                 "csr_common_name": csr_common_name,
@@ -911,9 +911,9 @@ class CAPIFExposerConnector:
         self.capif_netapp_username = capif_netapp_username
         self.capif_netapp_password = capif_netapp_password
 
-    def _store_certificate_authority_file(self):
+    def __store_certificate_authority_file(self):
         url = self.capif_http_url + "ca-root"
-        response = requests.request("POST", url,
+        response = requests.request("GET", url,
                                     headers={'Content-Type': 'application/json'})
         response.raise_for_status()
         response_payload = json.loads(response.text)
@@ -922,11 +922,11 @@ class CAPIFExposerConnector:
 
 
 
-    def _onboard_exposer_to_capif(self,
-                                  api_provider_domain_json_full_path,
-                                  capif_onboarding_url, cert):
+    def __onboard_exposer_to_capif(self,
+                                   api_provider_domain_json_full_path,
+                                   capif_onboarding_url, cert):
         url = self.capif_https_url + capif_onboarding_url
-        with open(api_provider_domain_json_full_path + 'api_provider_domain.json') as json_file:
+        with open(api_provider_domain_json_full_path) as json_file:
             payload = json.load(json_file)
             payload["regSec"] = cert
 
@@ -947,7 +947,7 @@ class CAPIFExposerConnector:
 
         return response_payload['apiProvDomId']
 
-    def _register_to_capif(self, role):
+    def __register_to_capif(self, role):
 
         url = self.capif_http_url + "register"
         payload = dict()
@@ -966,7 +966,7 @@ class CAPIFExposerConnector:
         response_payload = json.loads(response.text)
         return  response_payload
 
-    def _perform_authorization_and_store_ssl_keys(self,role):
+    def __perform_authorization_and_store_ssl_keys(self, role):
 
         url = self.capif_http_url + "getauth"
 
@@ -998,17 +998,17 @@ class CAPIFExposerConnector:
 
     def register_and_onboard_exposer(self, api_provider_domain_json_full_path)->None:
         role = "exposer"
-        self._store_certificate_authority_file()
-        registration_result = self._register_to_capif(role)
+        self.__store_certificate_authority_file()
+        registration_result = self.__register_to_capif(role)
         ccf_publish_url = registration_result['ccf_publish_url']
         capif_onboarding_url = registration_result['ccf_api_onboarding_url']
-        cert = self._perform_authorization_and_store_ssl_keys(role)
-        api_prov_dom_id = self._onboard_exposer_to_capif(api_provider_domain_json_full_path,capif_onboarding_url, cert)
+        cert = self.__perform_authorization_and_store_ssl_keys(role)
+        api_prov_dom_id = self.__onboard_exposer_to_capif(api_provider_domain_json_full_path, capif_onboarding_url, cert)
         self._write_to_file(ccf_publish_url)
 
     def publish_services(self,service_api_description_json_full_path)->None:
 
-        with open(self.certificates_folder + "capif_exposer_details.json", 'r') as openfile:
+        with open(self.certificates_folder, 'r') as openfile:
             publish_url = json.load(openfile)["publish_url"]
 
         url = self.capif_https_url + publish_url
