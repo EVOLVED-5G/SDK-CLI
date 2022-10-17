@@ -1,4 +1,3 @@
-
 {
     "apiName": "dummy-aef",
     "aefProfiles": [
@@ -60,4 +59,4 @@
       ]
     },
     "ccfId": "string"
-  }
+}
