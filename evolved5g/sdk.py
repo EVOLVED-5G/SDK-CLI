@@ -886,7 +886,6 @@ class CAPIFExposerConnector:
     def __init__(self,
                  certificates_folder: str,
                  description: str,
-                 csr_common_name: str,
                  capif_host: str,
                  capif_http_port: str,
                  capif_https_port: str,
@@ -905,7 +904,7 @@ class CAPIFExposerConnector:
         # add the trailing slash if it is not already there using os.path.join
         self.certificates_folder = os.path.join(certificates_folder.strip(), '')
         self.description= description
-        self.csr_common_name= csr_common_name
+        self.csr_common_name= capif_netapp_username
         self.capif_http_url = "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
         self.capif_https_url = "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
         self.capif_netapp_username = capif_netapp_username
@@ -990,7 +989,7 @@ class CAPIFExposerConnector:
 
         return response_payload['cert']
 
-    def _write_to_file(self,publish_url):
+    def __write_to_file(self, publish_url):
         with open(self.certificates_folder + "capif_exposer_details.json", "w") as outfile:
             json.dump({
                 "publish_url": publish_url
@@ -1004,26 +1003,28 @@ class CAPIFExposerConnector:
         capif_onboarding_url = registration_result['ccf_api_onboarding_url']
         cert = self.__perform_authorization_and_store_ssl_keys(role)
         api_prov_dom_id = self.__onboard_exposer_to_capif(api_provider_domain_json_full_path, capif_onboarding_url, cert)
-        self._write_to_file(ccf_publish_url)
+        self.__write_to_file(ccf_publish_url)
 
     def publish_services(self,service_api_description_json_full_path)->None:
 
-        with open(self.certificates_folder, 'r') as openfile:
-            publish_url = json.load(openfile)["publish_url"]
+        with open(self.certificates_folder + "capif_exposer_details.json", 'r') as openfile:
+            file = json.load(openfile)
+            publish_url = file["publish_url"]
 
         url = self.capif_https_url + publish_url
 
-        with open(service_api_description_json_full_path, 'rb') as payload:
-            response = requests.request("POST",
+        with open(service_api_description_json_full_path, 'rb') as service_file:
+           data = json.load(service_file)
+           response = requests.request("POST",
                                         url,
                                         headers={'Content-Type': 'application/json'},
-                                        data=payload,
+                                        data=data,
                                         cert=(self.certificates_folder + self.csr_common_name +'.crt',
                                               self.certificates_folder + 'private.key'),
                                         verify=self.certificates_folder+'ca.crt')
-            response.raise_for_status()
-            response_payload = json.loads(response.text)
-            return response_payload["apiId"]
+           response.raise_for_status()
+           response_payload = json.loads(response.text)
+           return response_payload["apiId"]
 
 
 class ServiceDiscoverer:
