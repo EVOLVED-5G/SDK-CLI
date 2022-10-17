@@ -2,10 +2,14 @@
 History
 =======
 
+0.8.3 (2022-10-17)
+-------------------
+* News SDK Library CAPIFExposerConnector, that allows exposers to register to CAPIF and publish services
+
+
 0.8.2 (2022-10-14)
 -------------------
 * Bug fix on import CAPIFConnector class from sdk
-
 
 0.8.1 (2022-10-12)
 -------------------
