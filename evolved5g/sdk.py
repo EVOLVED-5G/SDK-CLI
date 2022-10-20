@@ -728,8 +728,8 @@ class CAPIFInvokerConnector:
         """
         # add the trailing slash if it is not already there using os.path.join
         self.folder_to_store_certificates = os.path.join(folder_to_store_certificates.strip(), '')
-        self.capif_http_url = "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
-        self.capif_https_url = "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
+        self.capif_http_url = "http://" + capif_host.strip() + ":" + str(capif_http_port) + "/"
+        self.capif_https_url = "https://" + capif_host.strip() + ":" + str(capif_https_port) + "/"
         self.capif_callback_url = self.__add_trailing_slash_to_url_if_missing(capif_callback_url.strip())
         self.capif_netapp_username = capif_netapp_username
         self.capif_netapp_password = capif_netapp_password

@@ -5,6 +5,7 @@ History
 0.8.3 (2022-10-17)
 -------------------
 * News SDK Library CAPIFExposerConnector, that allows exposers to register to CAPIF and publish services
+* New CLI command evolved5G  register-and-onboard-to-capif  that allows NetApps to register their NetAPP to CAPIF via the command line
 
 
 0.8.2 (2022-10-14)
