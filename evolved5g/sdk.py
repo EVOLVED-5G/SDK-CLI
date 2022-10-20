@@ -1035,6 +1035,10 @@ class CAPIFExposerConnector:
 
         with open(service_api_description_json_full_path, 'rb') as service_file:
            data = json.load(service_file)
+           #todo: not sure if this is correct
+           for profile in data["aefProfiles"]:
+               profile["aefId"] = api_prov_dom_id
+
            response = requests.request("POST",
                                         url,
                                         headers={'Content-Type': 'application/json'},

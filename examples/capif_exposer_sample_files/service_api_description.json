@@ -1,5 +1,5 @@
 {
-    "apiName": "THE_NAME_OF_API",
+    "apiName": "api_name_2",
     "aefProfiles": [
       {
         "aefId": "UNIQUE_ID THAT IS SET AUTOMATICALLY BY THE SDK. Contains the API PROV DOM ID parameter",
@@ -58,5 +58,5 @@
         "string"
       ]
     },
-    "ccfId": "string"
+    "ccfId": "test"
 }
