@@ -2,7 +2,7 @@
     "apiName": "THE_NAME_OF_API",
     "aefProfiles": [
       {
-        "aefId": "UNIQUE_STRING",
+        "aefId": "UNIQUE_ID THAT IS SET AUTOMATICALLY BY THE SDK. Contains the API PROV DOM ID parameter",
         "versions": [
           {
             "apiVersion": "v1",
@@ -36,7 +36,7 @@
         "securityMethods": ["Oauth", "PSK"],
         "interfaceDescriptions": [
           {
-            "ipv4Addr": "python_aef",
+            "ipv4Addr": "the ip address where the exposer relies",
             "port": 8086,
             "securityMethods": ["Oauth"]
           }

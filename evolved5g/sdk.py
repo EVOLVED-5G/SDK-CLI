@@ -921,17 +921,27 @@ class CAPIFExposerConnector:
 
 
 
-    def __onboard_exposer_to_capif(self,
-                                   api_provider_domain_json_full_path,
-                                   capif_onboarding_url, cert):
+    def __onboard_exposer_to_capif(self, capif_registration_id, public_key, capif_onboarding_url):
         url = self.capif_https_url + capif_onboarding_url
-        with open(api_provider_domain_json_full_path) as json_file:
-            payload = json.load(json_file)
-            payload["regSec"] = cert
-
-        headers = {
-            'Content-Type': 'application/json'
+        payload = {
+            "regSec": public_key,
+            "apiProvFuncs": [
+                {
+                    "apiProvFuncId": capif_registration_id,
+                    "regInfo": {
+                        "apiProvPubKey": public_key,
+                        "apiProvCert": "", # what is this?
+                    },
+                    "apiProvFuncRole": "AEF",
+                    "apiProvFuncInfo": ""
+                }
+            ],
+            "apiProvDomInfo": "",
+            "suppFeat": "fff",
+            "failReason": ""
         }
+
+        headers = { 'Content-Type': 'application/json'}
 
         response = requests.request("POST",
                                     url,
@@ -963,7 +973,7 @@ class CAPIFExposerConnector:
         response.raise_for_status()
 
         response_payload = json.loads(response.text)
-        return  response_payload
+        return response_payload
 
     def __perform_authorization_and_store_ssl_keys(self, role):
 
@@ -987,26 +997,28 @@ class CAPIFExposerConnector:
         with open(self.certificates_folder + "private.key", 'wb+') as private_key_file:
             private_key_file.write(bytes(response_payload['private_key'], 'utf-8'))
 
-        return response_payload['cert']
+        return response_payload
 
-    def __write_to_file(self, publish_url):
+    def __write_to_file(self,capif_registration_id,api_prov_dom_id, publish_url):
         with open(self.certificates_folder + "capif_exposer_details.json", "w") as outfile:
             json.dump({
+                "capif_registration_id": capif_registration_id,
+                "api_prov_dom_id": api_prov_dom_id,
                 "publish_url": publish_url
             }, outfile)
 
-    def register_and_onboard_exposer(self, api_provider_domain_json_full_path)->None:
-        """
-        :param api_provider_domain_json_full_path: The full path of the api_provider_domain.json
-        """
+    def register_and_onboard_exposer(self)->None:
         role = "exposer"
         self.__store_certificate_authority_file()
         registration_result = self.__register_to_capif(role)
+        capif_registration_id = registration_result["id"]
         ccf_publish_url = registration_result['ccf_publish_url']
         capif_onboarding_url = registration_result['ccf_api_onboarding_url']
-        cert = self.__perform_authorization_and_store_ssl_keys(role)
-        api_prov_dom_id = self.__onboard_exposer_to_capif(api_provider_domain_json_full_path, capif_onboarding_url, cert)
-        self.__write_to_file(ccf_publish_url)
+        authorization_result = self.__perform_authorization_and_store_ssl_keys(role)
+        public_key =  authorization_result['cert']
+
+        api_prov_dom_id = self.__onboard_exposer_to_capif(capif_registration_id, public_key, capif_onboarding_url)
+        self.__write_to_file(capif_registration_id,api_prov_dom_id,ccf_publish_url)
 
     def publish_services(self,service_api_description_json_full_path)->None:
         """
@@ -1016,6 +1028,8 @@ class CAPIFExposerConnector:
         with open(self.certificates_folder + "capif_exposer_details.json", 'r') as openfile:
             file = json.load(openfile)
             publish_url = file["publish_url"]
+            api_prov_dom_id = file["api_prov_dom_id"]
+
 
         url = self.capif_https_url + publish_url
 
