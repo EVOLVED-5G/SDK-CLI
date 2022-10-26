@@ -20,7 +20,11 @@ def showcase_create_subscription_and_retrieve_call_backs():
     netapp_id = "myNetapp"
     host = emulator_utils.get_host_of_the_nef_emulator()
     token = emulator_utils.get_token()
-    location_subscriber = LocationSubscriber(host, token.access_token)
+    location_subscriber = LocationSubscriber(host=host,
+                                             bearer_access_token=token.access_token,
+                                             folder_path_for_certificates_and_capif_api_key="",
+                                             capif_host="capifcore",
+                                             capif_https_port=443)
     # The following external identifier was copy pasted by the NEF emulator. Go to the Map and click on a User icon. There you can retrieve the id
     external_id = "10003@domain.com"
 
@@ -103,7 +107,7 @@ def read_and_delete_all_existing_subscriptions():
 
 
 if __name__ == "__main__":
-    read_and_delete_all_existing_subscriptions()
+    #read_and_delete_all_existing_subscriptions()
     showcase_create_subscription_and_retrieve_call_backs()
     read_and_delete_all_existing_subscriptions()
     showcase_create_single_request_for_location_info()

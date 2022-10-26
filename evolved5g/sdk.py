@@ -19,10 +19,19 @@ import json
 
 
 class MonitoringSubscriber(ABC):
-    def __init__(self, host: str, bearer_access_token: str):
+    def __init__(self, host: str,
+                        nef_bearer_access_token: str,
+                        folder_path_for_certificates_and_capif_api_key: str,
+                        capif_host:str,
+                        capif_https_port:int):
         configuration = swagger_client.Configuration()
         configuration.host = host
-        configuration.access_token = bearer_access_token
+        configuration.access_token = nef_bearer_access_token
+        #todo: these endpoints should be found dynamically by the capif
+        configuration.available_endpoints = {
+            "MONITORING_SUBSCRIPTIONS": '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions',
+            "MONITORING_SUBSCRIPTION_SINGLE": '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}'
+        }
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.monitoring_event_api = MonitoringEventAPIApi(api_client)
         self.cell_api = CellsApi(api_client)
@@ -82,7 +91,11 @@ class MonitoringSubscriber(ABC):
 
 class LocationSubscriber(MonitoringSubscriber):
 
-    def __init__(self, host: str, bearer_access_token: str):
+    def __init__(self, host: str,
+                 bearer_access_token: str,
+                 folder_path_for_certificates_and_capif_api_key: str,
+                 capif_host:str,
+                 capif_https_port:int):
         """
             Initializes class LocationSubscriber.
             This SKD class allows you to track devices and retrieve updates about their location.
@@ -92,7 +105,10 @@ class LocationSubscriber(MonitoringSubscriber):
              :param str host: The url of the 5G-API
              :param str bearer_access_token: The bearer access token that will be used to authenticate with the 5G-API
         """
-        super().__init__(host, bearer_access_token)
+        super().__init__(host, bearer_access_token,
+                         folder_path_for_certificates_and_capif_api_key,
+                         capif_host,
+                         capif_https_port)
 
     def __get_monitoring_type(self):
         return "LOCATION_REPORTING"
@@ -198,7 +214,12 @@ class ConnectionMonitor(MonitoringSubscriber):
         INFORM_WHEN_CONNECTED = 1
         INFORM_WHEN_NOT_CONNECTED = 2
 
-    def __init__(self, host: str, bearer_access_token: str):
+    def __init__(self,
+                 host: str,
+                 bearer_access_token: str,
+                 folder_path_for_certificates_and_capif_api_key: str,
+                 capif_host:str,
+                 capif_https_port:int):
         """
             Initializes class ConnectionMonitor.
             Consider a scenario where a NetApp wants to monitor 100 devices in the 5G Network.
@@ -210,8 +231,15 @@ class ConnectionMonitor(MonitoringSubscriber):
 
             :param str host: The url of the 5G-API
             :param str bearer_access_token: The bearer access token that will be used to authenticate with the 5G-API
+            :param folder_path_for_certificates_and_capif_api_key: The folder that contains the NetApp certificates and
+             CAPIF API Key. These are created  while registering and onboarding the NetApp to the CAPIF Server
+            :param capif_host: The host of the CAPIF Server (ex. "capifcore")
+            :param capif_https_port: The https_port of the  CAPIF Server
         """
-        super().__init__(host, bearer_access_token)
+        super().__init__(host, bearer_access_token,
+                         folder_path_for_certificates_and_capif_api_key,
+                         capif_host,
+                         capif_https_port)
 
     def __get_monitoring_type(self, monitoring_type: MonitoringType):
         if monitoring_type == self.MonitoringType.INFORM_WHEN_CONNECTED:
@@ -397,21 +425,36 @@ class QosAwareness:
         def get_reporting_configuration(self):
             return self.repetition_period_in_seconds
 
-    def __init__(self, host: str, bearer_access_token: str):
+    def __init__(self, host: str,
+                 nef_bearer_access_token: str,
+                 folder_path_for_certificates_and_capif_api_key: str,
+                 capif_host:str,
+                 capif_https_port:int):
         """
-            Initializes class QosAwareness.
-            This SKD class allows you to requests QoS from a set of standardized values for better service experience.
+        Initializes class QosAwareness.
+        This SKD class allows you to request QoS from a set of standardized values for better service experience.
 
-            You can create subscriptions where each one of them has specific QoS parameters.
-            A notification is sent to a callback url you will provide, informing you in case the QoS targets can no
-            longer be full-filled.
+        You can create subscriptions where each one of them has specific QoS parameters.
+        A notification is sent to a callback url you will provide, informing you in case the QoS targets can no
+        longer be full-filled.
 
-            :param str host: The url of the 5G-API
-            :param str bearer_access_token: The bearer access token that will be used to authenticate with the 5G-API
+        :param host:  The url of the 5G-API (ex. NEF emulator)
+        :param nef_bearer_access_token: The bearer access token that will be used to authenticate with the 5G-API
+        :param folder_path_for_certificates_and_capif_api_key: The folder that contains the NetApp certificates and
+         CAPIF API Key. These are created  while registering and onboarding the NetApp to the CAPIF Server
+        :param capif_host: The host of the CAPIF Server (ex. "capifcore")
+        :param capif_https_port: The https_port of the  CAPIF Server
         """
+
         configuration = swagger_client.Configuration()
         configuration.host = host
-        configuration.access_token = bearer_access_token
+        configuration.access_token = nef_bearer_access_token
+        service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_capif_api_key,capif_host,capif_https_port)
+        #todo: these endpoints should be found dynamically by the capif
+        configuration.available_endpoints = {
+            "QOS_SUBSCRIPTIONS": '/nef/api/v1/3gpp-as-session-with-qos/v1/{scsAsId}/subscriptions',
+            "QOS_SUBSCRIPTION_SINGLE": '/nef/api/v1/3gpp-as-session-with-qos/v1/{scsAsId}/subscriptions/{subscriptionId}'
+        }
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.qos_api = SessionWithQoSAPIApi(api_client)
 
