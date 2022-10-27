@@ -1154,9 +1154,6 @@ class ServiceDiscoverer:
             if len(uris)==0:
                 raise ServiceDiscoverer.ServiceDiscovererException("Could not find resource_name: "+ resource_name + "at api_name" + api_name)
             else:
-                #url = "http://" + nef_endpoints[0]["aef_profiles"][0]["interface_descriptions"][0]["ipv4_addr"]
-                #url = url + ":" + str(nef_endpoints[0]["aef_profiles"][0]["interface_descriptions"][0]["port"])+"/"
-                #url = url +uris[0]["uri"]
                 return uris[0]["uri"]
 
 
