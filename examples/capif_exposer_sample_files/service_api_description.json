@@ -11,7 +11,7 @@
             {
               "resourceName": "MONITORING_SUBSCRIPTIONS",
               "commType": " SUBSCRIBE_NOTIFY",
-              "uri": "nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions",
+              "uri": "/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions",
               "custOpName": "http_post",
               "operations": ["GET","POST","PUT","DELETE"],
               "description": "Endpoint to manage monitoring subscriptions"
