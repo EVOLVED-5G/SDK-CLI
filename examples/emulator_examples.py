@@ -7,7 +7,7 @@ def showcase_login_to_the_emulator_and_test_token():
     Demonstrate how to interact with the Emulator, to a token and the current logged in User
     """
 
-    token = emulator_utils.get_token()
+    token = emulator_utils.get_token_for_nef_emulator()
     print("-----")
     print("Got token")
     print(token)

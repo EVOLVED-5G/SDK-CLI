@@ -10,17 +10,21 @@ import time
 def showcase_create_subscription_and_retrieve_call_backs():
     """
     This example showcases how you can create a subscription to the 5G-API in order to monitor devices that are connected or disconnected to the network.
-    In order to run this example you need to follow the instructions in  readme.md in order to a) run the NEF emulator
-    and b) run a local webserver that will print the notifications it retrieves from the emulator.
-    A testing local webserver (Flask webserver) can be initiated by running the examples/api.py
+    In order to run this example, to follow the instructions in  readme.md (https://evolved5g-cli.readthedocs.io/en/latest/libraries.html) in order to
+     a) run the NEF emulator
+     b) run the CAPIF server
+     c) connect your NetAPP to the CAPIF server (you have to do this only once)
+     d) run a local webserver that will print the notifications it retrieves from the emulator. A testing local webserver (Flask webserver) can be initiated by running the examples/api.py
     """
 
     # Create a subscription, that will notify us 1000 times, for the next 1 day starting from now
     expire_time = (datetime.datetime.utcnow() + datetime.timedelta(days=1)).isoformat() + "Z"
     netapp_id = "myNetapp"
-    host = emulator_utils.get_host_of_the_nef_emulator()
-    token = emulator_utils.get_token()
-    connection_monitor = ConnectionMonitor(host, token.access_token)
+    connection_monitor = ConnectionMonitor(nef_url=emulator_utils.get_url_of_the_nef_emulator(),
+                                           nef_bearer_access_token= emulator_utils.get_token_for_nef_emulator().access_token,
+                                           folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_certificated_and_capif_api_key(),
+                                           capif_host=emulator_utils.get_capif_host(),
+                                           capif_https_port=emulator_utils.get_capif_https_port()   )
     # The following external identifier was copy pasted by the NEF emulator. Go to the Map and click on a User icon. There you can retrieve the id
     external_id = "10003@domain.com"
 
@@ -82,9 +86,11 @@ def showcase_create_subscription_and_retrieve_call_backs():
 def read_and_delete_all_existing_subscriptions():
     # How to get all subscriptions
     netapp_id = "myNetapp"
-    host = emulator_utils.get_host_of_the_nef_emulator()
-    token = emulator_utils.get_token()
-    connection_monitor = ConnectionMonitor(host, token.access_token)
+    connection_monitor = ConnectionMonitor(nef_url=emulator_utils.get_url_of_the_nef_emulator(),
+                                           nef_bearer_access_token= emulator_utils.get_token_for_nef_emulator().access_token,
+                                           folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_certificated_and_capif_api_key(),
+                                           capif_host=emulator_utils.get_capif_host(),
+                                           capif_https_port=emulator_utils.get_capif_https_port())
 
     try:
         all_subscriptions = connection_monitor.get_all_subscriptions(netapp_id, 0, 100)

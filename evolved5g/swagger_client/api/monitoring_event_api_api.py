@@ -124,7 +124,7 @@ class MonitoringEventAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions', 'POST',
+           self.api_client.configuration.available_endpoints["MONITORING_SUBSCRIPTIONS"], 'POST',
             path_params,
             query_params,
             header_params,
@@ -233,7 +233,7 @@ class MonitoringEventAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}', 'DELETE',
+            self.api_client.configuration.available_endpoints["MONITORING_SUBSCRIPTION_SINGLE"], 'DELETE',
             path_params,
             query_params,
             header_params,
@@ -336,7 +336,7 @@ class MonitoringEventAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions', 'GET',
+           self.api_client.configuration.available_endpoints["MONITORING_SUBSCRIPTIONS"], 'GET',
             path_params,
             query_params,
             header_params,
@@ -439,7 +439,7 @@ class MonitoringEventAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}', 'GET',
+            self.api_client.configuration.available_endpoints["MONITORING_SUBSCRIPTION_SINGLE"], 'GET',
             path_params,
             query_params,
             header_params,
@@ -554,7 +554,7 @@ class MonitoringEventAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}', 'PUT',
+            self.api_client.configuration.available_endpoints["MONITORING_SUBSCRIPTION_SINGLE"], 'PUT',
             path_params,
             query_params,
             header_params,
