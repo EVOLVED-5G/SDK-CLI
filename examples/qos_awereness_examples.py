@@ -4,22 +4,24 @@ from evolved5g.sdk import QosAwareness
 import emulator_utils
 from evolved5g.swagger_client import UsageThreshold
 
-
-
 def showcase_create_quaranteed_bit_rate_subscription_for_conversational_voice():
     """
         This example showcases how you can create a subscription to the 5G-API in order to establish
         a Guaranteed Bit Rate (NON-GBR) QoS.
 
-        In order to run this example you need to follow the instructions in  readme.md in order to
-        a) run the NEF emulator and
-        b) run a local webserver that will print the location notifications it retrieves from the emulator.
-        A testing local webserver (Flask webserver) can be initiated by running the examples/api.py
+        In order to run this example, to follow the instructions in  readme.md (https://evolved5g-cli.readthedocs.io/en/latest/libraries.html) in order to
+        a) run the NEF emulator
+        b) run the CAPIF server
+        c) connect your NetAPP to the CAPIF server (you have to do this only once)
+        d) run a local webserver that will print the notifications it retrieves from the emulator. A testing local webserver (Flask webserver) can be initiated by running the examples/api.py
     """
     netapp_id = "myNetapp"
-    host = emulator_utils.get_host_of_the_nef_emulator()
-    token = emulator_utils.get_token()
-    qos_awereness = QosAwareness(host, token.access_token)
+
+    qos_awereness = QosAwareness(nef_url=emulator_utils.get_url_of_the_nef_emulator(),
+                                 nef_bearer_access_token= emulator_utils.get_token_for_nef_emulator().access_token,
+                                 folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_certificated_and_capif_api_key(),
+                                 capif_host=emulator_utils.get_capif_host(),
+                                 capif_https_port=emulator_utils.get_capif_https_port())
     # The following external identifier was copy pasted by the NEF emulator.
     # Go to the Map and hover over a User icon.There you can retrieve the id address.
     # Notice that the NEF emulator is able to establish a guaranteed bit rate only if one and only one user is connected to a shell
@@ -95,8 +97,8 @@ def showcase_create_non_quaranteed_bit_rate_subscription_for_live_streaming():
 
     # Create a subscription, that will notify us 1000 times, for the next 1 day starting from now
     netapp_id = "myNetapp"
-    host = emulator_utils.get_host_of_the_nef_emulator()
-    token = emulator_utils.get_token()
+    host = emulator_utils.get_url_of_the_nef_emulator()
+    token = emulator_utils.get_token_for_nef_emulator()
     qos_awereness = QosAwareness(host, token.access_token)
     # The following external identifier was copy pasted by the NEF emulator. Go to the Map and hover over a User icon.
     # There you can retrieve the id address
@@ -142,8 +144,8 @@ def showcase_create_non_quaranteed_bit_rate_subscription_for_live_streaming():
 def read_and_delete_all_existing_subscriptions():
     # How to get all subscriptions
     netapp_id = "myNetapp"
-    host = emulator_utils.get_host_of_the_nef_emulator()
-    token = emulator_utils.get_token()
+    host = emulator_utils.get_url_of_the_nef_emulator()
+    token = emulator_utils.get_token_for_nef_emulator()
     qos_awareness = QosAwareness(host, token.access_token)
 
     try:

@@ -32,7 +32,8 @@ class SessionWithQoSAPIApi(object):
             api_client = ApiClient()
         self.api_client = api_client
 
-    def create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post(self, body, scs_as_id, **kwargs):  # noqa: E501
+    def create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post(self, body, scs_as_id,
+                                                                                           **kwargs):  # noqa: E501
         """Create Subscription  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
@@ -49,12 +50,17 @@ class SessionWithQoSAPIApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(body, scs_as_id, **kwargs)  # noqa: E501
+            return self.create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(
+                body, scs_as_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(body, scs_as_id, **kwargs)  # noqa: E501
+            (
+                data) = self.create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(
+                body, scs_as_id, **kwargs)  # noqa: E501
             return data
 
-    def create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(self, body, scs_as_id, **kwargs):  # noqa: E501
+    def create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post_with_http_info(self, body,
+                                                                                                          scs_as_id,
+                                                                                                          **kwargs):  # noqa: E501
         """Create Subscription  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
@@ -88,11 +94,13 @@ class SessionWithQoSAPIApi(object):
         # verify the required parameter 'body' is set
         if ('body' not in params or
                 params['body'] is None):
-            raise ValueError("Missing the required parameter `body` when calling `create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post`")  # noqa: E501
+            raise ValueError(
+                "Missing the required parameter `body` when calling `create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post`")  # noqa: E501
         # verify the required parameter 'scs_as_id' is set
         if ('scs_as_id' not in params or
                 params['scs_as_id'] is None):
-            raise ValueError("Missing the required parameter `scs_as_id` when calling `create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post`")  # noqa: E501
+            raise ValueError(
+                "Missing the required parameter `scs_as_id` when calling `create_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_post`")  # noqa: E501
 
         collection_formats = {}
 
@@ -122,7 +130,7 @@ class SessionWithQoSAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/nef/api/v1/3gpp-as-session-with-qos/v1/{scsAsId}/subscriptions', 'POST',
+            self.api_client.configuration["QOS_SUBSCRIPTIONS"], 'POST',
             path_params,
             query_params,
             header_params,
@@ -137,7 +145,10 @@ class SessionWithQoSAPIApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
+    def delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete(self,
+                                                                                                             scs_as_id,
+                                                                                                             subscription_id,
+                                                                                                             **kwargs):  # noqa: E501
         """Delete Subscription  # noqa: E501
 
         Delete a subscription  # noqa: E501
@@ -155,12 +166,16 @@ class SessionWithQoSAPIApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(scs_as_id, subscription_id, **kwargs)  # noqa: E501
+            return self.delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(
+                scs_as_id, subscription_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(scs_as_id, subscription_id, **kwargs)  # noqa: E501
+            (
+                data) = self.delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(
+                scs_as_id, subscription_id, **kwargs)  # noqa: E501
             return data
 
-    def delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
+    def delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete_with_http_info(
+            self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
         """Delete Subscription  # noqa: E501
 
         Delete a subscription  # noqa: E501
@@ -195,11 +210,13 @@ class SessionWithQoSAPIApi(object):
         # verify the required parameter 'scs_as_id' is set
         if ('scs_as_id' not in params or
                 params['scs_as_id'] is None):
-            raise ValueError("Missing the required parameter `scs_as_id` when calling `delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete`")  # noqa: E501
+            raise ValueError(
+                "Missing the required parameter `scs_as_id` when calling `delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete`")  # noqa: E501
         # verify the required parameter 'subscription_id' is set
         if ('subscription_id' not in params or
                 params['subscription_id'] is None):
-            raise ValueError("Missing the required parameter `subscription_id` when calling `delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete`")  # noqa: E501
+            raise ValueError(
+                "Missing the required parameter `subscription_id` when calling `delete_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_delete`")  # noqa: E501
 
         collection_formats = {}
 
@@ -225,7 +242,7 @@ class SessionWithQoSAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/nef/api/v1/3gpp-as-session-with-qos/v1/{scsAsId}/subscriptions/{subscriptionId}', 'DELETE',
+            self.api_client.configuration["QOS_SUBSCRIPTION_SINGLE"], 'DELETE',
             path_params,
             query_params,
             header_params,
@@ -240,7 +257,8 @@ class SessionWithQoSAPIApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get(self, scs_as_id, **kwargs):  # noqa: E501
+    def read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get(self, scs_as_id,
+                                                                                                **kwargs):  # noqa: E501
         """Read Active Subscriptions  # noqa: E501
 
         Get subscription by id  # noqa: E501
@@ -257,12 +275,17 @@ class SessionWithQoSAPIApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get_with_http_info(scs_as_id, **kwargs)  # noqa: E501
+            return self.read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get_with_http_info(
+                scs_as_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get_with_http_info(scs_as_id, **kwargs)  # noqa: E501
+            (
+                data) = self.read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get_with_http_info(
+                scs_as_id, **kwargs)  # noqa: E501
             return data
 
-    def read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get_with_http_info(self, scs_as_id, **kwargs):  # noqa: E501
+    def read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get_with_http_info(self,
+                                                                                                               scs_as_id,
+                                                                                                               **kwargs):  # noqa: E501
         """Read Active Subscriptions  # noqa: E501
 
         Get subscription by id  # noqa: E501
@@ -296,7 +319,8 @@ class SessionWithQoSAPIApi(object):
         # verify the required parameter 'scs_as_id' is set
         if ('scs_as_id' not in params or
                 params['scs_as_id'] is None):
-            raise ValueError("Missing the required parameter `scs_as_id` when calling `read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get`")  # noqa: E501
+            raise ValueError(
+                "Missing the required parameter `scs_as_id` when calling `read_active_subscriptions_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_get`")  # noqa: E501
 
         collection_formats = {}
 
@@ -320,7 +344,7 @@ class SessionWithQoSAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/nef/api/v1/3gpp-as-session-with-qos/v1/{scsAsId}/subscriptions', 'GET',
+            self.api_client.configuration["QOS_SUBSCRIPTIONS"], 'GET',
             path_params,
             query_params,
             header_params,
@@ -335,7 +359,9 @@ class SessionWithQoSAPIApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
+    def read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get(self, scs_as_id,
+                                                                                                        subscription_id,
+                                                                                                        **kwargs):  # noqa: E501
         """Read Subscription  # noqa: E501
 
         Get subscription by id  # noqa: E501
@@ -353,12 +379,16 @@ class SessionWithQoSAPIApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(scs_as_id, subscription_id, **kwargs)  # noqa: E501
+            return self.read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(
+                scs_as_id, subscription_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(scs_as_id, subscription_id, **kwargs)  # noqa: E501
+            (
+                data) = self.read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(
+                scs_as_id, subscription_id, **kwargs)  # noqa: E501
             return data
 
-    def read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
+    def read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get_with_http_info(
+            self, scs_as_id, subscription_id, **kwargs):  # noqa: E501
         """Read Subscription  # noqa: E501
 
         Get subscription by id  # noqa: E501
@@ -393,11 +423,13 @@ class SessionWithQoSAPIApi(object):
         # verify the required parameter 'scs_as_id' is set
         if ('scs_as_id' not in params or
                 params['scs_as_id'] is None):
-            raise ValueError("Missing the required parameter `scs_as_id` when calling `read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get`")  # noqa: E501
+            raise ValueError(
+                "Missing the required parameter `scs_as_id` when calling `read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get`")  # noqa: E501
         # verify the required parameter 'subscription_id' is set
         if ('subscription_id' not in params or
                 params['subscription_id'] is None):
-            raise ValueError("Missing the required parameter `subscription_id` when calling `read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get`")  # noqa: E501
+            raise ValueError(
+                "Missing the required parameter `subscription_id` when calling `read_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_get`")  # noqa: E501
 
         collection_formats = {}
 
@@ -423,7 +455,7 @@ class SessionWithQoSAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/nef/api/v1/3gpp-as-session-with-qos/v1/{scsAsId}/subscriptions/{subscriptionId}', 'GET',
+            self.api_client.configuration["QOS_SUBSCRIPTION_SINGLE"], 'GET',
             path_params,
             query_params,
             header_params,
@@ -438,7 +470,10 @@ class SessionWithQoSAPIApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put(self, body, scs_as_id, subscription_id, **kwargs):  # noqa: E501
+    def update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put(self, body,
+                                                                                                          scs_as_id,
+                                                                                                          subscription_id,
+                                                                                                          **kwargs):  # noqa: E501
         """Update Subscription  # noqa: E501
 
         Update subscription by id  # noqa: E501
@@ -457,12 +492,16 @@ class SessionWithQoSAPIApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(body, scs_as_id, subscription_id, **kwargs)  # noqa: E501
+            return self.update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(
+                body, scs_as_id, subscription_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(body, scs_as_id, subscription_id, **kwargs)  # noqa: E501
+            (
+                data) = self.update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(
+                body, scs_as_id, subscription_id, **kwargs)  # noqa: E501
             return data
 
-    def update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(self, body, scs_as_id, subscription_id, **kwargs):  # noqa: E501
+    def update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put_with_http_info(
+            self, body, scs_as_id, subscription_id, **kwargs):  # noqa: E501
         """Update Subscription  # noqa: E501
 
         Update subscription by id  # noqa: E501
@@ -498,15 +537,18 @@ class SessionWithQoSAPIApi(object):
         # verify the required parameter 'body' is set
         if ('body' not in params or
                 params['body'] is None):
-            raise ValueError("Missing the required parameter `body` when calling `update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put`")  # noqa: E501
+            raise ValueError(
+                "Missing the required parameter `body` when calling `update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put`")  # noqa: E501
         # verify the required parameter 'scs_as_id' is set
         if ('scs_as_id' not in params or
                 params['scs_as_id'] is None):
-            raise ValueError("Missing the required parameter `scs_as_id` when calling `update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put`")  # noqa: E501
+            raise ValueError(
+                "Missing the required parameter `scs_as_id` when calling `update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put`")  # noqa: E501
         # verify the required parameter 'subscription_id' is set
         if ('subscription_id' not in params or
                 params['subscription_id'] is None):
-            raise ValueError("Missing the required parameter `subscription_id` when calling `update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put`")  # noqa: E501
+            raise ValueError(
+                "Missing the required parameter `subscription_id` when calling `update_subscription_api_v13gpp_as_session_with_qos_v1_scs_as_id_subscriptions_subscription_id_put`")  # noqa: E501
 
         collection_formats = {}
 
@@ -538,7 +580,7 @@ class SessionWithQoSAPIApi(object):
         auth_settings = ['OAuth2PasswordBearer']  # noqa: E501
 
         return self.api_client.call_api(
-            '/nef/api/v1/3gpp-as-session-with-qos/v1/{scsAsId}/subscriptions/{subscriptionId}', 'PUT',
+            self.api_client.configuration["QOS_SUBSCRIPTION_SINGLE"], 'PUT',
             path_params,
             query_params,
             header_params,

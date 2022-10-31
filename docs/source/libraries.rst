@@ -43,6 +43,13 @@ Install the requirements_dev.txt
 Make sure you have initiated the NEF_EMULATOR at url :py:func:`http://localhost:8888` (See  `here <https://github.com/EVOLVED-5G/NEF_emulator>`_  for instructions),
 you have logged in to the interface, clicked on the map and have started the simulation.
 
+Make sure that your NetApp has been registered and onboarded to CAPIF. If this process is completed, then in the specified folder the following files should be present
+
+    - ca.crt
+    - capif_api_details.json
+    - private.key
+    - your_common_name_you_specified.crt
+
 Then run a webserver in order to capture the callback post requests from NEF EMULATOR: On the terminal run the following commands to initialize the webserver.
 
 
