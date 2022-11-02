@@ -1149,8 +1149,11 @@ class ServiceDiscoverer:
             raise ServiceDiscoverer.ServiceDiscovererException("Could not find available endpoints for api_name: "
                                                                + api_name + ".Make sure that a) your NetApp is registered and onboarded to CAPIF and b) the NEF emulator has been registered and onboarded to CAPIF")
         else:
-            resources = nef_endpoints[0]["aef_profiles"][0]["versions"][0]["resources"]
+            version_dictionary = nef_endpoints[0]["aef_profiles"][0]["versions"][0]
+            version = version_dictionary["api_version"]
+            resources = version_dictionary["resources"]
             uris = (list(filter(lambda resource: resource["resource_name"] == resource_name , resources)))
+
             if len(uris)==0:
                 raise ServiceDiscoverer.ServiceDiscovererException("Could not find resource_name: "+ resource_name + "at api_name" + api_name)
             else:
@@ -1162,7 +1165,7 @@ class ServiceDiscoverer:
                 if api_name.endswith("/"):
                     api_name = api_name[:-1]
                 # construct the url
-                return api_name + uri
+                return api_name + "/" + version + uri
 
 
 
