@@ -97,9 +97,11 @@ def showcase_create_non_quaranteed_bit_rate_subscription_for_live_streaming():
 
     # Create a subscription, that will notify us 1000 times, for the next 1 day starting from now
     netapp_id = "myNetapp"
-    host = emulator_utils.get_url_of_the_nef_emulator()
-    token = emulator_utils.get_token_for_nef_emulator()
-    qos_awereness = QosAwareness(host, token.access_token)
+    qos_awereness = QosAwareness(nef_url=emulator_utils.get_url_of_the_nef_emulator(),
+                                 nef_bearer_access_token= emulator_utils.get_token_for_nef_emulator().access_token,
+                                 folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_certificated_and_capif_api_key(),
+                                 capif_host=emulator_utils.get_capif_host(),
+                                 capif_https_port=emulator_utils.get_capif_https_port())
     # The following external identifier was copy pasted by the NEF emulator. Go to the Map and hover over a User icon.
     # There you can retrieve the id address
     equipment_network_identifier = "10.0.0.3"
