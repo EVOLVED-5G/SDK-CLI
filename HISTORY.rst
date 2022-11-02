@@ -1,6 +1,10 @@
 =======
 History
 =======
+0.8.5 (2022-10-27)
+-------------------
+* Update of the SDK library to be compatible with the latest release of NEF  v1.6.1
+
 0.8.4 (2022-10-27)
 -------------------
 * The SDK Library now communicates first with CAPIF server in order to discover the NEF endpoints
