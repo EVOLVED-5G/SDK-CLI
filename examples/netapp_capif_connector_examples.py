@@ -35,5 +35,5 @@ def showcase_service_discovery():
     print(endpoints)
 
 if __name__ == "__main__":
-    showcase_capif_connector()
+    #showcase_capif_connector()
     showcase_service_discovery()

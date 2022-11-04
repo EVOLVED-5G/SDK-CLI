@@ -29,9 +29,9 @@ class MonitoringSubscriber(ABC):
         configuration.access_token = nef_bearer_access_token
         service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_capif_api_key,capif_host,capif_https_port)
         configuration.available_endpoints = {
-            "MONITORING_SUBSCRIPTIONS": service_discoverer.retrieve_specific_resource_name("nef_emulator_endpoints",
+            "MONITORING_SUBSCRIPTIONS": service_discoverer.retrieve_specific_resource_name("/nef/api/v1/3gpp-monitoring-event/",
                                                                                            "MONITORING_SUBSCRIPTIONS"),
-            "MONITORING_SUBSCRIPTION_SINGLE": service_discoverer.retrieve_specific_resource_name("nef_emulator_endpoints",
+            "MONITORING_SUBSCRIPTION_SINGLE": service_discoverer.retrieve_specific_resource_name("/nef/api/v1/3gpp-monitoring-event/",
                                                                                                  "MONITORING_SUBSCRIPTION_SINGLE"),
         }
         api_client = swagger_client.ApiClient(configuration=configuration)
@@ -453,8 +453,8 @@ class QosAwareness:
         configuration.access_token = nef_bearer_access_token
         service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_capif_api_key,capif_host,capif_https_port)
         configuration.available_endpoints = {
-            "QOS_SUBSCRIPTIONS": service_discoverer.retrieve_specific_resource_name("nef_emulator_endpoints", "QOS_SUBSCRIPTIONS"),
-            "QOS_SUBSCRIPTION_SINGLE":  service_discoverer.retrieve_specific_resource_name("nef_emulator_endpoints", "QOS_SUBSCRIPTION_SINGLE")
+            "QOS_SUBSCRIPTIONS": service_discoverer.retrieve_specific_resource_name("/nef/api/v1/3gpp-as-session-with-qos/", "QOS_SUBSCRIPTIONS"),
+            "QOS_SUBSCRIPTION_SINGLE":  service_discoverer.retrieve_specific_resource_name("/nef/api/v1/3gpp-as-session-with-qos/", "QOS_SUBSCRIPTION_SINGLE")
         }
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.qos_api = SessionWithQoSAPIApi(api_client)
@@ -1149,12 +1149,23 @@ class ServiceDiscoverer:
             raise ServiceDiscoverer.ServiceDiscovererException("Could not find available endpoints for api_name: "
                                                                + api_name + ".Make sure that a) your NetApp is registered and onboarded to CAPIF and b) the NEF emulator has been registered and onboarded to CAPIF")
         else:
-            resources = nef_endpoints[0]["aef_profiles"][0]["versions"][0]["resources"]
+            version_dictionary = nef_endpoints[0]["aef_profiles"][0]["versions"][0]
+            version = version_dictionary["api_version"]
+            resources = version_dictionary["resources"]
             uris = (list(filter(lambda resource: resource["resource_name"] == resource_name , resources)))
+
             if len(uris)==0:
                 raise ServiceDiscoverer.ServiceDiscovererException("Could not find resource_name: "+ resource_name + "at api_name" + api_name)
             else:
-                return uris[0]["uri"]
+                uri = uris[0]["uri"]
+                #make sure the uri starts with /
+                if not uri.startswith('/'):
+                    uri = "/" + uri
+                #make sure the API doesn't have a trailing /
+                if api_name.endswith("/"):
+                    api_name = api_name[:-1]
+                # construct the url
+                return api_name + "/" + version + uri
 
 
 
