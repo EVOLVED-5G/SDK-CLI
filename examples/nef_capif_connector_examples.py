@@ -20,4 +20,5 @@ def showcase_capif_nef_connector():
 
 
 if __name__ == "__main__":
+    #Let's register a NEF to CAPIF. This should happen exactly once
     showcase_capif_nef_connector()
