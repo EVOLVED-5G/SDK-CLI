@@ -11,7 +11,7 @@ def showcase_capif_connector():
                                             capif_host="capifcore",
                                             capif_http_port="8080",
                                             capif_https_port="443",
-                                            capif_netapp_username="test_netapp_22",
+                                            capif_netapp_username="test_netapp_23",
                                             capif_netapp_password="test_netapp_password",
                                             capif_callback_url="http://localhost:5000",
                                             description= "test_app_description",
@@ -35,5 +35,6 @@ def showcase_service_discovery():
     print(endpoints)
 
 if __name__ == "__main__":
-    #showcase_capif_connector()
+    #Let's register NetApp to CAPIF. This should happen exactly once
+    showcase_capif_connector()
     showcase_service_discovery()

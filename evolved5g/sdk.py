@@ -20,19 +20,22 @@ import json
 
 class MonitoringSubscriber(ABC):
     def __init__(self, host: str,
-                        nef_bearer_access_token: str,
-                        folder_path_for_certificates_and_capif_api_key: str,
-                        capif_host:str,
-                        capif_https_port:int):
+                 nef_bearer_access_token: str,
+                 folder_path_for_certificates_and_capif_api_key: str,
+                 capif_host: str,
+                 capif_https_port: int):
         configuration = swagger_client.Configuration()
         configuration.host = host
         configuration.access_token = nef_bearer_access_token
-        service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_capif_api_key,capif_host,capif_https_port)
+        service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_capif_api_key, capif_host,
+                                               capif_https_port)
         configuration.available_endpoints = {
-            "MONITORING_SUBSCRIPTIONS": service_discoverer.retrieve_specific_resource_name("/nef/api/v1/3gpp-monitoring-event/",
-                                                                                           "MONITORING_SUBSCRIPTIONS"),
-            "MONITORING_SUBSCRIPTION_SINGLE": service_discoverer.retrieve_specific_resource_name("/nef/api/v1/3gpp-monitoring-event/",
-                                                                                                 "MONITORING_SUBSCRIPTION_SINGLE"),
+            "MONITORING_SUBSCRIPTIONS": service_discoverer.retrieve_specific_resource_name(
+                "/nef/api/v1/3gpp-monitoring-event/",
+                "MONITORING_SUBSCRIPTIONS"),
+            "MONITORING_SUBSCRIPTION_SINGLE": service_discoverer.retrieve_specific_resource_name(
+                "/nef/api/v1/3gpp-monitoring-event/",
+                "MONITORING_SUBSCRIPTION_SINGLE"),
         }
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.monitoring_event_api = MonitoringEventAPIApi(api_client)
@@ -96,8 +99,8 @@ class LocationSubscriber(MonitoringSubscriber):
     def __init__(self, nef_url: str,
                  nef_bearer_access_token: str,
                  folder_path_for_certificates_and_capif_api_key: str,
-                 capif_host:str,
-                 capif_https_port:int):
+                 capif_host: str,
+                 capif_https_port: int):
         """
             Initializes class LocationSubscriber.
             This SKD class allows you to track devices and retrieve updates about their location.
@@ -220,8 +223,8 @@ class ConnectionMonitor(MonitoringSubscriber):
                  nef_url: str,
                  nef_bearer_access_token: str,
                  folder_path_for_certificates_and_capif_api_key: str,
-                 capif_host:str,
-                 capif_https_port:int):
+                 capif_host: str,
+                 capif_https_port: int):
         """
             Initializes class ConnectionMonitor.
             Consider a scenario where a NetApp wants to monitor 100 devices in the 5G Network.
@@ -430,8 +433,8 @@ class QosAwareness:
     def __init__(self, nef_url: str,
                  nef_bearer_access_token: str,
                  folder_path_for_certificates_and_capif_api_key: str,
-                 capif_host:str,
-                 capif_https_port:int):
+                 capif_host: str,
+                 capif_https_port: int):
         """
         Initializes class QosAwareness.
         This SKD class allows you to request QoS from a set of standardized values for better service experience.
@@ -451,10 +454,13 @@ class QosAwareness:
         configuration = swagger_client.Configuration()
         configuration.host = nef_url
         configuration.access_token = nef_bearer_access_token
-        service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_capif_api_key,capif_host,capif_https_port)
+        service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_capif_api_key, capif_host,
+                                               capif_https_port)
         configuration.available_endpoints = {
-            "QOS_SUBSCRIPTIONS": service_discoverer.retrieve_specific_resource_name("/nef/api/v1/3gpp-as-session-with-qos/", "QOS_SUBSCRIPTIONS"),
-            "QOS_SUBSCRIPTION_SINGLE":  service_discoverer.retrieve_specific_resource_name("/nef/api/v1/3gpp-as-session-with-qos/", "QOS_SUBSCRIPTION_SINGLE")
+            "QOS_SUBSCRIPTIONS": service_discoverer.retrieve_specific_resource_name(
+                "/nef/api/v1/3gpp-as-session-with-qos/", "QOS_SUBSCRIPTIONS"),
+            "QOS_SUBSCRIPTION_SINGLE": service_discoverer.retrieve_specific_resource_name(
+                "/nef/api/v1/3gpp-as-session-with-qos/", "QOS_SUBSCRIPTION_SINGLE")
         }
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.qos_api = SessionWithQoSAPIApi(api_client)
@@ -744,7 +750,7 @@ class CAPIFInvokerConnector:
                  capif_netapp_username,
                  capif_netapp_password: str,
                  capif_callback_url: str,
-                 description:str,
+                 description: str,
                  csr_common_name: str,
                  csr_organizational_unit: str,
                  csr_organization: str,
@@ -757,7 +763,9 @@ class CAPIFInvokerConnector:
 
         :param folder_to_store_certificates: The folder where certificates will be stores. Your own certificate,
          along with the certificate root that will be retrieved by the CAPIF server
-        :param capif_url: The url of the CAPIF Server (Ex. http://locahost:8080 if you are running the docker container)
+        :param capif_host: The host of the CAPIF Server. It can be an ip or a domain name (Ex. localhost)
+        :param capif_http_port: The port of http port (if None is specified port 80 will be used)
+        :param capif_https_port: The port of https port (if None is specified port 443 will be used)
         :param capif_netapp_username: The CAPIF username of your netapp
         :param capif_netapp_password: The CAPIF password  of your netapp
         :param capif_callback_url: A url provided by you that will be used to receive HTTP POST notifications from CAPIF.
@@ -772,12 +780,21 @@ class CAPIFInvokerConnector:
         """
         # add the trailing slash if it is not already there using os.path.join
         self.folder_to_store_certificates = os.path.join(folder_to_store_certificates.strip(), '')
-        self.capif_http_url = "http://" + capif_host.strip() + ":" + str(capif_http_port) + "/"
-        self.capif_https_url = "https://" + capif_host.strip() + ":" + str(capif_https_port) + "/"
+        if len(capif_http_port) == 0 or int(capif_http_port) == 80:
+            self.capif_http_url = "http://" + capif_host.strip() + "/"
+        else:
+            self.capif_http_url = "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
+
+        if len(capif_https_port) == 0 or int(capif_https_port) == 443:
+            self.capif_https_url = "https://" + capif_host.strip() + "/"
+        else:
+            self.capif_https_url = "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
+
+
         self.capif_callback_url = self.__add_trailing_slash_to_url_if_missing(capif_callback_url.strip())
         self.capif_netapp_username = capif_netapp_username
         self.capif_netapp_password = capif_netapp_password
-        self.description =description
+        self.description = description
         self.csr_common_name = csr_common_name
         self.csr_organizational_unit = csr_organizational_unit
         self.csr_organization = csr_organization
@@ -790,7 +807,8 @@ class CAPIFInvokerConnector:
         if url[len(url) - 1] != "/":
             url = url + "/"
         return url
-    def register_and_onboard_netapp(self)->None:
+
+    def register_and_onboard_netapp(self) -> None:
         """
         Using this method a NetApp can get onboarded to CAPIF.
         After calling this method the following should happen:
@@ -800,18 +818,18 @@ class CAPIFInvokerConnector:
         These will be used  ServiceDiscoverer class in order to communicate with CAPIF and discover services
 
         """
-        public_key =self.__create_private_and_public_keys()
+        public_key = self.__create_private_and_public_keys()
         role = "invoker"
         registration_result = self.__register_to_capif(role)
         capif_onboarding_url = registration_result['ccf_onboarding_url']
         capif_discover_url = registration_result['ccf_discover_url']
         capif_access_token = self.__save_capif_ca_root_file_and_get_auth_token(role)
-        api_invoker_id= self.__onboard_netapp_to_capif_and_create_the_signed_certificate(public_key,
-                                                                                         capif_onboarding_url,
-                                                                                         capif_access_token)
+        api_invoker_id = self.__onboard_netapp_to_capif_and_create_the_signed_certificate(public_key,
+                                                                                          capif_onboarding_url,
+                                                                                          capif_access_token)
         self.__write_to_file(self.csr_common_name, api_invoker_id, capif_discover_url)
 
-    def __create_private_and_public_keys(self)->str:
+    def __create_private_and_public_keys(self) -> str:
         """
         Creates 2 keys in folder folder_to_store_certificates. A private.key and a cert_req.csr.
         :return: The contents of the public key
@@ -860,7 +878,7 @@ class CAPIFInvokerConnector:
         response.raise_for_status()
 
         response_payload = json.loads(response.text)
-        return  response_payload
+        return response_payload
 
     def __save_capif_ca_root_file_and_get_auth_token(self, role):
 
@@ -873,7 +891,7 @@ class CAPIFInvokerConnector:
 
         response = requests.request("POST",
                                     url,
-                                    headers={'Content-Type': 'application/json' },
+                                    headers={'Content-Type': 'application/json'},
                                     data=json.dumps(payload))
         response.raise_for_status()
         response_payload = json.loads(response.text)
@@ -881,14 +899,15 @@ class CAPIFInvokerConnector:
         ca_root_file.write(bytes(response_payload['ca_root'], 'utf-8'))
         return response_payload['access_token']
 
-    def __onboard_netapp_to_capif_and_create_the_signed_certificate(self, public_key, capif_onboarding_url, capif_access_token):
+    def __onboard_netapp_to_capif_and_create_the_signed_certificate(self, public_key, capif_onboarding_url,
+                                                                    capif_access_token):
         url = self.capif_https_url + capif_onboarding_url
         payload_dict = {
             "notificationDestination": self.capif_callback_url,
             "supportedFeatures": "fffffff",
             "apiInvokerInformation": self.csr_common_name,
             "websockNotifConfig": {
-                "requestWebsocketUri" : True,
+                "requestWebsocketUri": True,
                 "websocketUri": "websocketUri"
             },
             "onboardingInformation": {
@@ -905,10 +924,10 @@ class CAPIFInvokerConnector:
                                     url,
                                     headers=headers,
                                     data=payload,
-                                    verify=self.folder_to_store_certificates +'ca.crt')
+                                    verify=self.folder_to_store_certificates + 'ca.crt')
         response.raise_for_status()
         response_payload = json.loads(response.text)
-        certification_file = open(self.folder_to_store_certificates + self.csr_common_name +".crt", 'wb')
+        certification_file = open(self.folder_to_store_certificates + self.csr_common_name + ".crt", 'wb')
         certification_file.write(bytes(response_payload['onboardingInformation']['apiInvokerCertificate'], 'utf-8'))
         certification_file.close()
         return response_payload['apiInvokerId']
@@ -918,7 +937,7 @@ class CAPIFInvokerConnector:
             json.dump({
                 "csr_common_name": csr_common_name,
                 "api_invoker_id": api_invoker_id,
-                "discover_services_url":discover_services_url
+                "discover_services_url": discover_services_url
             }, outfile)
 
 
@@ -947,10 +966,19 @@ class CAPIFExposerConnector:
         """
         # add the trailing slash if it is not already there using os.path.join
         self.certificates_folder = os.path.join(certificates_folder.strip(), '')
-        self.description= description
-        self.csr_common_name= capif_netapp_username
-        self.capif_http_url = "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
-        self.capif_https_url = "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
+        self.description = description
+        self.csr_common_name = capif_netapp_username
+
+        if len(capif_http_port) == 0 or int(capif_http_port) == 80:
+            self.capif_http_url = "http://" + capif_host.strip() + "/"
+        else:
+            self.capif_http_url = "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
+
+        if len(capif_https_port) == 0 or int(capif_https_port) == 443:
+            self.capif_https_url = "https://" + capif_host.strip() + "/"
+        else:
+            self.capif_https_url = "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
+
         self.capif_netapp_username = capif_netapp_username
         self.capif_netapp_password = capif_netapp_password
 
@@ -963,8 +991,6 @@ class CAPIFExposerConnector:
         with open(self.certificates_folder + 'ca.crt', 'wb+') as ca_root:
             ca_root.write(bytes(response_payload['certificate'], 'utf-8'))
 
-
-
     def __onboard_exposer_to_capif(self, capif_registration_id, public_key, capif_onboarding_url):
         url = self.capif_https_url + capif_onboarding_url
         payload = {
@@ -974,7 +1000,7 @@ class CAPIFExposerConnector:
                     "apiProvFuncId": capif_registration_id,
                     "regInfo": {
                         "apiProvPubKey": public_key,
-                        "apiProvCert": "", # what is this?
+                        "apiProvCert": "",  # what is this?
                     },
                     "apiProvFuncRole": "AEF",
                     "apiProvFuncInfo": ""
@@ -985,15 +1011,15 @@ class CAPIFExposerConnector:
             "failReason": ""
         }
 
-        headers = { 'Content-Type': 'application/json'}
+        headers = {'Content-Type': 'application/json'}
 
         response = requests.request("POST",
                                     url,
                                     headers=headers,
                                     data=json.dumps(payload),
-                                    cert=(self.certificates_folder+ self.csr_common_name+'.crt',
+                                    cert=(self.certificates_folder + self.csr_common_name + '.crt',
                                           self.certificates_folder + 'private.key'),
-                                    verify= self.certificates_folder+'ca.crt')
+                                    verify=self.certificates_folder + 'ca.crt')
 
         response.raise_for_status()
         response_payload = json.loads(response.text)
@@ -1030,12 +1056,12 @@ class CAPIFExposerConnector:
 
         response = requests.request("POST",
                                     url,
-                                    headers={'Content-Type': 'application/json' },
+                                    headers={'Content-Type': 'application/json'},
                                     data=json.dumps(payload))
         response.raise_for_status()
         response_payload = json.loads(response.text)
 
-        with open(self.certificates_folder + self.csr_common_name +'.crt', 'wb+') as certification_file:
+        with open(self.certificates_folder + self.csr_common_name + '.crt', 'wb+') as certification_file:
             certification_file.write(bytes(response_payload['cert'], 'utf-8'))
 
         with open(self.certificates_folder + "private.key", 'wb+') as private_key_file:
@@ -1043,7 +1069,7 @@ class CAPIFExposerConnector:
 
         return response_payload
 
-    def __write_to_file(self,capif_registration_id,api_prov_dom_id, publish_url):
+    def __write_to_file(self, capif_registration_id, api_prov_dom_id, publish_url):
         with open(self.certificates_folder + "capif_exposer_details.json", "w") as outfile:
             json.dump({
                 "capif_registration_id": capif_registration_id,
@@ -1051,7 +1077,7 @@ class CAPIFExposerConnector:
                 "publish_url": publish_url
             }, outfile)
 
-    def register_and_onboard_exposer(self)->None:
+    def register_and_onboard_exposer(self) -> None:
         role = "exposer"
         self.__store_certificate_authority_file()
         registration_result = self.__register_to_capif(role)
@@ -1059,12 +1085,12 @@ class CAPIFExposerConnector:
         ccf_publish_url = registration_result['ccf_publish_url']
         capif_onboarding_url = registration_result['ccf_api_onboarding_url']
         authorization_result = self.__perform_authorization_and_store_ssl_keys(role)
-        public_key =  authorization_result['cert']
+        public_key = authorization_result['cert']
 
         api_prov_dom_id = self.__onboard_exposer_to_capif(capif_registration_id, public_key, capif_onboarding_url)
-        self.__write_to_file(capif_registration_id,api_prov_dom_id,ccf_publish_url)
+        self.__write_to_file(capif_registration_id, api_prov_dom_id, ccf_publish_url)
 
-    def publish_services(self,service_api_description_json_full_path)->None:
+    def publish_services(self, service_api_description_json_full_path) -> None:
         """
         :param service_api_description_json_full_path: The full path fo the service_api_description.json that contains
         the endpoints that will be published
@@ -1074,25 +1100,24 @@ class CAPIFExposerConnector:
             publish_url = file["publish_url"]
             api_prov_dom_id = file["api_prov_dom_id"]
 
-
         url = self.capif_https_url + publish_url
 
         with open(service_api_description_json_full_path, 'rb') as service_file:
-           data = json.load(service_file)
-           #todo: not sure if this is correct
-           for profile in data["aefProfiles"]:
-               profile["aefId"] = api_prov_dom_id
+            data = json.load(service_file)
+            # todo: not sure if this is correct
+            for profile in data["aefProfiles"]:
+                profile["aefId"] = api_prov_dom_id
 
-           response = requests.request("POST",
+            response = requests.request("POST",
                                         url,
                                         headers={'Content-Type': 'application/json'},
                                         data=json.dumps(data),
-                                        cert=(self.certificates_folder + self.csr_common_name +'.crt',
+                                        cert=(self.certificates_folder + self.csr_common_name + '.crt',
                                               self.certificates_folder + 'private.key'),
-                                        verify=self.certificates_folder+'ca.crt')
-           response.raise_for_status()
-           response_payload = json.loads(response.text)
-           return response_payload["apiId"]
+                                        verify=self.certificates_folder + 'ca.crt')
+            response.raise_for_status()
+            response_payload = json.loads(response.text)
+            return response_payload["apiId"]
 
 
 class ServiceDiscoverer:
@@ -1101,12 +1126,13 @@ class ServiceDiscoverer:
 
     def __init__(self,
                  folder_path_for_certificates_and_api_key: str,
-                 capif_host:str,
-                 capif_https_port:int
+                 capif_host: str,
+                 capif_https_port: int
                  ):
         self.capif_host = capif_host
         self.capif_https_port = capif_https_port
-        self.folder_to_store_certificates_and_api_key =  os.path.join(folder_path_for_certificates_and_api_key.strip(), '')
+        self.folder_to_store_certificates_and_api_key = os.path.join(folder_path_for_certificates_and_api_key.strip(),
+                                                                     '')
 
     def _add_trailing_slash_to_url_if_missing(self, url):
         if url[len(url) - 1] != "/":
@@ -1122,8 +1148,9 @@ class ServiceDiscoverer:
                                        capif_api_details["discover_services_url"],
                                        capif_api_details["api_invoker_id"])
 
-        signed_key_crt_path =self.folder_to_store_certificates_and_api_key + capif_api_details["csr_common_name"] + '.crt'
-        private_key_path = self.folder_to_store_certificates_and_api_key +'private.key'
+        signed_key_crt_path = self.folder_to_store_certificates_and_api_key + capif_api_details[
+            "csr_common_name"] + '.crt'
+        private_key_path = self.folder_to_store_certificates_and_api_key + 'private.key'
         ca_root_path = self.folder_to_store_certificates_and_api_key + 'ca.crt'
         response = requests.request("GET",
                                     url,
@@ -1136,7 +1163,7 @@ class ServiceDiscoverer:
         response_payload = json.loads(response.text)
         return response_payload
 
-    def retrieve_specific_resource_name(self, api_name,resource_name):
+    def retrieve_specific_resource_name(self, api_name, resource_name):
         """
         Can be used to locate specific resources inside APIS.
         For example the NEF emulator exposes an api with name "nef_emulator_endpoints" that contains two resources (two endpoints)
@@ -1144,34 +1171,26 @@ class ServiceDiscoverer:
         2. '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}' with resource name : MONITORING_SUBSCRIPTION_SINGLE
         """
         capif_apifs = self.discover_service_apis()
-        nef_endpoints = (list(filter(lambda api: api["api_name"] == api_name , capif_apifs)))
-        if len(nef_endpoints)== 0:
+        nef_endpoints = (list(filter(lambda api: api["api_name"] == api_name, capif_apifs)))
+        if len(nef_endpoints) == 0:
             raise ServiceDiscoverer.ServiceDiscovererException("Could not find available endpoints for api_name: "
                                                                + api_name + ".Make sure that a) your NetApp is registered and onboarded to CAPIF and b) the NEF emulator has been registered and onboarded to CAPIF")
         else:
             version_dictionary = nef_endpoints[0]["aef_profiles"][0]["versions"][0]
             version = version_dictionary["api_version"]
             resources = version_dictionary["resources"]
-            uris = (list(filter(lambda resource: resource["resource_name"] == resource_name , resources)))
+            uris = (list(filter(lambda resource: resource["resource_name"] == resource_name, resources)))
 
-            if len(uris)==0:
-                raise ServiceDiscoverer.ServiceDiscovererException("Could not find resource_name: "+ resource_name + "at api_name" + api_name)
+            if len(uris) == 0:
+                raise ServiceDiscoverer.ServiceDiscovererException(
+                    "Could not find resource_name: " + resource_name + "at api_name" + api_name)
             else:
                 uri = uris[0]["uri"]
-                #make sure the uri starts with /
+                # make sure the uri starts with /
                 if not uri.startswith('/'):
                     uri = "/" + uri
-                #make sure the API doesn't have a trailing /
+                # make sure the API doesn't have a trailing /
                 if api_name.endswith("/"):
                     api_name = api_name[:-1]
                 # construct the url
                 return api_name + "/" + version + uri
-
-
-
-
-
-
-
-
-
