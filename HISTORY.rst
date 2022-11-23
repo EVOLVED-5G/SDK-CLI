@@ -1,6 +1,18 @@
 =======
 History
 =======
+0.8.6 (2022-11-23)
+-------------------
+Update of the SDK library, on how the CAPIF endpoints are constructed.
+When connecting to CAPIF if standard ports are used (80,443) we now don't include them to the capif url/endpoint
+
+(ex. https://capifcore/register instead of https://capifcore:443/register)
+
+(ex. http://capifcore/register instead of  http://capifcore:80/register)
+
+If non standard ports are used (ex. 8080) then they are included in the capif url/endpoint
+(ex.http://capifcore:8080/register)
+
 0.8.5 (2022-10-27)
 -------------------
 * Update of the SDK library to be compatible with the latest release of NEF  v1.6.1
