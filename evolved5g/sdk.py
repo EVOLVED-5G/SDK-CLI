@@ -780,6 +780,9 @@ class CAPIFInvokerConnector:
         """
         # add the trailing slash if it is not already there using os.path.join
         self.folder_to_store_certificates = os.path.join(folder_to_store_certificates.strip(), '')
+        # make sure the parameters are str
+        capif_http_port = str(capif_http_port)
+        capif_https_port = str(capif_https_port)
         if len(capif_http_port) == 0 or int(capif_http_port) == 80:
             self.capif_http_url = "http://" + capif_host.strip() + "/"
         else:
@@ -968,7 +971,9 @@ class CAPIFExposerConnector:
         self.certificates_folder = os.path.join(certificates_folder.strip(), '')
         self.description = description
         self.csr_common_name = capif_netapp_username
-
+        # make sure the parameters are str
+        capif_http_port = str(capif_http_port)
+        capif_https_port = str(capif_https_port)
         if len(capif_http_port) == 0 or int(capif_http_port) == 80:
             self.capif_http_url = "http://" + capif_host.strip() + "/"
         else:
