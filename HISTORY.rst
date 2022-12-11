@@ -7,8 +7,8 @@ History
 0.8.7 (2022-11-23)
 -------------------
 * Update of the SDK library:
-**CAPIFExposerConnector and CAPIFInvokerConnector have capif_http_port and capif_https_port declared as "str" (via type hinting)
-If the developer passes the parameter as integer we make sure it's casted to string and the code does not fail
+    * CAPIFExposerConnector and CAPIFInvokerConnector have capif_http_port and capif_https_port declared as "str" (via type hinting)
+        If the developer passes the parameter as integer we make sure it's casted to string and the code does not fail
 
 0.8.6 (2022-11-23)
 -------------------
