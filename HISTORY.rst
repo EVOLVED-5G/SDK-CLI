@@ -1,23 +1,29 @@
 =======
 History
 =======
-0.8.7 (2024-11-23)
+0.8.8 (2022-12-09)
 -------------------
-Update of the SDK library:
-CAPIFExposerConnector and CAPIFInvokerConnector have capif_http_port and capif_https_port declared as "str" (via type hinting)
-If the developer passes the parameter as integer we make sure it's casted to string and the code does not fail
+* Update SDK documetation:
+    * Update documentation of the SDK libraries by updating the ConnectionMonitor Library information.
+    * Update SDK pipelines by updating the commands to run and check pipelines and adding new pipelines.
+    
+0.8.7 (2022-11-23)
+-------------------
+* Update of the SDK library:
+    * CAPIFExposerConnector and CAPIFInvokerConnector have capif_http_port and capif_https_port declared as "str" (via type hinting)
+    * If the developer passes the parameter as integer we make sure it's casted to string and the code does not fail
 
 0.8.6 (2022-11-23)
 -------------------
-Update of the SDK library, on how the CAPIF endpoints are constructed.
-When connecting to CAPIF if standard ports are used (80,443) we now don't include them to the capif url/endpoint
+* Update of the SDK library, on how the CAPIF endpoints are constructed.
+    * When connecting to CAPIF if standard ports are used (80,443) we now don't include them to the capif url/endpoint
 
-(ex. https://capifcore/register instead of https://capifcore:443/register)
+        * (ex. https://capifcore/register instead of https://capifcore:443/register)
 
-(ex. http://capifcore/register instead of  http://capifcore:80/register)
+        * (ex. http://capifcore/register instead of  http://capifcore:80/register)
 
-If non standard ports are used (ex. 8080) then they are included in the capif url/endpoint
-(ex.http://capifcore:8080/register)
+    * If non standard ports are used (ex. 8080) then they are included in the capif url/endpoint
+        * (ex.http://capifcore:8080/register)
 
 0.8.5 (2022-10-27)
 -------------------
