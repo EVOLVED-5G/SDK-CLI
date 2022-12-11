@@ -6,7 +6,7 @@ At the current release the SDK contains six classes
 
 * **LocationSubscriber**: allows you to track devices and retrieve updates about their location.You can use LocationSubscriber to create subscriptions, where each one of them can be used to track a device.
 * **QosAwareness**: allows you to request QoS from a set of standardized values for better service experience (Ex. TCP_BASED / LIVE Streaming / CONVERSATIONAL_VOICE etc). You can create subscriptions where each one of them has specific QoS parameters. A notification is sent back to the net-app if the QoS targets can no longer be full-filled.
-* **ConnectionMonitor**: allows you to monitor devices in the 5G Network. You this class to p can retrieve notifications by the 5G Network for individual devices when connection is lost (for example the user device has not been connected to the 5G network for the past 10 seconds) or when connection is alive (for example the user device has been connected to the 5G network for the past 10 seconds).
+* **ConnectionMonitor**: allows you to monitor devices in the 5G Network. You can use this class to retrieve notifications by the 5G Network for individual devices when connection is lost (for example the user device has not been connected to the 5G network for the past 10 seconds) or when connection is alive.
 * **CAPIFInvokerConnector** a low level class, that is used by the evolved-5G CLI in order to register NetApps to CAPIF
 * **CAPIFExposerConnector** a low level class, that allows an Exposer (like the NEF emulator) to register to CAPIF
 * **ServiceDiscoverer** allows NetApp developer to connect to CAPIF in order to discover services
@@ -76,3 +76,32 @@ or the
 (you should be able to retrieve notifications when the QoS thresholds can not be achieved, or have been restored)
 or the  `ConnectionMonitor example <https://github.com/EVOLVED-5G/SDK-CLI/blob/master/examples/connection_monitor_examples.py>`_
 (you should be able to retrieve notifications when user devices connect or disconnect to the netowrk,  printed in the terminal that runs the FLASK webserver)
+
+ConnectionMonitor Library
+----------------------------
+
+Overview
+###################
+ConnectionMonitor library supports two events as described briefly above. The first event is the loss of connectivity event where the network detects that a UE is no longer reachable for either signalling or user plane communication. The NetApp may provide a Maximum Detection Time, which indicates the maximum period of time without any communication with the UE (after the UE is considered to be unreachable by the network). The respective monitoring type enumeration and the maximum detection time parameter are shown below:
+
+.. code-block:: console
+
+   monitoring_type= ConnectionMonitor.MonitoringType.INFORM_WHEN_NOT_CONNECTED
+   wait_time_before_sending_notification_in_seconds=5
+
+The second event is the ue reachability event where the network detects when the UE becomes reachable (for sending downlink data or SMS to the UE). The monitoring type enumeration is shown below:
+
+.. code-block:: console
+
+   monitoring_type= ConnectionMonitor.MonitoringType.INFORM_WHEN_CONNECTED
+   
+Prerequisite
+###################
+ 
+❗An important prerequisite for the loss of connectivity event (INFORM_WHEN_NOT_CONNECTED) is that while a NetApp successfully receives the callback notification from the NEF Emulator, subsequently NEF expects an ``HTTP Response`` with the ``JSON`` content shown below:
+
+.. code-block:: console
+
+   {"ack" : "TRUE"}
+
+As a result, the developer should ensure that in the endpoint that is responsible for receiving the callback notifications (HTTP POST requests) from NEF, NetApp always returns the aforementioned acknowledgement, in ``JSON`` format.
