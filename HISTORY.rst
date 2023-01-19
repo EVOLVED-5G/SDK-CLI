@@ -1,12 +1,18 @@
 =======
 History
 =======
+0.8.9 (2023-01-03)
+-------------------
+* Bug fix on LocationSubscriber on method get_location_information.
+    * Previously when calling this method the response object returned two properties:  a) cell_id and b) enode_b_id.  enode_b_id has been dropped in latest versions of the NEF emulator so it was always returned as None by the SDK.
+    * With current version the following two properties are returned: a) cell_id and b) g_NB_Id
+
 0.8.8 (2022-12-09)
 -------------------
 * Update SDK documetation:
     * Update documentation of the SDK libraries by updating the ConnectionMonitor Library information.
     * Update SDK pipelines by updating the commands to run and check pipelines and adding new pipelines.
-    
+
 0.8.7 (2022-11-23)
 -------------------
 * Update of the SDK library:
