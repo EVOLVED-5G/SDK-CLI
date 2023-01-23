@@ -20,7 +20,12 @@ class CLI_helper:
         self.branch_cicd_repo = "develop"
         self.header = {"Content-Type": "application/json", "accept": "application/json", "Authorization": None}
         self.repository = "https://api.github.com/repos/EVOLVED-5G"
-        self.jenkinsjob = "003-NETAPPS/999-ToReview/"
+        self.jenkinsjob = {"bdd": "003-NETAPPS/999-ToReview/",
+                               "code_analysis": "003-NETAPPS/003-Helpers/001-Static Code Analysis",
+                               "capif_nef": "1001-DUMMY_NETAPP_VERIFICATION/test-dummy-netapp/verification-tests",
+                               "security_scan": ["003-NETAPPS/003-Helpers/002-Security Scan Code",
+                                                 "003-NETAPPS/003-Helpers/003-Security Scan Secrets",
+                                                 "003-NETAPPS/003-Helpers/004-Security Scan Docker Images"]}
 
     def generate(self, config_file):
         """Generate EVOLVED-5G compliant NetApp from template"""
@@ -37,49 +42,70 @@ class CLI_helper:
 
     def run_verification_tests(self, mode, repo):
         """Run the build pipeline for the EVOLVED-5G NetApp"""
-        r = requests.get(f"{self.repository}/{repo}")
-        repo_exist = r.json()
-        if "message" not in repo_exist:
-            try:
-                if mode == "build":
-                    self.header = {"content-Type": "application/json", "accept": "application/json",
-                                   "Authorization": self.generate_token()}
-                    data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob + mode + '", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '", "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '", "GIT_CICD_BRANCH": "' + self.branch_cicd_repo + '"} }'
-                    resp = requests.post(self.url_curl, headers=self.header, data=data)
-                    echo('Your pipeline ID is: %s' % resp.json()["id"])
-                elif mode == "deploy" or mode == "destroy":
-                    self.header = {"content-Type": "application/json", "accept": "application/json",
-                                   "Authorization": self.generate_token()}
-                    data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob + mode + '", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '", "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '", "GIT_CICD_BRANCH": "' + self.branch_cicd_repo + '"} }'
-                    resp = requests.post(self.url_curl, headers=self.header, data=data)
-                    echo('Your pipeline ID is: %s' % resp.json()["id"])
-                elif mode == "code_analysis":
-                    self.header = {"content-Type": "application/json", "accept": "application/json",
-                                   "Authorization": self.generate_token()}
-                    data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/001-Static Code Analysis", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
-                    resp = requests.post(self.url_curl, headers=self.header, data=data)
-                    echo('Your pipeline ID is: %s' % resp.json()["id"])
-                elif mode == "security_scan":
-                    self.header = {"content-Type": "application/json", "accept": "application/json",
-                                   "Authorization": self.generate_token()}
-                    data1 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/002-Security Scan Code", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
-                    data2 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/003-Security Scan Secrets", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
-                    data3 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "003-NETAPPS/003-Helpers/004-Security Scan Docker Images", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
-                    resp1 = requests.post(self.url_curl, headers=self.header, data=data1)
-                    resp2 = requests.post(self.url_curl, headers=self.header, data=data2)
-                    resp3 = requests.post(self.url_curl, headers=self.header, data=data3)
-                    echo('Your pipeline ID is: %s' % resp1.json()["id"])
-                    echo('Your pipeline ID is: %s' % resp2.json()["id"])
-                    echo('Your pipeline ID is: %s' % resp3.json()["id"])
-                else:
 
-                    echo(f"The {mode} you have chosen does not exist, please check the modes and try again")
-
-            except TypeError as e:
-                echo("Please enter the correct command: evolved5g run_pipeline --mode build --repo REPOSITORY_NAME")
+        if repo is None:
+            echo ("'None' value provided.\nPlease enter the correct command: evolved5g run-verification-tests --mode build --repo REPOSITORY_NAME")
         else:
-            echo(
-                f"The {repo} repository you have chosen does not exist, please check the name you typed and try again.")
+            r = requests.get(f"{self.repository}/{repo}")
+            repo_exist = r.json()
+
+            if "message" not in repo_exist:
+                try:
+                    if mode == "build":
+                        self.header = {"content-Type": "application/json", "accept": "application/json",
+                                       "Authorization": self.generate_token()}
+                        data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["bdd"] + mode + '", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '", "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '", "GIT_CICD_BRANCH": "' + self.branch_cicd_repo + '"} }'
+                        resp = requests.post(self.url_curl, headers=self.header, data=data)
+                        
+                        echo(f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}.")
+                    elif mode == "deploy":
+                        self.header = {"content-Type": "application/json", "accept": "application/json",
+                                       "Authorization": self.generate_token()}
+                        data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["bdd"] + mode + '", "parameters": { "GIT_CICD_BRANCH": "' + self.branch_cicd_repo + '", "APP_REPLICAS": "1", "DEPLOYMENT_NAME": "' + repo + '", "DEPLOYMENT": "openshift" } }'
+                        resp = requests.post(self.url_curl, headers=self.header, data=data)
+
+                        echo(f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}.")
+                    elif mode == "destroy":
+                        self.header = {"content-Type": "application/json", "accept": "application/json",
+                                       "Authorization": self.generate_token()}
+                        data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["bdd"] + mode + '", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '", "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '", "GIT_CICD_BRANCH": "' + self.branch_cicd_repo + '"} }'
+                        resp = requests.post(self.url_curl, headers=self.header, data=data)
+
+                        echo(f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}.")
+                    elif mode == "code_analysis":
+                        self.header = {"content-Type": "application/json", "accept": "application/json",
+                                       "Authorization": self.generate_token()}
+                        data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["code_analysis"] + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
+                        resp = requests.post(self.url_curl, headers=self.header, data=data)
+
+                        echo(f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}.")
+                    elif mode == "security_scan":
+                        self.header = {"content-Type": "application/json", "accept": "application/json",
+                                       "Authorization": self.generate_token()}
+                        data1 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["security_scan"][0] + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
+                        data2 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["security_scan"][1] + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
+                        data3 = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["security_scan"][2] + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
+                        resp1 = requests.post(self.url_curl, headers=self.header, data=data1)
+                        resp2 = requests.post(self.url_curl, headers=self.header, data=data2)
+                        resp3 = requests.post(self.url_curl, headers=self.header, data=data3)
+
+                        echo(f"Your pipeline ID is: {resp1.json()['id']} and the actual status is: {resp1.json()['status']}.")
+                        echo(f"Your pipeline ID is: {resp2.json()['id']} and the actual status is: {resp2.json()['status']}.")
+                        echo(f"Your pipeline ID is: {resp3.json()['id']} and the actual status is: {resp3.json()['status']}.")
+                    elif mode == "capif_nef":
+                        self.header = {"content-Type": "application/json", "accept": "application/json",
+                                       "Authorization": self.generate_token()}
+                        data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["capif_nef"] + '", "parameters": { "NetApp_repo": "' + repo + '","NetApp_repo_branch": "' + self.netapp_branch + '", "ROBOT_DOCKER_IMAGE_NAME": "dockerhub.hi.inet/dummy-netapp-testing/robot-test-image", "ROBOT_DOCKER_IMAGE_VERSION": "3.1.1"} }'
+                        resp = requests.post(self.url_curl, headers=self.header, data=data)
+
+                        echo(f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}.")
+                    else:
+                        echo(f"The {mode} you have chosen does not exist, please check the modes and try again")
+
+                except ValueError as e:
+                    echo("Please enter the correct command: evolved5g run-verification-tests --mode build --repo REPOSITORY_NAME")
+            else:
+                echo(f"The {repo} repository you have chosen does not exist, please check the name you typed and try again.")
 
     def check_job(self, id):
 
@@ -104,7 +130,7 @@ class CLI_helper:
                     elif "] stage" in element:
                         echo(element)
         except ValueError as e:
-            echo("Please add the ID: evolved5g check-pipeline --id <yourID>")
+            echo("Please add the ID: evolved5g check-job --id <yourID>")
 
     def register_and_onboard_to_capif(self, config_file_full_path: str) -> None:
         with open(config_file_full_path, 'r') as openfile:
