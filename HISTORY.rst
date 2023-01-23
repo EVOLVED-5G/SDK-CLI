@@ -6,8 +6,9 @@ History
 * Bug fix on LocationSubscriber on method get_location_information.
     * Previously when calling this method the response object returned two properties:  a) cell_id and b) enode_b_id.  enode_b_id has been dropped in latest versions of the NEF emulator so it was always returned as None by the SDK.
     * With current version the following two properties are returned: a) cell_id and b) g_NB_Id
-* New deploy pipeline integrated.
-* Documentation updated.
+* New deploy pipeline updated and integrated.
+* Added new verification tests CAPIF and NEF.
+* Documentation updated including new verification tests CAPIF and NEF.
 
 0.8.8 (2022-12-09)
 -------------------

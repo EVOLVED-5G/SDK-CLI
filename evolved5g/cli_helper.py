@@ -56,24 +56,28 @@ class CLI_helper:
                                        "Authorization": self.generate_token()}
                         data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["bdd"] + mode + '", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '", "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '", "GIT_CICD_BRANCH": "' + self.branch_cicd_repo + '"} }'
                         resp = requests.post(self.url_curl, headers=self.header, data=data)
+                        
                         echo(f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}.")
                     elif mode == "deploy":
                         self.header = {"content-Type": "application/json", "accept": "application/json",
                                        "Authorization": self.generate_token()}
                         data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["bdd"] + mode + '", "parameters": { "GIT_CICD_BRANCH": "' + self.branch_cicd_repo + '", "APP_REPLICAS": "1", "DEPLOYMENT_NAME": "' + repo + '", "DEPLOYMENT": "openshift" } }'
                         resp = requests.post(self.url_curl, headers=self.header, data=data)
+
                         echo(f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}.")
                     elif mode == "destroy":
                         self.header = {"content-Type": "application/json", "accept": "application/json",
                                        "Authorization": self.generate_token()}
                         data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["bdd"] + mode + '", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '", "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '", "GIT_CICD_BRANCH": "' + self.branch_cicd_repo + '"} }'
                         resp = requests.post(self.url_curl, headers=self.header, data=data)
+
                         echo(f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}.")
                     elif mode == "code_analysis":
                         self.header = {"content-Type": "application/json", "accept": "application/json",
                                        "Authorization": self.generate_token()}
                         data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["code_analysis"] + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/' + repo + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "' + self.netapp_branch + '"} }'
                         resp = requests.post(self.url_curl, headers=self.header, data=data)
+
                         echo(f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}.")
                     elif mode == "security_scan":
                         self.header = {"content-Type": "application/json", "accept": "application/json",
@@ -84,9 +88,17 @@ class CLI_helper:
                         resp1 = requests.post(self.url_curl, headers=self.header, data=data1)
                         resp2 = requests.post(self.url_curl, headers=self.header, data=data2)
                         resp3 = requests.post(self.url_curl, headers=self.header, data=data3)
+
                         echo(f"Your pipeline ID is: {resp1.json()['id']} and the actual status is: {resp1.json()['status']}.")
                         echo(f"Your pipeline ID is: {resp2.json()['id']} and the actual status is: {resp2.json()['status']}.")
                         echo(f"Your pipeline ID is: {resp3.json()['id']} and the actual status is: {resp3.json()['status']}.")
+                    elif mode == "capif_nef":
+                        self.header = {"content-Type": "application/json", "accept": "application/json",
+                                       "Authorization": self.generate_token()}
+                        data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "1001-DUMMY_NETAPP_VERIFICATION/test-dummy-netapp/verification-tests", "parameters": { "NetApp_repo": "' + repo + '","NetApp_repo_branch": "' + self.netapp_branch + '", "ROBOT_DOCKER_IMAGE_NAME": "dockerhub.hi.inet/dummy-netapp-testing/robot-test-image", "ROBOT_DOCKER_IMAGE_VERSION": "3.1.1"} }'
+                        resp = requests.post(self.url_curl, headers=self.header, data=data)
+
+                        echo(f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}.")
                     else:
                         echo(f"The {mode} you have chosen does not exist, please check the modes and try again")
 
