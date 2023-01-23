@@ -29,7 +29,7 @@ Examples of usage
 
 .. code-block:: console
 
-    evolved5g check-pipeline --id YOUR_ID
+    evolved5g check-job --id YOUR_ID
 
 The pipelines build, deploy, destroy, code_analysis or security_scan will return an **ID** which can be used with the command :py:func:`check-job` to see how the NetApp is performing.
 

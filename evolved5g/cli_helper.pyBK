@@ -42,13 +42,11 @@ class CLI_helper:
 
     def run_verification_tests(self, mode, repo):
         """Run the build pipeline for the EVOLVED-5G NetApp"""
-
-        if repo is None:
-            echo ("'None' value provided.\nPlease enter the correct command: evolved5g run-verification-tests --mode build --repo REPOSITORY_NAME")
-        else:
-            r = requests.get(f"{self.repository}/{repo}")
-            repo_exist = r.json()
-
+        r = requests.get(f"{self.repository}/{repo}")
+        repo_exist = r.json()
+        print ("hello!")
+        try:
+            print ("hello1")
             if "message" not in repo_exist:
                 try:
                     if mode == "build":
@@ -88,12 +86,16 @@ class CLI_helper:
                         echo(f"Your pipeline ID is: {resp2.json()['id']} and the actual status is: {resp2.json()['status']}.")
                         echo(f"Your pipeline ID is: {resp3.json()['id']} and the actual status is: {resp3.json()['status']}.")
                     else:
+
                         echo(f"The {mode} you have chosen does not exist, please check the modes and try again")
 
                 except ValueError as e:
                     echo("Please enter the correct command: evolved5g run-verification-tests --mode build --repo REPOSITORY_NAME")
             else:
-                echo(f"The {repo} repository you have chosen does not exist, please check the name you typed and try again.")
+                echo(
+                    f"The {repo} repository you have chosen does not exist, please check the name you typed and try again.")
+        except TypeError as e:
+            echo("Please enter the correct command: evolved5g run-verification-tests --mode build --repo REPOSITORY_NAME")
 
     def check_job(self, id):
 
