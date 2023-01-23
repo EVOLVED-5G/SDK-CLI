@@ -21,7 +21,7 @@ def generate(ctx,config_file):
     ctx.obj["helper"].generate(config_file)
 
 @cli.command()
-@click.option('--mode',type=click.Choice(['build', 'deploy','destroy', 'code_analysis', 'security_scan'], case_sensitive=False))
+@click.option('--mode',type=click.Choice(['build', 'deploy','destroy', 'capif_nef', 'code_analysis', 'security_scan'], case_sensitive=False))
 @click.option('--repo',type=str, help='Enter repo name')
 
 @click.pass_context
