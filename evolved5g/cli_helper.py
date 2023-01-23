@@ -95,7 +95,7 @@ class CLI_helper:
                     elif mode == "capif_nef":
                         self.header = {"content-Type": "application/json", "accept": "application/json",
                                        "Authorization": self.generate_token()}
-                        data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "1001-DUMMY_NETAPP_VERIFICATION/test-dummy-netapp/verification-tests", "parameters": { "NetApp_repo": "' + repo + '","NetApp_repo_branch": "' + self.netapp_branch + '", "ROBOT_DOCKER_IMAGE_NAME": "dockerhub.hi.inet/dummy-netapp-testing/robot-test-image", "ROBOT_DOCKER_IMAGE_VERSION": "3.1.1"} }'
+                        data = '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "' + self.jenkinsjob["capif_nef"] + '", "parameters": { "NetApp_repo": "' + repo + '","NetApp_repo_branch": "' + self.netapp_branch + '", "ROBOT_DOCKER_IMAGE_NAME": "dockerhub.hi.inet/dummy-netapp-testing/robot-test-image", "ROBOT_DOCKER_IMAGE_VERSION": "3.1.1"} }'
                         resp = requests.post(self.url_curl, headers=self.header, data=data)
 
                         echo(f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}.")
