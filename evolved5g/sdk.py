@@ -35,6 +35,8 @@ from OpenSSL.crypto import (
 )
 import requests
 import json
+from uuid import uuid4
+import warnings
 
 
 class MonitoringSubscriber(ABC):
@@ -1516,11 +1518,67 @@ class TSNManager:
         self.tsn_https_port = tsn_https_port
         self.endpoints_prefix = "api/v1"
 
-    def get_tsn_profiles(self) -> dict[list[str]]:  # TODO return a class
+    class NetappTrafficIdentifier:
+        def __init__(self, netapp_name: str):
+            self.netapp_name = netapp_name
+            self.__identifier = self.__generate_random_identifier()
+
+        def __generate_random_identifier(self):
+            return "{netapp_name}_{random_uuid}".format(
+                netapp_name=self.netapp_name, random_uuid=uuid4().hex
+            )
+
+        def value(self):
+            return self.__identifier
+
+    class TSNProfile:
+        def __init__(self, tsn_manager, profile_name):
+            self.tsn_manager = tsn_manager
+            self.name = profile_name
+            self.configuration = self.get_configuration_for_tsn_profile()
+
+        class TSNProfileConfiguration:
+            def __init__(self, parameters_dict):
+                parameters_dict = {"requests_per_minute": 10, "requests_per_sec": 3}
+                for (
+                    profile_parameter_name,
+                    profile_parameter_value,
+                ) in parameters_dict.items():
+                    setattr(self, profile_parameter_name, profile_parameter_value)
+
+            def get_profile_configuration_parameters(self):
+                return vars(self)
+
+        def get_configuration_for_tsn_profile(
+            self,
+        ) -> TSNProfileConfiguration:
+            """
+            Returns the configuration parameters of the selected time-sensitive networking (TSN) profile. Note: the
+            profile_name must belong in the list of available profiles retrieved via the "get_tsn_profiles" function of
+            TSNManager
+
+            :return: the default configuration for <profile_name>
+            """
+            url = "{protocol}://{hostname_port}".format(
+                protocol="https" if self.tsn_manager.https else "http",
+                hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
+                    host=self.tsn_manager.tsn_https_host,
+                    port=str(self.tsn_manager.tsn_https_port),
+                    prefix=self.tsn_manager.endpoints_prefix,
+                    route_name="profile",
+                    profile_name=self.name,
+                ),
+            )
+            response = requests.get(url=url, headers={"Accept": "application/json"})
+            response.raise_for_status()
+            parameters_dict = json.loads(response.text)[self.name]
+            return self.TSNProfileConfiguration(parameters_dict)
+
+    def get_tsn_profiles(self) -> [TSNProfile]:
         """
         Returns the names of supported time-sensitive networking (TSN) profiles.
 
-        :return: a list of supported TSN profile names
+        :return: a list of supported TSN profiles
         """
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
@@ -1533,44 +1591,23 @@ class TSNManager:
         )
         response = requests.get(url=url, headers={"Accept": "application/json"})
         response.raise_for_status()
-        return json.loads(response.text)
+        response_dict = json.loads(response.text)
+        return [
+            self.TSNProfile(tsn_manager=self, profile_name=name)
+            for name in response_dict["profiles"]
+        ]
 
-    def get_configuration_for_tsn_profile(
-        self, profile_name: str
-    ) -> dict[dict]:  # TODO class
-        """
-        Returns the configuration parameters of the selected time-sensitive networking (TSN) profile. Note: the
-        profile_name must belong in the list of available profiles retrieved via the "get_tsn_profiles_ function of
-        TSNManager
-
-        :param profile_name: a supported profile name
-        :return: the default configuration values for <profile_name>
-        """
-        url = "{protocol}://{hostname_port}".format(
-            protocol="https" if self.https else "http",
-            hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-                host=self.tsn_https_host,
-                port=str(self.tsn_https_port),
-                prefix=self.endpoints_prefix,
-                route_name="profile",
-                profile_name=profile_name,
-            ),
-        )
-        response = requests.get(url=url, headers={"Accept": "application/json"})
-        response.raise_for_status()
-        return json.loads(response.text)
-
-    def apply_tsn_profile_to_traffic_identifier(
+    def apply_tsn_profile_to_netapp(
         self,
-        traffic_identifier: str | int,
-        profile_name: str,
-    ) -> dict:
+        netapp_traffic_identifier: NetappTrafficIdentifier,
+        profile: TSNProfile,
+    ) -> str:
         """
         Applies the default TSN configuration of the profile to the network packets specified by <traffic_identifier>.
 
-        :param traffic_identifier: identifier of the packets that will be configured.
-        :param profile_name: the profile name whose configuration will be applied to the packages tagged with <param_traffic_identifier>
-        :return: contains the clearance_token which can be used to clear the configuration from <traffic_identifier>
+        :param netapp_traffic_identifier: identifier of the packets that will be configured.
+        :param profile: the profile whose configuration will be applied to the packages tagged with <param_traffic_identifier>
+        :return: returns the clearance_token which can be used to clear the configuration from <traffic_identifier>
         """
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
@@ -1579,12 +1616,12 @@ class TSNManager:
                 port=str(self.tsn_https_port),
                 prefix=self.endpoints_prefix,
                 route_name="apply",
-                profile_name=profile_name,
+                profile_name=profile.name,
             ),
         )
         data = {
-            "identifier": traffic_identifier,
-            "profile": profile_name,
+            "identifier": netapp_traffic_identifier.value(),
+            "profile": profile.name,
             "overrides": None,
         }
         response = requests.post(
@@ -1592,32 +1629,28 @@ class TSNManager:
         )
         response.raise_for_status()
         response = json.loads(response.text)
-        response["clearance_token"] = response.pop("token")
-        return response
+        return response["token"]
 
-    # '''
-    # TODO
-    # Generate traffic identifier function
-    # returns a class
-    # GenerateFunc(netapp_name) -> netapp_name+ (random_guid)
-    # '''
-    def apply_modified_profile_to_traffic_identifier(
+    def apply_profile_with_overriden_parameters_to_netapp(
         self,
-        traffic_identifier: str | int,  # TODO: class
-        base_profile_name: str,
+        netapp_traffic_identifier: NetappTrafficIdentifier,
+        base_profile: TSNProfile,
         modified_params: dict,
-    ) -> dict:
+    ) -> str:
         """
         Overrides the default parameters of the TSN profile, and applies it to the packets specified by
         <traffic_identifier>.
 
-        :param traffic_identifier: identifier of the packets that will be configured.
+        :param netapp_traffic_identifier: identifier of the packets that will be configured.
         :param base_profile_name: the profile name whose configuration will be applied to the packages tagged with <param_traffic_identifier>
         :param modified_params: A dictionary of values that will be overriden from the used profile. May be empty.
         :return: dictionary containing the clearance_token which can be used to clear the configuration from <traffic_identifier>
         """
         if not modified_params:
-            return self.get_configuration_for_tsn_profile(base_profile_name)
+            return self.apply_tsn_profile_to_netapp(
+                netapp_traffic_identifier=netapp_traffic_identifier,
+                profile=base_profile,
+            )
 
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
@@ -1626,12 +1659,25 @@ class TSNManager:
                 port=str(self.tsn_https_port),
                 prefix=self.endpoints_prefix,
                 route_name="apply",
-                profile_name=base_profile_name,
+                profile_name=base_profile.name,
             ),
         )
+        profile_base_params = (
+            base_profile.get_configuration_for_tsn_profile().get_profile_configuration_parameters()
+        )
+        for param_to_override, new_param_value in modified_params.items():
+            try:
+                _ = profile_base_params[param_to_override]
+            except KeyError:
+                warnings.warn(
+                    f'parameter value of "{param_to_override}" has no effect since it is not a configuration parameter '
+                    f'of the base profile "{base_profile.name}".\nOverridable parameters are '
+                    f'the following [{",".join(profile_base_params.keys())}]'
+                )
+
         data = {
-            "identifier": traffic_identifier,
-            "profile": base_profile_name,
+            "identifier": netapp_traffic_identifier.value(),
+            "profile": base_profile.name,
             "overrides": modified_params,
         }
         response = requests.post(
@@ -1639,22 +1685,14 @@ class TSNManager:
         )
         response.raise_for_status()
         response = json.loads(response.text)
-        response["clearance_token"] = response.pop("token")
-        try:
-            assert (
-                response["message"] == "Success" or response.status_code == 200
-            )  # TODO
-            return response["token"]
-        except AssertionError:
-            return ""  # TODO
-        return response
+        return response["token"]
 
     def clear_profile_for_traffic_identifier(
-        self, traffic_identifier: str | int, clearance_token: str
+        self, netapp_traffic_identifier: NetappTrafficIdentifier, clearance_token: str
     ) -> dict:
         """
         Disables a previously applied configuration, for the selected traffic identifier.
-        :param traffic_identifier: identifier of the packets that will be configured.
+        :param netapp_traffic_identifier: identifier of the packets that will be configured.
         :param clearance_token: Random value returned by the application of a profile, used to configure <traffic_identifier>
         :return: success or error message with a detailed explanation
         """
@@ -1668,7 +1706,7 @@ class TSNManager:
             ),
         )
         data = {
-            "identifier": traffic_identifier,
+            "identifier": netapp_traffic_identifier.value(),
             "token": clearance_token,
         }
         response = requests.post(
@@ -1680,26 +1718,28 @@ class TSNManager:
 
 if __name__ == "__main__":  # TODO MOVE TO examples/tsn...
     tsn = TSNManager(https=False, tsn_https_host="localhost", tsn_https_port=5000)
-    ret = tsn.get_tsn_profiles()
-    identifier = "test"
-    for profile in ret["profiles"]:
-        print(profile)
-        configuration = tsn.get_configuration_for_tsn_profile(profile_name=profile)
-        print(configuration, type(configuration))
-        token = tsn.apply_tsn_profile_to_traffic_identifier(
-            profile_name=profile, traffic_identifier=identifier
-        )["clearance_token"]
+    profiles = tsn.get_tsn_profiles()
+    netapp_name = "test_netapp"
+    netapp_identifier = tsn.NetappTrafficIdentifier(netapp_name=netapp_name)
+    for profile in profiles:
+
+        configuration = profile.get_configuration_for_tsn_profile()
+        print(configuration.get_profile_configuration_parameters())
+        token = tsn.apply_tsn_profile_to_netapp(
+            profile=profile, netapp_traffic_identifier=netapp_identifier
+        )
+
         clear_response = tsn.clear_profile_for_traffic_identifier(
-            traffic_identifier=identifier, clearance_token=token
+            netapp_traffic_identifier=netapp_identifier, clearance_token=token
         )
         print(clear_response)
-        token = tsn.apply_modified_profile_to_traffic_identifier(
-            traffic_identifier=identifier,
-            base_profile_name=profile,
-            modified_params={"what": "ever"},
-        )["clearance_token"]
+        token = tsn.apply_profile_with_overriden_parameters_to_netapp(
+            netapp_traffic_identifier=netapp_identifier,
+            base_profile=profile,
+            modified_params={"requests_per_minute": 10},
+        )
 
         clear_response_2 = tsn.clear_profile_for_traffic_identifier(
-            traffic_identifier=identifier, clearance_token=token
+            netapp_traffic_identifier=netapp_identifier, clearance_token=token
         )
         print(clear_response_2)
