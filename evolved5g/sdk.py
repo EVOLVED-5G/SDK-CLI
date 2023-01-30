@@ -1539,7 +1539,6 @@ class TSNManager:
 
         class TSNProfileConfiguration:
             def __init__(self, parameters_dict):
-                # parameters_dict = {"requests_per_minute": 10, "requests_per_sec": 3}
                 for (
                     profile_parameter_name,
                     profile_parameter_value,
@@ -1553,11 +1552,9 @@ class TSNManager:
             self,
         ) -> TSNProfileConfiguration:
             """
-            Returns the configuration parameters of the selected time-sensitive networking (TSN) profile. Note: the
-            profile_name must belong in the list of available profiles retrieved via the "get_tsn_profiles" function of
-            TSNManager
+            Returns the configuration parameters of the selected time-sensitive networking (TSN) profile.
 
-            :return: the default configuration for <profile_name>
+            :return: the default TSN profile configuration
             """
             url = "{protocol}://{hostname_port}".format(
                 protocol="https" if self.tsn_manager.https else "http",
@@ -1578,7 +1575,8 @@ class TSNManager:
         """
         Returns the names of supported time-sensitive networking (TSN) profiles.
 
-        :return: a list of supported TSN profiles
+        :return: a list of TSN profiles. Each TSN profile is a TSNProfile class.
+
         """
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
@@ -1603,11 +1601,11 @@ class TSNManager:
         profile: TSNProfile,
     ) -> str:
         """
-        Applies the default TSN configuration of the profile to the network packets specified by <traffic_identifier>.
+        Applies the time-sensitive networking (TSN) profile to the NetApp specified by <netapp_traffic_identifier>
 
-        :param netapp_traffic_identifier: identifier of the packets that will be configured.
-        :param profile: the profile whose configuration will be applied to the packages tagged with <param_traffic_identifier>
-        :return: returns the clearance_token which can be used to clear the configuration from <traffic_identifier>
+        :param netapp_traffic_identifier: the TSN identifier class of the NetApp
+        :param profile: the TSN profile whose configuration will be applied to the NetApp
+        :return: token which can be used to clear the configuration from the NetApp
         """
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
@@ -1638,13 +1636,14 @@ class TSNManager:
         modified_params: dict,
     ) -> str:
         """
-        Overrides the default parameters of the TSN profile, and applies it to the packets specified by
-        <traffic_identifier>.
+        Overrides the default parameters of the time-sensitive networking (TSN) profile, and applies it to the NetApp
+        specified by <traffic_identifier>.
 
-        :param netapp_traffic_identifier: identifier of the packets that will be configured.
-        :param base_profile_name: the profile name whose configuration will be applied to the packages tagged with <param_traffic_identifier>
-        :param modified_params: A dictionary of values that will be overriden from the used profile. May be empty.
-        :return: dictionary containing the clearance_token which can be used to clear the configuration from <traffic_identifier>
+
+        :param netapp_traffic_identifier: the TSN identifier class of the NetApp
+        :param base_profile: the profile class whose configuration will be applied to the NetApp
+        :param modified_params: Dict of param-value pairs that will override the default configuration of the TSN profile
+        :return token used to clear the applied TSN configuration from the NetApp
         """
         if not modified_params:
             return self.apply_tsn_profile_to_netapp(
@@ -1691,10 +1690,11 @@ class TSNManager:
         self, netapp_traffic_identifier: NetappTrafficIdentifier, clearance_token: str
     ) -> None:
         """
-        Disables a previously applied configuration, for the selected traffic identifier.
-        :param netapp_traffic_identifier: identifier of the packets that will be configured.
-        :param clearance_token: Random value returned by the application of a profile, used to configure <traffic_identifier>
-        :return: success or error message with a detailed explanation
+        Disables a previously applied configuration for the selected NetApp
+
+
+        :param netapp_traffic_identifier: the TSN identifier class of the NetApp
+        :param clearance_token: used to clear the applied TSN configuration from the NetApp
         """
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
@@ -1713,5 +1713,4 @@ class TSNManager:
             url=url, json=data, headers={"Content-type": "application/json"}
         )
         response.raise_for_status()
-        # TODO
         assert "success" in json.loads(response.text)["message"]
