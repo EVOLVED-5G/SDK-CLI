@@ -1539,7 +1539,7 @@ class TSNManager:
 
         class TSNProfileConfiguration:
             def __init__(self, parameters_dict):
-                parameters_dict = {"requests_per_minute": 10, "requests_per_sec": 3}
+                # parameters_dict = {"requests_per_minute": 10, "requests_per_sec": 3}
                 for (
                     profile_parameter_name,
                     profile_parameter_value,
@@ -1689,7 +1689,7 @@ class TSNManager:
 
     def clear_profile_for_traffic_identifier(
         self, netapp_traffic_identifier: NetappTrafficIdentifier, clearance_token: str
-    ) -> dict:
+    ) -> None:
         """
         Disables a previously applied configuration, for the selected traffic identifier.
         :param netapp_traffic_identifier: identifier of the packets that will be configured.
@@ -1713,33 +1713,5 @@ class TSNManager:
             url=url, json=data, headers={"Content-type": "application/json"}
         )
         response.raise_for_status()
-        return json.loads(response.text)
-
-
-if __name__ == "__main__":  # TODO MOVE TO examples/tsn...
-    tsn = TSNManager(https=False, tsn_https_host="localhost", tsn_https_port=5000)
-    profiles = tsn.get_tsn_profiles()
-    netapp_name = "test_netapp"
-    netapp_identifier = tsn.NetappTrafficIdentifier(netapp_name=netapp_name)
-    for profile in profiles:
-
-        configuration = profile.get_configuration_for_tsn_profile()
-        print(configuration.get_profile_configuration_parameters())
-        token = tsn.apply_tsn_profile_to_netapp(
-            profile=profile, netapp_traffic_identifier=netapp_identifier
-        )
-
-        clear_response = tsn.clear_profile_for_traffic_identifier(
-            netapp_traffic_identifier=netapp_identifier, clearance_token=token
-        )
-        print(clear_response)
-        token = tsn.apply_profile_with_overriden_parameters_to_netapp(
-            netapp_traffic_identifier=netapp_identifier,
-            base_profile=profile,
-            modified_params={"requests_per_minute": 10},
-        )
-
-        clear_response_2 = tsn.clear_profile_for_traffic_identifier(
-            netapp_traffic_identifier=netapp_identifier, clearance_token=token
-        )
-        print(clear_response_2)
+        # TODO
+        assert "success" in json.loads(response.text)["message"]
