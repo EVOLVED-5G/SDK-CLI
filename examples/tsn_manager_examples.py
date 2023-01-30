@@ -1,20 +1,24 @@
 import random
-
 from evolved5g.sdk import TSNManager
 
 
-tsn_https_host = "localhost"
-tsn_https_port = 5000
-netapp_name_ids = {}
-netapp_ids_tokens = {}
-netapp_name = "MyNetapp"
-tsn = TSNManager(
+tsn_https_host = "localhost"  # TSN server hostname
+tsn_https_port = 5000  # TSN server port
+netapp_name_ids = {}  # Stores the generated TNS identifiers for each NetApp
+netapp_ids_tokens = (
+    {}
+)  # Stores the clearance token of each profile application to a NetApp
+netapp_name = "MyNetapp"  # The name of our NetApp
+
+tsn = TSNManager(  # Initialization of the TNSManager
     https=False, tsn_https_host=tsn_https_host, tsn_https_port=tsn_https_port
 )
 
 
 def showcase_get_tsn_profiles():
-
+    """
+    Demonstrates how to retrieve information on all the available TSN profiles
+    """
     profiles = tsn.get_tsn_profiles()
     for profile in profiles:
         profile_configuration = profile.get_configuration_for_tsn_profile()
@@ -27,7 +31,9 @@ def showcase_get_tsn_profiles():
 
 
 def showcase_apply_tsn_profile_to_netapp():
-
+    """
+    Demonstrates how to apply a TSN profile configuration to a NetApp
+    """
     profiles = tsn.get_tsn_profiles()
     random.seed(1131)
     profile_to_apply = random.choice(profiles)
@@ -51,16 +57,23 @@ def showcase_apply_tsn_profile_to_netapp():
     netapp_ids_tokens[netapp_identifier.value()] = clearance_token
 
 
-def showcase_clear_profile_configuration_from_netapp(netapp_name=netapp_name):
+def showcase_clear_profile_configuration_from_netapp():
+    """
+    Demonstrates how to clear a previously applied TSN profile configuration from a NetApp
+    """
     netapp_identifier = netapp_name_ids[netapp_name]
     netapp_clearance_token = netapp_ids_tokens[netapp_identifier.value()]
     tsn.clear_profile_for_traffic_identifier(
         netapp_traffic_identifier=netapp_identifier,
         clearance_token=netapp_clearance_token,
     )
+    print(f"Cleared TSN configuration from {netapp_name}")
 
 
 def showcase_apply_tsn_profile_with_overriden_parameters():
+    """
+    Demonstrates how to override the parameters of a TSN profile and apply it to a NetApp.
+    """
 
     profiles = tsn.get_tsn_profiles()
     random.seed(1131)
@@ -85,7 +98,7 @@ def showcase_apply_tsn_profile_with_overriden_parameters():
     )
     print(
         f"The profile configuration has been applied to the netapp. The returned token {clearance_token} can be used "
-        f"to reset the configuration"
+        f"to reset the configuration\n"
     )
     netapp_ids_tokens[netapp_identifier.value()] = clearance_token
 
