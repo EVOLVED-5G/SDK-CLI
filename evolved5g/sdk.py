@@ -793,7 +793,6 @@ class CAPIFInvokerConnector:
         else:
             self.capif_https_url = "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
 
-
         self.capif_callback_url = self.__add_trailing_slash_to_url_if_missing(capif_callback_url.strip())
         self.capif_netapp_username = capif_netapp_username
         self.capif_netapp_password = capif_netapp_password
@@ -957,6 +956,13 @@ class CAPIFExposerConnector:
                  capif_https_port: str,
                  capif_netapp_username,
                  capif_netapp_password: str,
+                 csr_common_name: str,
+                 csr_organizational_unit: str,
+                 csr_organization: str,
+                 crs_locality: str,
+                 csr_state_or_province_name,
+                 csr_country_name,
+                 csr_email_address
                  ):
         """
         :param certificates_folder: The folder where certificates will be created and stored.
@@ -966,6 +972,14 @@ class CAPIFExposerConnector:
         :param capif_https_port:
         :param capif_netapp_username: The CAPIF username of your netapp
         :param capif_netapp_password: The CAPIF password  of your netapp
+        :param csr_common_name: The CommonName that will be used in the generated X.509 certificate
+        :param csr_organizational_unit:The OrganizationalUnit that will be used in the generated X.509 certificate
+        :param csr_organization: The Organization that will be used in the generated X.509 certificate
+        :param crs_locality: The Locality that will be used in the generated X.509 certificate
+        :param csr_state_or_province_name: The StateOrProvinceName that will be used in the generated X.509 certificate
+        :param csr_country_name: The CountryName that will be used in the generated X.509 certificate
+        :param csr_email_address: The email that will be used in the generated X.509 certificate
+
         """
         # add the trailing slash if it is not already there using os.path.join
         self.certificates_folder = os.path.join(certificates_folder.strip(), '')
@@ -984,8 +998,17 @@ class CAPIFExposerConnector:
         else:
             self.capif_https_url = "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
 
+        self.capif_host = capif_host.strip()
         self.capif_netapp_username = capif_netapp_username
         self.capif_netapp_password = capif_netapp_password
+
+        self.csr_common_name = csr_common_name
+        self.csr_organizational_unit = csr_organizational_unit
+        self.csr_organization = csr_organization
+        self.crs_locality = crs_locality
+        self.csr_state_or_province_name = csr_state_or_province_name
+        self.csr_country_name = csr_country_name
+        self.csr_email_address = csr_email_address
 
     def __store_certificate_authority_file(self):
         url = self.capif_http_url + "ca-root"
@@ -995,41 +1018,99 @@ class CAPIFExposerConnector:
         response_payload = json.loads(response.text)
         with open(self.certificates_folder + 'ca.crt', 'wb+') as ca_root:
             ca_root.write(bytes(response_payload['certificate'], 'utf-8'))
+    def __store_certificate(self) -> None:
+        """
+            Retrieves and stores the cert_server.pem from CAPIF
+        """
+        print("Retrieve cert_server.pem , process may take a few minutes")
+        cmd = "openssl s_client -connect {0}:443  | openssl x509 -text >> {1}/cert_server.pem".format(
+            self.capif_host,
+            self.certificates_folder
+        )
+        os.system(cmd)
+        print("cert_server.pem succesfully generated!")
 
-    def __onboard_exposer_to_capif(self, capif_registration_id, public_key, capif_onboarding_url):
+    def __create_private_and_public_keys(self, api_prov_func_role)->bytes:
+        """
+        Creates 2 keys in folder folder_to_store_certificates. An api_prov_func_role_private.key and a api_prov_func_role_private.public.csr key"
+        :return: The contents of the public key
+        """
+        private_key_path = self.certificates_folder + api_prov_func_role+ "_private.key"
+        csr_file_path = self.certificates_folder + api_prov_func_role + "_public.csr"
+
+        # create public/private key
+        key = PKey()
+        key.generate_key(TYPE_RSA, 2048)
+
+        # Generate CSR
+        req = X509Req()
+        req.get_subject().CN = self.csr_common_name+api_prov_func_role
+        req.get_subject().O = self.csr_organization
+        req.get_subject().OU = self.csr_organizational_unit
+        req.get_subject().L = self.crs_locality
+        req.get_subject().ST = self.csr_state_or_province_name
+        req.get_subject().C = self.csr_country_name
+        req.get_subject().emailAddress = self.csr_email_address
+        req.set_pubkey(key)
+        req.sign(key, 'sha256')
+
+        with open(csr_file_path, 'wb+') as f:
+            f.write(dump_certificate_request(FILETYPE_PEM, req))
+            public_key = dump_certificate_request(FILETYPE_PEM, req)
+        with open(private_key_path, 'wb+') as f:
+            f.write(dump_privatekey(FILETYPE_PEM, key))
+
+        return public_key
+
+    def __onboard_exposer_to_capif(self, access_token, capif_onboarding_url):
         url = self.capif_https_url + capif_onboarding_url
         payload = {
-            "regSec": public_key,
+            "regSec": access_token,
             "apiProvFuncs": [
                 {
-                    "apiProvFuncId": capif_registration_id,
                     "regInfo": {
-                        "apiProvPubKey": public_key,
-                        "apiProvCert": "",  # what is this?
+                        "apiProvPubKey": ""
                     },
                     "apiProvFuncRole": "AEF",
-                    "apiProvFuncInfo": ""
+                    "apiProvFuncInfo": "dummy_aef"
+                },
+                {
+                    "regInfo": {
+                        "apiProvPubKey": ""
+                    },
+                    "apiProvFuncRole": "APF",
+                    "apiProvFuncInfo": "dummy_apf"
+                },
+                {
+                    "regInfo": {
+                        "apiProvPubKey": ""
+                    },
+                    "apiProvFuncRole": "AMF",
+                    "apiProvFuncInfo": "dummy_amf"
                 }
             ],
-            "apiProvDomInfo": "",
+            "apiProvDomInfo": "This is provider",
             "suppFeat": "fff",
-            "failReason": ""
+            "failReason": "string"
         }
+        for api_func in payload['apiProvFuncs']:
+            public_key = self.__create_private_and_public_keys(api_func["apiProvFuncRole"])
+            api_func["regInfo"]["apiProvPubKey"] = public_key.decode("utf-8")
 
-        headers = {'Content-Type': 'application/json'}
+        headers = {
+            'Authorization': 'Bearer {}'.format(access_token),
+            'Content-Type': 'application/json'
+        }
 
         response = requests.request("POST",
                                     url,
                                     headers=headers,
                                     data=json.dumps(payload),
-                                    cert=(self.certificates_folder + self.csr_common_name + '.crt',
-                                          self.certificates_folder + 'private.key'),
                                     verify=self.certificates_folder + 'ca.crt')
 
         response.raise_for_status()
         response_payload = json.loads(response.text)
-
-        return response_payload['apiProvDomId']
+        return response_payload
 
     def __register_to_capif(self, role):
 
@@ -1050,14 +1131,16 @@ class CAPIFExposerConnector:
         response_payload = json.loads(response.text)
         return response_payload
 
-    def __perform_authorization_and_store_ssl_keys(self, role):
+    def __perform_authorization(self) -> str:
+        """
+        :return: the access_token from CAPIF
+        """
 
         url = self.capif_http_url + "getauth"
 
         payload = dict()
         payload['username'] = self.capif_netapp_username
         payload['password'] = self.capif_netapp_password
-        payload['role'] = role
 
         response = requests.request("POST",
                                     url,
@@ -1066,41 +1149,50 @@ class CAPIFExposerConnector:
         response.raise_for_status()
         response_payload = json.loads(response.text)
 
-        with open(self.certificates_folder + self.csr_common_name + '.crt', 'wb+') as certification_file:
-            certification_file.write(bytes(response_payload['cert'], 'utf-8'))
+        return response_payload["access_token"]
 
-        with open(self.certificates_folder + "private.key", 'wb+') as private_key_file:
-            private_key_file.write(bytes(response_payload['private_key'], 'utf-8'))
+    def __write_to_file(self, capif_registration_id, onboarding_response, publish_url):
 
-        return response_payload
+        for func_provile in onboarding_response["apiProvFuncs"]:
+            with open(self.certificates_folder + func_provile["apiProvFuncRole"]+'_dummy.crt', "wb") as certification_file:
+               certification_file.write(bytes(func_provile['regInfo']['apiProvCert'], 'utf-8'))
 
-    def __write_to_file(self, capif_registration_id, api_prov_dom_id, publish_url):
-        with open(self.certificates_folder + "capif_exposer_details.json", "w") as outfile:
+
+        with open(self.certificates_folder + "capif_provider_details.json", "w") as outfile:
             json.dump({
                 "capif_registration_id": capif_registration_id,
-                "api_prov_dom_id": api_prov_dom_id,
+                #"api_prov_dom_id": api_prov_dom_id,
                 "publish_url": publish_url
             }, outfile)
 
-    def register_and_onboard_exposer(self) -> None:
-        role = "exposer"
+    def register_and_onboard_provider(self) -> None:
+        role = "provider"
+        # retrieve store the .pem certificate from CAPIF
         self.__store_certificate_authority_file()
+        self.__store_certificate()
+        # register provider to CAPIF
         registration_result = self.__register_to_capif(role)
         capif_registration_id = registration_result["id"]
         ccf_publish_url = registration_result['ccf_publish_url']
         capif_onboarding_url = registration_result['ccf_api_onboarding_url']
-        authorization_result = self.__perform_authorization_and_store_ssl_keys(role)
-        public_key = authorization_result['cert']
 
-        api_prov_dom_id = self.__onboard_exposer_to_capif(capif_registration_id, public_key, capif_onboarding_url)
-        self.__write_to_file(capif_registration_id, api_prov_dom_id, ccf_publish_url)
+        # authorization_result = self.__perform_authorization()
+        # public_key = authorization_result['cert']
+        # api_prov_dom_id = self.__onboard_exposer_to_capif(capif_registration_id, public_key, capif_onboarding_url)
+
+        access_token = self.__perform_authorization()
+        onboarding_response = self.__onboard_exposer_to_capif(access_token, capif_onboarding_url)
+        self.__write_to_file(capif_registration_id, onboarding_response, ccf_publish_url)
+
+
+
 
     def publish_services(self, service_api_description_json_full_path) -> None:
         """
         :param service_api_description_json_full_path: The full path fo the service_api_description.json that contains
         the endpoints that will be published
         """
-        with open(self.certificates_folder + "capif_exposer_details.json", 'r') as openfile:
+        with open(self.certificates_folder + "capif_provider_details.json", 'r') as openfile:
             file = json.load(openfile)
             publish_url = file["publish_url"]
             api_prov_dom_id = file["api_prov_dom_id"]
