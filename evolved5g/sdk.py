@@ -1207,6 +1207,9 @@ class CAPIFProviderConnector:
 
         # Generate CSR
         req = X509Req()
+        #TODO: ASK STAVROS. DO WE NEED THE CSR COMMON NAME HERE?
+        # IS THIS RELATED WITH WHY THE AUTHORIZATION FAILS?
+        # At dummy_aef repo this is "EXPOSERAEF" or "EXPORSERAPF" OR EXPOSERAMF
         req.get_subject().CN = self.csr_common_name + api_prov_func_role
         req.get_subject().O = self.csr_organization
         req.get_subject().OU = self.csr_organizational_unit
@@ -1234,6 +1237,8 @@ class CAPIFProviderConnector:
                     "regInfo": {"apiProvPubKey": ""},
                     "apiProvFuncRole": "AEF",
                     "apiProvFuncInfo": "dummy_aef",
+                    #TODO: ASK STAVROS. Should this match the .csr file?
+                    # What the about the Common Name that we are specificing in the constructor.
                 },
                 {
                     "regInfo": {"apiProvPubKey": ""},
@@ -1345,7 +1350,7 @@ class CAPIFProviderConnector:
         role = "provider"
         # retrieve store the .pem certificate from CAPIF
         self.__store_certificate_authority_file()
-        self.__store_certificate() #TODO: Ask Stavros, where is this used?
+        self.__store_certificate() #TODO: Ask Stavros,  is this neede used? It not used in the code, only the ca.crt is used
         # register provider to CAPIF
         registration_result = self.__register_to_capif(role)
         capif_registration_id = registration_result["id"]
@@ -1387,6 +1392,7 @@ class CAPIFProviderConnector:
                 headers={"Content-Type": "application/json"},
                 data=json.dumps(data),
                 cert=(
+                    #TODO:Ask Stavros should this be named like APF_dummy.crt  or like dummy_apf.crt? See line 1241
                     self.certificates_folder + "APF_dummy.crt",
                     self.certificates_folder + "APF_private.key",
                 ),
