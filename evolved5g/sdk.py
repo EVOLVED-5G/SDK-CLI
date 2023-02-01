@@ -1051,7 +1051,7 @@ class CAPIFInvokerConnector:
         payload_dict = {
             "notificationDestination": self.capif_callback_url,
             "supportedFeatures": "fffffff",
-            # TODO: ask stavros, should we do the same for onboarding an Provider?
+            # TODO: This works fine.  But what about CapifProviderConnector class where we onboard a Provider/Exposer. On onboarding there we dont pass the username. Is this a mistake in the flow? Or a different flow is implemented there
             "apiInvokerInformation": self.csr_common_name,
             "websockNotifConfig": {
                 "requestWebsocketUri": True,
@@ -1297,7 +1297,7 @@ class CAPIFProviderConnector:
         payload["password"] = self.capif_netapp_password
         payload["role"] = role
         payload["description"] = self.description
-        #TODO: ASK STAVROS.
+        #TODO: ASK STAVROS. THIS INFORMATION IS STORED AT CAPIF users collection.  Is it used somewhere else at the capif? Notice it does not have postfixes "AEF/APF/AMF"
         payload["cn"] = self.csr_common_name
 
         response = requests.request(
@@ -1404,7 +1404,9 @@ class CAPIFProviderConnector:
                 headers={"Content-Type": "application/json"},
                 data=json.dumps(data),
                 cert=(
-                    #TODO:Ask Stavros should this be named like APF_dummy.crt  or like dummy_apf.crt? See line 1241
+                    #TODO:Ask Stavros should this be named like APF_dummy.crt  or like dummy_apf.crt? Does the naming matters? Also we are passing the APF and not the AMF or the AEF keys?
+                    # When should AMF or AEF be passed? At which scenarios?
+                    # Is it fine that we have hardcoded these?
                     self.certificates_folder + "dummy_apf.crt",
                     self.certificates_folder + "APF_private_key.key"
                 ),
