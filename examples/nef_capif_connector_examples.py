@@ -11,7 +11,7 @@ def showcase_capif_nef_connector():
                                              capif_netapp_username="test_nef026",
                                              capif_netapp_password="test_netapp_password",
                                              description= "test_app_description",
-                                             csr_common_name="Exposer", #TODO: ASK STAVROS
+                                             csr_common_name="Exposer", #TODO: ASK STAVROS. THIS SHOULD NOT BE HARDCODED, RIGHT?
                                              csr_organizational_unit="test_app_ou",
                                              csr_organization="test_app_o",
                                              crs_locality="Madrid",
