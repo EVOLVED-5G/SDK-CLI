@@ -1350,7 +1350,7 @@ class CAPIFProviderConnector:
         role = "provider"
         # retrieve store the .pem certificate from CAPIF
         self.__store_certificate_authority_file()
-        self.__store_certificate() #TODO: Ask Stavros,  is this neede used? It not used in the code, only the ca.crt is used
+        self.__store_certificate()
         # register provider to CAPIF
         registration_result = self.__register_to_capif(role)
         capif_registration_id = registration_result["id"]
