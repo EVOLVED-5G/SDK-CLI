@@ -1243,19 +1243,26 @@ class CAPIFProviderConnector:
                     "apiProvFuncInfo": "dummy_aef",
                     #TODO: ASK STAVROS. Should this match the .csr file?
                     # What the about the Common Name that we are specificing in the constructor.
+                    # This seems similar to NET APP REGISTRATION: "apiInvokerInformation": self.csr_common_name,
                 },
                 {
                     "regInfo": {"apiProvPubKey": ""},
                     "apiProvFuncRole": "APF",
                     "apiProvFuncInfo": "dummy_apf",
+                    #TODO: ASK STAVROS. Should this match the .csr file?
+                    # What the about the Common Name that we are specificing in the constructor.
+                    # This seems similar to NET APP REGISTRATION: "apiInvokerInformation": self.csr_common_name,
                 },
                 {
                     "regInfo": {"apiProvPubKey": ""},
                     "apiProvFuncRole": "AMF",
                     "apiProvFuncInfo": "dummy_amf",
+                    #TODO: ASK STAVROS. Should this match the .csr file?
+                    # What the about the Common Name that we are specificing in the constructor.
+                    # This seems similar to NET APP REGISTRATION: "apiInvokerInformation": self.csr_common_name,
                 },
             ],
-            "apiProvDomInfo": "This is provider",  #TODO: MAY BE HERE WE NEED TO PUT THE csr_common_name?
+            "apiProvDomInfo": "This is provider",  #TODO: MAY BE HERE WE NEED TO PUT THE csr_common_name? This seems similar to NET APP REGISTRATION: "apiInvokerInformation": self.csr_common_name,
             "suppFeat": "fff",
             "failReason": "string",
         }
@@ -1355,7 +1362,7 @@ class CAPIFProviderConnector:
         role = "provider"
         # retrieve store the .pem certificate from CAPIF
         self.__store_certificate_authority_file()
-        # TODO: comment back ine self.__store_certificate()
+        self.__store_certificate()
         # register provider to CAPIF
         registration_result = self.__register_to_capif(role)
         capif_registration_id = registration_result["id"]
