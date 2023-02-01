@@ -974,6 +974,7 @@ class CAPIFInvokerConnector:
         Creates 2 keys in folder folder_to_store_certificates. A private.key and a cert_req.csr.
         :return: The contents of the public key
         """
+
         private_key_path = self.folder_to_store_certificates + "private.key"
         csr_file_path = self.folder_to_store_certificates + "cert_req.csr"
 
@@ -1518,7 +1519,7 @@ class TSNManager:
         self.tsn_https_port = tsn_https_port
         self.endpoints_prefix = "api/v1"
 
-    class NetappTrafficIdentifier:
+    class TSNNetappIdentifier:
         def __init__(self, netapp_name: str):
             self.netapp_name = netapp_name
             self.__identifier = self.__generate_random_identifier()
@@ -1597,13 +1598,13 @@ class TSNManager:
 
     def apply_tsn_profile_to_netapp(
         self,
-        netapp_traffic_identifier: NetappTrafficIdentifier,
+        tsn_netapp_identifier: TSNNetappIdentifier,
         profile: TSNProfile,
     ) -> str:
         """
-        Applies the time-sensitive networking (TSN) profile to the NetApp specified by <netapp_traffic_identifier>
+        Applies the time-sensitive networking (TSN) profile to the NetApp specified by <tsn_netapp_identifier>
 
-        :param netapp_traffic_identifier: the TSN identifier class of the NetApp
+        :param tsn_netapp_identifier: the TSN identifier class of the NetApp
         :param profile: the TSN profile whose configuration will be applied to the NetApp
         :return: token which can be used to clear the configuration from the NetApp
         """
@@ -1618,7 +1619,7 @@ class TSNManager:
             ),
         )
         data = {
-            "identifier": netapp_traffic_identifier.value(),
+            "identifier": tsn_netapp_identifier.value(),
             "profile": profile.name,
             "overrides": None,
         }
@@ -1631,23 +1632,23 @@ class TSNManager:
 
     def apply_profile_with_overriden_parameters_to_netapp(
         self,
-        netapp_traffic_identifier: NetappTrafficIdentifier,
+        tsn_netapp_identifier: TSNNetappIdentifier,
         base_profile: TSNProfile,
         modified_params: dict,
     ) -> str:
         """
         Overrides the default parameters of the time-sensitive networking (TSN) profile, and applies it to the NetApp
-        specified by <traffic_identifier>.
+        specified by <tsn_netapp_identifier>.
 
 
-        :param netapp_traffic_identifier: the TSN identifier class of the NetApp
+        :param tsn_netapp_identifier: the TSN identifier class of the NetApp
         :param base_profile: the profile class whose configuration will be applied to the NetApp
         :param modified_params: Dict of param-value pairs that will override the default configuration of the TSN profile
         :return token used to clear the applied TSN configuration from the NetApp
         """
         if not modified_params:
             return self.apply_tsn_profile_to_netapp(
-                netapp_traffic_identifier=netapp_traffic_identifier,
+                tsn_netapp_identifier=tsn_netapp_identifier,
                 profile=base_profile,
             )
 
@@ -1675,7 +1676,7 @@ class TSNManager:
                 )
 
         data = {
-            "identifier": netapp_traffic_identifier.value(),
+            "identifier": tsn_netapp_identifier.value(),
             "profile": base_profile.name,
             "overrides": modified_params,
         }
@@ -1686,14 +1687,14 @@ class TSNManager:
         response = json.loads(response.text)
         return response["token"]
 
-    def clear_profile_for_traffic_identifier(
-        self, netapp_traffic_identifier: NetappTrafficIdentifier, clearance_token: str
+    def clear_profile_for_tsn_netapp_identifier(
+        self, tsn_netapp_identifier: TSNNetappIdentifier, clearance_token: str
     ) -> None:
         """
         Disables a previously applied configuration for the selected NetApp
 
 
-        :param netapp_traffic_identifier: the TSN identifier class of the NetApp
+        :param tsn_netapp_identifier: the TSN identifier class of the NetApp
         :param clearance_token: used to clear the applied TSN configuration from the NetApp
         """
         url = "{protocol}://{hostname_port}".format(
@@ -1706,7 +1707,7 @@ class TSNManager:
             ),
         )
         data = {
-            "identifier": netapp_traffic_identifier.value(),
+            "identifier": tsn_netapp_identifier.value(),
             "token": clearance_token,
         }
         response = requests.post(

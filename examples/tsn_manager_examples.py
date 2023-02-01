@@ -25,6 +25,7 @@ def showcase_get_tsn_profiles():
         profile_configuration_parameters = (
             profile_configuration.get_profile_configuration_parameters()
         )
+
         print(
             f"Profile {profile.name} with configuration parameters {profile_configuration_parameters}"
         )
@@ -39,32 +40,34 @@ def showcase_apply_tsn_profile_to_netapp():
     profile_to_apply = random.choice(profiles)
     profile_configuration = profile_to_apply.get_configuration_for_tsn_profile()
 
-    netapp_identifier = tsn.NetappTrafficIdentifier(netapp_name=netapp_name)
-    netapp_name_ids[netapp_name] = netapp_identifier
+    tsn_netapp_identifier = tsn.TSNNetappIdentifier(netapp_name=netapp_name)
+    netapp_name_ids[netapp_name] = tsn_netapp_identifier
 
-    print(f"Generated TSN traffic identifier for Netapp: {netapp_identifier.value()}")
+    print(
+        f"Generated TSN traffic identifier for Netapp: {tsn_netapp_identifier.value()}"
+    )
     print(
         f"Apply {profile_to_apply.name} with configuration parameters"
         f"{profile_configuration.get_profile_configuration_parameters()} to NetApp {netapp_name} "
     )
     clearance_token = tsn.apply_tsn_profile_to_netapp(
-        profile=profile_to_apply, netapp_traffic_identifier=netapp_identifier
+        profile=profile_to_apply, tsn_netapp_identifier=tsn_netapp_identifier
     )
     print(
         f"The profile configuration has been applied to the netapp. The returned token {clearance_token} can be used "
         f"to reset the configuration"
     )
-    netapp_ids_tokens[netapp_identifier.value()] = clearance_token
+    netapp_ids_tokens[tsn_netapp_identifier.value()] = clearance_token
 
 
 def showcase_clear_profile_configuration_from_netapp():
     """
     Demonstrates how to clear a previously applied TSN profile configuration from a NetApp
     """
-    netapp_identifier = netapp_name_ids[netapp_name]
-    netapp_clearance_token = netapp_ids_tokens[netapp_identifier.value()]
-    tsn.clear_profile_for_traffic_identifier(
-        netapp_traffic_identifier=netapp_identifier,
+    tsn_netapp_identifier = netapp_name_ids[netapp_name]
+    netapp_clearance_token = netapp_ids_tokens[tsn_netapp_identifier.value()]
+    tsn.clear_profile_for_tsn_netapp_identifier(
+        tsn_netapp_identifier=tsn_netapp_identifier,
         clearance_token=netapp_clearance_token,
     )
     print(f"Cleared TSN configuration from {netapp_name}")
@@ -85,22 +88,24 @@ def showcase_apply_tsn_profile_with_overriden_parameters():
             value + 1 if isinstance(value, int) or isinstance(value, float) else ""
         )
 
-    netapp_identifier = tsn.NetappTrafficIdentifier(netapp_name=netapp_name)
-    netapp_name_ids[netapp_name] = netapp_identifier.value()
+    tsn_netapp_identifier = tsn.TSNNetappIdentifier(netapp_name=netapp_name)
+    netapp_name_ids[netapp_name] = tsn_netapp_identifier.value()
 
-    print(f"Generated TSN traffic identifier for Netapp: {netapp_identifier.value()}")
+    print(
+        f"Generated TSN traffic identifier for Netapp: {tsn_netapp_identifier.value()}"
+    )
     print(
         f"Apply {profile_to_apply.name} with configuration parameters"
         f"{profile_configuration.get_profile_configuration_parameters()} to NetApp {netapp_name} "
     )
     clearance_token = tsn.apply_tsn_profile_to_netapp(
-        profile=profile_to_apply, netapp_traffic_identifier=netapp_identifier
+        profile=profile_to_apply, tsn_netapp_identifier=tsn_netapp_identifier
     )
     print(
         f"The profile configuration has been applied to the netapp. The returned token {clearance_token} can be used "
         f"to reset the configuration\n"
     )
-    netapp_ids_tokens[netapp_identifier.value()] = clearance_token
+    netapp_ids_tokens[tsn_netapp_identifier.value()] = clearance_token
 
 
 if __name__ == "__main__":
