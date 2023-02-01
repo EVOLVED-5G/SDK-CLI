@@ -1050,6 +1050,7 @@ class CAPIFInvokerConnector:
         payload_dict = {
             "notificationDestination": self.capif_callback_url,
             "supportedFeatures": "fffffff",
+            # TODO: ask stavros, should we do the same for onboarding an Provider?
             "apiInvokerInformation": self.csr_common_name,
             "websockNotifConfig": {
                 "requestWebsocketUri": True,
@@ -1122,7 +1123,7 @@ class CAPIFProviderConnector:
     ):
         """
         :param certificates_folder: The folder where certificates will be created and stored.
-        :param description: A short description of the Exposer
+        :param description: A short description of the Provider
         :param capif_host:
         :param capif_http_port:
         :param capif_https_port:
@@ -1197,7 +1198,7 @@ class CAPIFProviderConnector:
         :return: The contents of the public key
         """
         private_key_path = (
-            self.certificates_folder + api_prov_func_role + "_private.key"
+            self.certificates_folder + api_prov_func_role + "_private_key.key"
         )
         csr_file_path = self.certificates_folder + api_prov_func_role + "_public.csr"
 
@@ -1207,10 +1208,12 @@ class CAPIFProviderConnector:
 
         # Generate CSR
         req = X509Req()
-        #TODO: ASK STAVROS. DO WE NEED THE CSR COMMON NAME HERE?
-        # IS THIS RELATED WITH WHY THE AUTHORIZATION FAILS?
-        # At dummy_aef repo this is "EXPOSERAEF" or "EXPORSERAPF" OR EXPOSERAMF
+
+        #THIS RAISES 500 ERROR AT CAPIF  REGISTER
+        # req.get_subject().CN = self.csr_common_name
+        # TODO: ASK STAVROS:  SHOULD WEALWAYS PUT THE ROLE IN THE COMMON NAME? IS THIS BY CONVENTION?
         req.get_subject().CN = self.csr_common_name + api_prov_func_role
+        #req.get_subject().CN = "EXPOSER" + api_prov_func_role
         req.get_subject().O = self.csr_organization
         req.get_subject().OU = self.csr_organizational_unit
         req.get_subject().L = self.crs_locality
@@ -1251,7 +1254,7 @@ class CAPIFProviderConnector:
                     "apiProvFuncInfo": "dummy_amf",
                 },
             ],
-            "apiProvDomInfo": "This is provider",
+            "apiProvDomInfo": "This is provider",  #TODO: MAY BE HERE WE NEED TO PUT THE csr_common_name?
             "suppFeat": "fff",
             "failReason": "string",
         }
@@ -1286,6 +1289,7 @@ class CAPIFProviderConnector:
         payload["password"] = self.capif_netapp_password
         payload["role"] = role
         payload["description"] = self.description
+        #TODO: ASK STAVROS.
         payload["cn"] = self.csr_common_name
 
         response = requests.request(
@@ -1325,7 +1329,7 @@ class CAPIFProviderConnector:
 
         for func_provile in onboarding_response["apiProvFuncs"]:
             with open(
-                self.certificates_folder+ func_provile["apiProvFuncRole"]+ "_dummy.crt",
+                self.certificates_folder+ "dummy_"+ func_provile["apiProvFuncRole"].lower()+ ".crt",
                 "wb",
             ) as certification_file:
                 certification_file.write(
@@ -1350,7 +1354,7 @@ class CAPIFProviderConnector:
         role = "provider"
         # retrieve store the .pem certificate from CAPIF
         self.__store_certificate_authority_file()
-        self.__store_certificate()
+        # TODO: comment back ine self.__store_certificate()
         # register provider to CAPIF
         registration_result = self.__register_to_capif(role)
         capif_registration_id = registration_result["id"]
@@ -1393,8 +1397,8 @@ class CAPIFProviderConnector:
                 data=json.dumps(data),
                 cert=(
                     #TODO:Ask Stavros should this be named like APF_dummy.crt  or like dummy_apf.crt? See line 1241
-                    self.certificates_folder + "APF_dummy.crt",
-                    self.certificates_folder + "APF_private.key",
+                    self.certificates_folder + "dummy_apf.crt",
+                    self.certificates_folder + "APF_private_key.key"
                 ),
                 verify=self.certificates_folder + "ca.crt",
             )
