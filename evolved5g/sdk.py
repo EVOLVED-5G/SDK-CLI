@@ -1099,7 +1099,7 @@ class CAPIFInvokerConnector:
             )
 
 
-class CAPIFExposerConnector:
+class CAPIFProviderConnector:
     """
     Τhis class is responsible for onboarding an exposer (eg. NEF emulator) to CAPIF
     """
@@ -1208,6 +1208,9 @@ class CAPIFExposerConnector:
 
         # Generate CSR
         req = X509Req()
+        #TODO: ASK STAVROS. DO WE NEED THE CSR COMMON NAME HERE?
+        # IS THIS RELATED WITH WHY THE AUTHORIZATION FAILS?
+        # At dummy_aef repo this is "EXPOSERAEF" or "EXPORSERAPF" OR EXPOSERAMF
         req.get_subject().CN = self.csr_common_name + api_prov_func_role
         req.get_subject().O = self.csr_organization
         req.get_subject().OU = self.csr_organizational_unit
@@ -1235,6 +1238,8 @@ class CAPIFExposerConnector:
                     "regInfo": {"apiProvPubKey": ""},
                     "apiProvFuncRole": "AEF",
                     "apiProvFuncInfo": "dummy_aef",
+                    #TODO: ASK STAVROS. Should this match the .csr file?
+                    # What the about the Common Name that we are specificing in the constructor.
                 },
                 {
                     "regInfo": {"apiProvPubKey": ""},
@@ -1317,13 +1322,11 @@ class CAPIFExposerConnector:
 
         return response_payload["access_token"]
 
-    def __write_to_file(self, capif_registration_id, onboarding_response, publish_url):
+    def __write_to_file(self, onboarding_response, capif_registration_id, publish_url):
 
         for func_provile in onboarding_response["apiProvFuncs"]:
             with open(
-                self.certificates_folder
-                + func_provile["apiProvFuncRole"]
-                + "_dummy.crt",
+                self.certificates_folder+ func_provile["apiProvFuncRole"]+ "_dummy.crt",
                 "wb",
             ) as certification_file:
                 certification_file.write(
@@ -1333,14 +1336,16 @@ class CAPIFExposerConnector:
         with open(
             self.certificates_folder + "capif_provider_details.json", "w"
         ) as outfile:
-            json.dump(
-                {
-                    "capif_registration_id": capif_registration_id,
-                    # "api_prov_dom_id": api_prov_dom_id,
-                    "publish_url": publish_url,
-                },
-                outfile,
-            )
+            data = {
+                "capif_registration_id": capif_registration_id,
+                "publish_url": publish_url
+            }
+            for api_prov_func in onboarding_response["apiProvFuncs"]:
+                key = api_prov_func["apiProvFuncRole"] +"_api_prov_func_id"
+                value =api_prov_func["apiProvFuncId"]
+                data[key] =value
+
+            json.dump(data,outfile)
 
     def register_and_onboard_provider(self) -> None:
         role = "provider"
@@ -1353,16 +1358,12 @@ class CAPIFExposerConnector:
         ccf_publish_url = registration_result["ccf_publish_url"]
         capif_onboarding_url = registration_result["ccf_api_onboarding_url"]
 
-        # authorization_result = self.__perform_authorization()
-        # public_key = authorization_result['cert']
-        # api_prov_dom_id = self.__onboard_exposer_to_capif(capif_registration_id, public_key, capif_onboarding_url)
-
         access_token = self.__perform_authorization()
         onboarding_response = self.__onboard_exposer_to_capif(
             access_token, capif_onboarding_url
         )
         self.__write_to_file(
-            capif_registration_id, onboarding_response, ccf_publish_url
+            onboarding_response,capif_registration_id, ccf_publish_url
         )
 
     def publish_services(self, service_api_description_json_full_path) -> None:
@@ -1375,15 +1376,16 @@ class CAPIFExposerConnector:
         ) as openfile:
             file = json.load(openfile)
             publish_url = file["publish_url"]
-            api_prov_dom_id = file["api_prov_dom_id"]
+            AEF_api_prov_func_id = file["AEF_api_prov_func_id"]
+            APF_api_prov_func_id = file["APF_api_prov_func_id"]
 
-        url = self.capif_https_url + publish_url
+
+        url = self.capif_https_url + publish_url.replace("<apfId>",APF_api_prov_func_id)
 
         with open(service_api_description_json_full_path, "rb") as service_file:
             data = json.load(service_file)
-            # todo: not sure if this is correct
             for profile in data["aefProfiles"]:
-                profile["aefId"] = api_prov_dom_id
+                profile["aefId"] = AEF_api_prov_func_id
 
             response = requests.request(
                 "POST",
@@ -1391,8 +1393,9 @@ class CAPIFExposerConnector:
                 headers={"Content-Type": "application/json"},
                 data=json.dumps(data),
                 cert=(
-                    self.certificates_folder + self.csr_common_name + ".crt",
-                    self.certificates_folder + "private.key",
+                    #TODO:Ask Stavros should this be named like APF_dummy.crt  or like dummy_apf.crt? See line 1241
+                    self.certificates_folder + "APF_dummy.crt",
+                    self.certificates_folder + "APF_private.key",
                 ),
                 verify=self.certificates_folder + "ca.crt",
             )
@@ -1512,7 +1515,7 @@ class TSNManager:
         self,
         https: bool,
         tsn_https_host: str,
-        tsn_https_port: int | str,
+        tsn_https_port: int,
     ) -> None:
         self.https = https
         self.tsn_https_host = tsn_https_host

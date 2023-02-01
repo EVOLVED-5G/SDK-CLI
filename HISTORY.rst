@@ -1,6 +1,13 @@
 =======
 History
 =======
+0.9.0 (2023-01-03)
+-------------------
+* CAPIFExposerConnector has been a) refactored to conform to the latest CAPIF API and b) renamed to CAPIFProviderConnector
+    * CAPIFProviderConnector registers, onboards and publishes a Provider (ex. NEF) to the CAPIF instance.
+
+* New class TSNManager that communicates with the TSN API
+
 0.8.9 (2023-01-03)
 -------------------
 * Bug fix on LocationSubscriber on method get_location_information.
