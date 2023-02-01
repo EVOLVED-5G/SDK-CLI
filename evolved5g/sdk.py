@@ -1187,7 +1187,7 @@ class CAPIFProviderConnector:
         Retrieves and stores the cert_server.pem from CAPIF
         """
         print("Retrieve cert_server.pem , process may take a few minutes")
-        cmd = "openssl s_client -connect {0}:443  | openssl x509 -text >> {1}/cert_server.pem".format(
+        cmd = "openssl s_client -connect {0}:443  | openssl x509 -text >> {1}/capif_cert_server.pem".format(
             self.capif_host, self.certificates_folder
         )
         os.system(cmd)
@@ -1359,7 +1359,7 @@ class CAPIFProviderConnector:
         role = "provider"
         # retrieve store the .pem certificate from CAPIF
         self.__store_certificate_authority_file()
-        #TODO: COMMENT IDself.__store_certificate()
+        self.__store_certificate()
         # register provider to CAPIF
         registration_result = self.__register_to_capif(role)
         capif_registration_id = registration_result["id"]
