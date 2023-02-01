@@ -1210,11 +1210,8 @@ class CAPIFProviderConnector:
         # Generate CSR
         req = X509Req()
 
-        #THIS RAISES 500 ERROR AT CAPIF  REGISTER
-        # req.get_subject().CN = self.csr_common_name
-        # TODO: ASK STAVROS:  SHOULD WEALWAYS PUT THE ROLE IN THE COMMON NAME? IS THIS BY CONVENTION?
-        req.get_subject().CN = self.csr_common_name + api_prov_func_role
-        #req.get_subject().CN = "EXPOSER" + api_prov_func_role
+        # The role should always be put in the certificate .lower() by convention
+        req.get_subject().CN = self.csr_common_name + api_prov_func_role.lower()
         req.get_subject().O = self.csr_organization
         req.get_subject().OU = self.csr_organizational_unit
         req.get_subject().L = self.crs_locality
@@ -1362,7 +1359,7 @@ class CAPIFProviderConnector:
         role = "provider"
         # retrieve store the .pem certificate from CAPIF
         self.__store_certificate_authority_file()
-        self.__store_certificate()
+        #TODO: COMMENT IDself.__store_certificate()
         # register provider to CAPIF
         registration_result = self.__register_to_capif(role)
         capif_registration_id = registration_result["id"]
