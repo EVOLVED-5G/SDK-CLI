@@ -1208,7 +1208,7 @@ class CAPIFProviderConnector:
 
         # Generate CSR
         req = X509Req()
-        #TODO: ASK STAVROS. DO WE NEED THE CSR COMMON NAME HERE?
+        # TODO: ASK STAVROS. DO WE NEED THE CSR COMMON NAME HERE?
         # IS THIS RELATED WITH WHY THE AUTHORIZATION FAILS?
         # At dummy_aef repo this is "EXPOSERAEF" or "EXPORSERAPF" OR EXPOSERAMF
         req.get_subject().CN = self.csr_common_name + api_prov_func_role
@@ -1238,7 +1238,7 @@ class CAPIFProviderConnector:
                     "regInfo": {"apiProvPubKey": ""},
                     "apiProvFuncRole": "AEF",
                     "apiProvFuncInfo": "dummy_aef",
-                    #TODO: ASK STAVROS. Should this match the .csr file?
+                    # TODO: ASK STAVROS. Should this match the .csr file?
                     # What the about the Common Name that we are specificing in the constructor.
                 },
                 {
@@ -1326,7 +1326,9 @@ class CAPIFProviderConnector:
 
         for func_provile in onboarding_response["apiProvFuncs"]:
             with open(
-                self.certificates_folder+ func_provile["apiProvFuncRole"]+ "_dummy.crt",
+                self.certificates_folder
+                + func_provile["apiProvFuncRole"]
+                + "_dummy.crt",
                 "wb",
             ) as certification_file:
                 certification_file.write(
@@ -1338,14 +1340,14 @@ class CAPIFProviderConnector:
         ) as outfile:
             data = {
                 "capif_registration_id": capif_registration_id,
-                "publish_url": publish_url
+                "publish_url": publish_url,
             }
             for api_prov_func in onboarding_response["apiProvFuncs"]:
-                key = api_prov_func["apiProvFuncRole"] +"_api_prov_func_id"
-                value =api_prov_func["apiProvFuncId"]
-                data[key] =value
+                key = api_prov_func["apiProvFuncRole"] + "_api_prov_func_id"
+                value = api_prov_func["apiProvFuncId"]
+                data[key] = value
 
-            json.dump(data,outfile)
+            json.dump(data, outfile)
 
     def register_and_onboard_provider(self) -> None:
         role = "provider"
@@ -1363,7 +1365,7 @@ class CAPIFProviderConnector:
             access_token, capif_onboarding_url
         )
         self.__write_to_file(
-            onboarding_response,capif_registration_id, ccf_publish_url
+            onboarding_response, capif_registration_id, ccf_publish_url
         )
 
     def publish_services(self, service_api_description_json_full_path) -> None:
@@ -1379,8 +1381,9 @@ class CAPIFProviderConnector:
             AEF_api_prov_func_id = file["AEF_api_prov_func_id"]
             APF_api_prov_func_id = file["APF_api_prov_func_id"]
 
-
-        url = self.capif_https_url + publish_url.replace("<apfId>",APF_api_prov_func_id)
+        url = self.capif_https_url + publish_url.replace(
+            "<apfId>", APF_api_prov_func_id
+        )
 
         with open(service_api_description_json_full_path, "rb") as service_file:
             data = json.load(service_file)
@@ -1393,7 +1396,7 @@ class CAPIFProviderConnector:
                 headers={"Content-Type": "application/json"},
                 data=json.dumps(data),
                 cert=(
-                    #TODO:Ask Stavros should this be named like APF_dummy.crt  or like dummy_apf.crt? See line 1241
+                    # TODO:Ask Stavros should this be named like APF_dummy.crt  or like dummy_apf.crt? See line 1241
                     self.certificates_folder + "APF_dummy.crt",
                     self.certificates_folder + "APF_private.key",
                 ),
@@ -1509,17 +1512,19 @@ class ServiceDiscoverer:
 class TSNManager:
     """
     Contains helper functions to apply Time-Sensitive Networking (TSN) standards to time-sensitive NetApps.
+    Allows the configuration of certain parameters in the underlying TSN infrastructure of the testbed.
+    These parameters indicate the expected QoS of the communication.
     """
 
     def __init__(
         self,
         https: bool,
-        tsn_https_host: str,
-        tsn_https_port: int,
+        tsn_http_host: str,
+        tsn_http_port: int,
     ) -> None:
         self.https = https
-        self.tsn_https_host = tsn_https_host
-        self.tsn_https_port = tsn_https_port
+        self.tsn_http_host = tsn_http_host
+        self.tsn_http_port = tsn_http_port
         self.endpoints_prefix = "api/v1"
 
     class TSNNetappIdentifier:
@@ -1563,8 +1568,8 @@ class TSNManager:
             url = "{protocol}://{hostname_port}".format(
                 protocol="https" if self.tsn_manager.https else "http",
                 hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-                    host=self.tsn_manager.tsn_https_host,
-                    port=str(self.tsn_manager.tsn_https_port),
+                    host=self.tsn_manager.tsn_http_host,
+                    port=str(self.tsn_manager.tsn_http_port),
                     prefix=self.tsn_manager.endpoints_prefix,
                     route_name="profile",
                     profile_name=self.name,
@@ -1585,8 +1590,8 @@ class TSNManager:
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
             hostname_port="{host}:{port}/{prefix}/{route_name}".format(
-                host=self.tsn_https_host,
-                port=str(self.tsn_https_port),
+                host=self.tsn_http_host,
+                port=str(self.tsn_http_port),
                 prefix=self.endpoints_prefix,
                 route_name="profile",
             ),
@@ -1614,8 +1619,8 @@ class TSNManager:
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
             hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-                host=self.tsn_https_host,
-                port=str(self.tsn_https_port),
+                host=self.tsn_http_host,
+                port=str(self.tsn_http_port),
                 prefix=self.endpoints_prefix,
                 route_name="apply",
                 profile_name=profile.name,
@@ -1658,8 +1663,8 @@ class TSNManager:
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
             hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-                host=self.tsn_https_host,
-                port=str(self.tsn_https_port),
+                host=self.tsn_http_host,
+                port=str(self.tsn_http_port),
                 prefix=self.endpoints_prefix,
                 route_name="apply",
                 profile_name=base_profile.name,
@@ -1703,8 +1708,8 @@ class TSNManager:
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
             hostname_port="{host}:{port}/{prefix}/{route_name}".format(
-                host=self.tsn_https_host,
-                port=str(self.tsn_https_port),
+                host=self.tsn_http_host,
+                port=str(self.tsn_http_port),
                 prefix=self.endpoints_prefix,
                 route_name="clear",
             ),
