@@ -37,16 +37,14 @@ import requests
 import json
 from uuid import uuid4
 import warnings
-
-
 class MonitoringSubscriber(ABC):
     def __init__(
-        self,
-        host: str,
-        nef_bearer_access_token: str,
-        folder_path_for_certificates_and_capif_api_key: str,
-        capif_host: str,
-        capif_https_port: int,
+            self,
+            host: str,
+            nef_bearer_access_token: str,
+            folder_path_for_certificates_and_capif_api_key: str,
+            capif_host: str,
+            capif_https_port: int,
     ):
         configuration = swagger_client.Configuration()
         configuration.host = host
@@ -67,14 +65,14 @@ class MonitoringSubscriber(ABC):
         self.cell_api = CellsApi(api_client)
 
     def create_subscription_request(
-        self,
-        monitoring_type,
-        external_id,
-        notification_destination,
-        maximum_number_of_reports,
-        monitor_expire_time,
-        maximum_detection_time,
-        reachability_type,
+            self,
+            monitoring_type,
+            external_id,
+            notification_destination,
+            maximum_number_of_reports,
+            monitor_expire_time,
+            maximum_detection_time,
+            reachability_type,
     ) -> MonitoringEventSubscriptionCreate:
         return MonitoringEventSubscriptionCreate(
             external_id,
@@ -100,7 +98,7 @@ class MonitoringSubscriber(ABC):
         )
 
     def get_subscription(
-        self, netapp_id: str, subscription_id: str
+            self, netapp_id: str, subscription_id: str
     ) -> MonitoringEventSubscription:
         """
         Gets subscription by id
@@ -126,12 +124,12 @@ class MonitoringSubscriber(ABC):
 
 class LocationSubscriber(MonitoringSubscriber):
     def __init__(
-        self,
-        nef_url: str,
-        nef_bearer_access_token: str,
-        folder_path_for_certificates_and_capif_api_key: str,
-        capif_host: str,
-        capif_https_port: int,
+            self,
+            nef_url: str,
+            nef_bearer_access_token: str,
+            folder_path_for_certificates_and_capif_api_key: str,
+            capif_host: str,
+            capif_https_port: int,
     ):
         """
         Initializes class LocationSubscriber.
@@ -154,7 +152,7 @@ class LocationSubscriber(MonitoringSubscriber):
         return "LOCATION_REPORTING"
 
     def get_location_information(
-        self, netapp_id: str, external_id
+            self, netapp_id: str, external_id
     ) -> MonitoringEventReport:
         """
         Returns the location of a specific device.
@@ -165,8 +163,8 @@ class LocationSubscriber(MonitoringSubscriber):
 
         # create a dummy expiration time. Since we are requesting for only 1 report, we will get the location information back instantly
         monitor_expire_time = (
-            datetime.datetime.utcnow() + datetime.timedelta(minutes=1)
-        ).isoformat() + "Z"
+                                      datetime.datetime.utcnow() + datetime.timedelta(minutes=1)
+                              ).isoformat() + "Z"
         body = self.create_subscription_request(
             self.__get_monitoring_type(),
             external_id,
@@ -192,12 +190,12 @@ class LocationSubscriber(MonitoringSubscriber):
         return self.cell_api.read_cell_api_v1_cells_cell_id_get(cell_id)
 
     def create_subscription(
-        self,
-        netapp_id: str,
-        external_id,
-        notification_destination,
-        maximum_number_of_reports,
-        monitor_expire_time,
+            self,
+            netapp_id: str,
+            external_id,
+            notification_destination,
+            maximum_number_of_reports,
+            monitor_expire_time,
     ) -> MonitoringEventSubscription:
         """
         Creates a subscription that will be used to retrieve Location information about a device.
@@ -225,13 +223,13 @@ class LocationSubscriber(MonitoringSubscriber):
         return response
 
     def update_subscription(
-        self,
-        netapp_id: str,
-        subscription_id: str,
-        external_id,
-        notification_destination,
-        maximum_number_of_reports,
-        monitor_expire_time,
+            self,
+            netapp_id: str,
+            subscription_id: str,
+            external_id,
+            notification_destination,
+            maximum_number_of_reports,
+            monitor_expire_time,
     ) -> MonitoringEventSubscription:
         """
         Creates a subscription that will be used to retrieve Location information about a device.
@@ -270,12 +268,12 @@ class ConnectionMonitor(MonitoringSubscriber):
         INFORM_WHEN_NOT_CONNECTED = 2
 
     def __init__(
-        self,
-        nef_url: str,
-        nef_bearer_access_token: str,
-        folder_path_for_certificates_and_capif_api_key: str,
-        capif_host: str,
-        capif_https_port: int,
+            self,
+            nef_url: str,
+            nef_bearer_access_token: str,
+            folder_path_for_certificates_and_capif_api_key: str,
+            capif_host: str,
+            capif_https_port: int,
     ):
         """
         Initializes class ConnectionMonitor.
@@ -308,14 +306,14 @@ class ConnectionMonitor(MonitoringSubscriber):
             return "LOSS_OF_CONNECTIVITY"
 
     def create_subscription(
-        self,
-        netapp_id: str,
-        external_id,
-        notification_destination,
-        monitoring_type: MonitoringType,
-        wait_time_before_sending_notification_in_seconds: int,
-        maximum_number_of_reports,
-        monitor_expire_time,
+            self,
+            netapp_id: str,
+            external_id,
+            notification_destination,
+            monitoring_type: MonitoringType,
+            wait_time_before_sending_notification_in_seconds: int,
+            maximum_number_of_reports,
+            monitor_expire_time,
     ) -> MonitoringEventSubscription:
         """
         Creates a subscription that will be used to track the Network Connectivity about a device.
@@ -352,15 +350,15 @@ class ConnectionMonitor(MonitoringSubscriber):
         return response
 
     def update_subscription(
-        self,
-        netapp_id: str,
-        subscription_id: str,
-        external_id,
-        notification_destination,
-        monitoring_type: MonitoringType,
-        wait_time_before_sending_notification_in_seconds: int,
-        maximum_number_of_reports,
-        monitor_expire_time,
+            self,
+            netapp_id: str,
+            subscription_id: str,
+            external_id,
+            notification_destination,
+            monitoring_type: MonitoringType,
+            wait_time_before_sending_notification_in_seconds: int,
+            maximum_number_of_reports,
+            monitor_expire_time,
     ) -> MonitoringEventSubscription:
         """
         Creates a subscription that will be used to retrieve Location information about a device.
@@ -500,12 +498,12 @@ class QosAwareness:
             return self.repetition_period_in_seconds
 
     def __init__(
-        self,
-        nef_url: str,
-        nef_bearer_access_token: str,
-        folder_path_for_certificates_and_capif_api_key: str,
-        capif_host: str,
-        capif_https_port: int,
+            self,
+            nef_url: str,
+            nef_bearer_access_token: str,
+            folder_path_for_certificates_and_capif_api_key: str,
+            capif_host: str,
+            capif_https_port: int,
     ):
         """
         Initializes class QosAwareness.
@@ -541,14 +539,14 @@ class QosAwareness:
         self.qos_api = SessionWithQoSAPIApi(api_client)
 
     def create_subscription_request(
-        self,
-        equipment_network_identifier: str,
-        network_identifier: NetworkIdentifier,
-        notification_destination: str,
-        qos_reference: int,
-        alt_qo_s_references,
-        usage_threshold: UsageThreshold,
-        qos_mon_info,
+            self,
+            equipment_network_identifier: str,
+            network_identifier: NetworkIdentifier,
+            notification_destination: str,
+            qos_reference: int,
+            alt_qo_s_references,
+            usage_threshold: UsageThreshold,
+            qos_mon_info,
     ) -> AsSessionWithQoSSubscriptionCreate:
         ip4_address_value = (
             equipment_network_identifier
@@ -587,13 +585,13 @@ class QosAwareness:
         )
 
     def create_non_guaranteed_bit_rate_subscription(
-        self,
-        netapp_id,
-        equipment_network_identifier: str,
-        network_identifier: NetworkIdentifier,
-        notification_destination: str,
-        non_gbr_qos_reference: NonGBRQosReference,
-        usage_threshold: UsageThreshold,
+            self,
+            netapp_id,
+            equipment_network_identifier: str,
+            network_identifier: NetworkIdentifier,
+            notification_destination: str,
+            non_gbr_qos_reference: NonGBRQosReference,
+            usage_threshold: UsageThreshold,
     ) -> AsSessionWithQoSSubscription:
         """
         Initializes a Non Guaranteed Bit Rate (NGBR) Quality of Service (QoS) subscription.
@@ -627,14 +625,14 @@ class QosAwareness:
         return response
 
     def update_non_guaranteed_bit_rate_subscription(
-        self,
-        netapp_id: str,
-        subscription_id: str,
-        equipment_network_identifier: str,
-        network_identifier: NetworkIdentifier,
-        notification_destination: str,
-        non_gbr_qos_reference: NonGBRQosReference,
-        usage_threshold: UsageThreshold,
+            self,
+            netapp_id: str,
+            subscription_id: str,
+            equipment_network_identifier: str,
+            network_identifier: NetworkIdentifier,
+            notification_destination: str,
+            non_gbr_qos_reference: NonGBRQosReference,
+            usage_threshold: UsageThreshold,
     ) -> AsSessionWithQoSSubscription:
         """
         Updates a given subscription.
@@ -667,16 +665,16 @@ class QosAwareness:
         )
 
     def create_guaranteed_bit_rate_subscription(
-        self,
-        netapp_id,
-        equipment_network_identifier,
-        network_identifier,
-        notification_destination: str,
-        gbr_qos_reference: GBRQosReference,
-        usage_threshold: UsageThreshold,
-        qos_monitoring_parameter: QosMonitoringParameter,
-        threshold: int,
-        reporting_mode: GuaranteedBitRateReportingMode,
+            self,
+            netapp_id,
+            equipment_network_identifier,
+            network_identifier,
+            notification_destination: str,
+            gbr_qos_reference: GBRQosReference,
+            usage_threshold: UsageThreshold,
+            qos_monitoring_parameter: QosMonitoringParameter,
+            threshold: int,
+            reporting_mode: GuaranteedBitRateReportingMode,
     ) -> AsSessionWithQoSSubscription:
 
         """
@@ -722,11 +720,11 @@ class QosAwareness:
         return response
 
     def __create_gbr_request_qo_parameters(
-        self,
-        gbr_qos_reference,
-        qos_monitoring_parameter,
-        threshold,
-        reporting_mode: GuaranteedBitRateReportingMode,
+            self,
+            gbr_qos_reference,
+            qos_monitoring_parameter,
+            threshold,
+            reporting_mode: GuaranteedBitRateReportingMode,
     ):
         # Contains the remaining Guaranted Qos references, as fallback
         alt_qo_s_references = []
@@ -755,7 +753,7 @@ class QosAwareness:
         rep_period = None
 
         if isinstance(
-            reporting_mode, QosAwareness.EventTriggeredReportingConfiguration
+                reporting_mode, QosAwareness.EventTriggeredReportingConfiguration
         ):
             wait_time = reporting_mode.get_reporting_configuration()
         else:
@@ -773,17 +771,17 @@ class QosAwareness:
         return alt_qo_s_references, qos_monitoring_info
 
     def update_guaranteed_bit_rate_subscription(
-        self,
-        netapp_id: str,
-        subscription_id: str,
-        equipment_network_identifier: str,
-        network_identifier: NetworkIdentifier,
-        notification_destination: str,
-        gbr_qos_reference: GBRQosReference,
-        usage_threshold: UsageThreshold,
-        qos_monitoring_parameter: QosMonitoringParameter,
-        threshold: int,
-        reporting_mode: GuaranteedBitRateReportingMode,
+            self,
+            netapp_id: str,
+            subscription_id: str,
+            equipment_network_identifier: str,
+            network_identifier: NetworkIdentifier,
+            notification_destination: str,
+            gbr_qos_reference: GBRQosReference,
+            usage_threshold: UsageThreshold,
+            qos_monitoring_parameter: QosMonitoringParameter,
+            threshold: int,
+            reporting_mode: GuaranteedBitRateReportingMode,
     ) -> AsSessionWithQoSSubscription:
         """
         Updates a given subscription.
@@ -827,7 +825,7 @@ class QosAwareness:
         )
 
     def get_all_subscriptions(
-        self, netapp_id: str
+            self, netapp_id: str
     ) -> List[AsSessionWithQoSSubscription]:
         """
         Reads all active subscriptions
@@ -840,7 +838,7 @@ class QosAwareness:
         )
 
     def get_subscription(
-        self, netapp_id: str, subscription_id: str
+            self, netapp_id: str, subscription_id: str
     ) -> AsSessionWithQoSSubscription:
         """
 
@@ -870,22 +868,22 @@ class CAPIFInvokerConnector:
     """
 
     def __init__(
-        self,
-        folder_to_store_certificates: str,
-        capif_host: str,
-        capif_http_port: str,
-        capif_https_port: str,
-        capif_netapp_username,
-        capif_netapp_password: str,
-        capif_callback_url: str,
-        description: str,
-        csr_common_name: str,
-        csr_organizational_unit: str,
-        csr_organization: str,
-        crs_locality: str,
-        csr_state_or_province_name,
-        csr_country_name,
-        csr_email_address,
+            self,
+            folder_to_store_certificates: str,
+            capif_host: str,
+            capif_http_port: str,
+            capif_https_port: str,
+            capif_netapp_username,
+            capif_netapp_password: str,
+            capif_callback_url: str,
+            description: str,
+            csr_common_name: str,
+            csr_organizational_unit: str,
+            csr_organization: str,
+            crs_locality: str,
+            csr_state_or_province_name,
+            csr_country_name,
+            csr_email_address,
     ):
         """
 
@@ -917,14 +915,14 @@ class CAPIFInvokerConnector:
             self.capif_http_url = "http://" + capif_host.strip() + "/"
         else:
             self.capif_http_url = (
-                "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
+                    "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
             )
 
         if len(capif_https_port) == 0 or int(capif_https_port) == 443:
             self.capif_https_url = "https://" + capif_host.strip() + "/"
         else:
             self.capif_https_url = (
-                "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
+                    "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
             )
 
         self.capif_callback_url = self.__add_trailing_slash_to_url_if_missing(
@@ -1045,12 +1043,13 @@ class CAPIFInvokerConnector:
         return response_payload["access_token"]
 
     def __onboard_netapp_to_capif_and_create_the_signed_certificate(
-        self, public_key, capif_onboarding_url, capif_access_token
+            self, public_key, capif_onboarding_url, capif_access_token
     ):
         url = self.capif_https_url + capif_onboarding_url
         payload_dict = {
             "notificationDestination": self.capif_callback_url,
             "supportedFeatures": "fffffff",
+            # TODO: This works fine.  But what about CapifProviderConnector class where we onboard a Provider/Exposer. On onboarding there we dont pass the username. Is this a mistake in the flow? Or a different flow is implemented there
             "apiInvokerInformation": self.csr_common_name,
             "websockNotifConfig": {
                 "requestWebsocketUri": True,
@@ -1087,7 +1086,7 @@ class CAPIFInvokerConnector:
 
     def __write_to_file(self, csr_common_name, api_invoker_id, discover_services_url):
         with open(
-            self.folder_to_store_certificates + "capif_api_details.json", "w"
+                self.folder_to_store_certificates + "capif_api_details.json", "w"
         ) as outfile:
             json.dump(
                 {
@@ -1105,25 +1104,25 @@ class CAPIFProviderConnector:
     """
 
     def __init__(
-        self,
-        certificates_folder: str,
-        description: str,
-        capif_host: str,
-        capif_http_port: str,
-        capif_https_port: str,
-        capif_netapp_username,
-        capif_netapp_password: str,
-        csr_common_name: str,
-        csr_organizational_unit: str,
-        csr_organization: str,
-        crs_locality: str,
-        csr_state_or_province_name,
-        csr_country_name,
-        csr_email_address,
+            self,
+            certificates_folder: str,
+            description: str,
+            capif_host: str,
+            capif_http_port: str,
+            capif_https_port: str,
+            capif_netapp_username,
+            capif_netapp_password: str,
+            csr_common_name: str,
+            csr_organizational_unit: str,
+            csr_organization: str,
+            crs_locality: str,
+            csr_state_or_province_name,
+            csr_country_name,
+            csr_email_address,
     ):
         """
         :param certificates_folder: The folder where certificates will be created and stored.
-        :param description: A short description of the Exposer
+        :param description: A short description of the Provider
         :param capif_host:
         :param capif_http_port:
         :param capif_https_port:
@@ -1149,14 +1148,14 @@ class CAPIFProviderConnector:
             self.capif_http_url = "http://" + capif_host.strip() + "/"
         else:
             self.capif_http_url = (
-                "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
+                    "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
             )
 
         if len(capif_https_port) == 0 or int(capif_https_port) == 443:
             self.capif_https_url = "https://" + capif_host.strip() + "/"
         else:
             self.capif_https_url = (
-                "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
+                    "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
             )
 
         self.capif_host = capif_host.strip()
@@ -1185,8 +1184,8 @@ class CAPIFProviderConnector:
         """
         Retrieves and stores the cert_server.pem from CAPIF
         """
-        print("Retrieve cert_server.pem , process may take a few minutes")
-        cmd = "openssl s_client -connect {0}:443  | openssl x509 -text >> {1}/cert_server.pem".format(
+        print("Retrieve capif_cert_server.pem , process may take a few minutes")
+        cmd = "openssl s_client -connect {0}:443  | openssl x509 -text >> {1}/capif_cert_server.pem".format(
             self.capif_host, self.certificates_folder
         )
         os.system(cmd)
@@ -1198,7 +1197,7 @@ class CAPIFProviderConnector:
         :return: The contents of the public key
         """
         private_key_path = (
-            self.certificates_folder + api_prov_func_role + "_private.key"
+                self.certificates_folder + api_prov_func_role + "_private_key.key"
         )
         csr_file_path = self.certificates_folder + api_prov_func_role + "_public.csr"
 
@@ -1208,10 +1207,9 @@ class CAPIFProviderConnector:
 
         # Generate CSR
         req = X509Req()
-        # TODO: ASK STAVROS. DO WE NEED THE CSR COMMON NAME HERE?
-        # IS THIS RELATED WITH WHY THE AUTHORIZATION FAILS?
-        # At dummy_aef repo this is "EXPOSERAEF" or "EXPORSERAPF" OR EXPOSERAMF
-        req.get_subject().CN = self.csr_common_name + api_prov_func_role
+
+        # The role should always be put in the certificate .lower() by convention
+        req.get_subject().CN = self.csr_common_name + api_prov_func_role.lower()
         req.get_subject().O = self.csr_organization
         req.get_subject().OU = self.csr_organizational_unit
         req.get_subject().L = self.crs_locality
@@ -1238,21 +1236,28 @@ class CAPIFProviderConnector:
                     "regInfo": {"apiProvPubKey": ""},
                     "apiProvFuncRole": "AEF",
                     "apiProvFuncInfo": "dummy_aef",
-                    # TODO: ASK STAVROS. Should this match the .csr file?
+                    #TODO: ASK STAVROS. Should this match the .csr file?
                     # What the about the Common Name that we are specificing in the constructor.
+                    # This seems similar to NET APP REGISTRATION: "apiInvokerInformation": self.csr_common_name,
                 },
                 {
                     "regInfo": {"apiProvPubKey": ""},
                     "apiProvFuncRole": "APF",
                     "apiProvFuncInfo": "dummy_apf",
+                    #TODO: ASK STAVROS. Should this match the .csr file?
+                    # What the about the Common Name that we are specificing in the constructor.
+                    # This seems similar to NET APP REGISTRATION: "apiInvokerInformation": self.csr_common_name,
                 },
                 {
                     "regInfo": {"apiProvPubKey": ""},
                     "apiProvFuncRole": "AMF",
                     "apiProvFuncInfo": "dummy_amf",
+                    #TODO: ASK STAVROS. Should this match the .csr file?
+                    # What the about the Common Name that we are specificing in the constructor.
+                    # This seems similar to NET APP REGISTRATION: "apiInvokerInformation": self.csr_common_name,
                 },
             ],
-            "apiProvDomInfo": "This is provider",
+            "apiProvDomInfo": "This is provider",  #TODO: MAY BE HERE WE NEED TO PUT THE csr_common_name? This seems similar to NET APP REGISTRATION: "apiInvokerInformation": self.csr_common_name,
             "suppFeat": "fff",
             "failReason": "string",
         }
@@ -1287,6 +1292,7 @@ class CAPIFProviderConnector:
         payload["password"] = self.capif_netapp_password
         payload["role"] = role
         payload["description"] = self.description
+        #TODO: ASK STAVROS. THIS INFORMATION IS STORED AT CAPIF users collection.  Is it used somewhere else at the capif? Notice it does not have postfixes "AEF/APF/AMF"
         payload["cn"] = self.csr_common_name
 
         response = requests.request(
@@ -1326,28 +1332,26 @@ class CAPIFProviderConnector:
 
         for func_provile in onboarding_response["apiProvFuncs"]:
             with open(
-                self.certificates_folder
-                + func_provile["apiProvFuncRole"]
-                + "_dummy.crt",
-                "wb",
+                    self.certificates_folder+ "dummy_"+ func_provile["apiProvFuncRole"].lower()+ ".crt",
+                    "wb",
             ) as certification_file:
                 certification_file.write(
                     bytes(func_provile["regInfo"]["apiProvCert"], "utf-8")
                 )
 
         with open(
-            self.certificates_folder + "capif_provider_details.json", "w"
+                self.certificates_folder + "capif_provider_details.json", "w"
         ) as outfile:
             data = {
                 "capif_registration_id": capif_registration_id,
-                "publish_url": publish_url,
+                "publish_url": publish_url
             }
             for api_prov_func in onboarding_response["apiProvFuncs"]:
-                key = api_prov_func["apiProvFuncRole"] + "_api_prov_func_id"
-                value = api_prov_func["apiProvFuncId"]
-                data[key] = value
+                key = api_prov_func["apiProvFuncRole"] +"_api_prov_func_id"
+                value =api_prov_func["apiProvFuncId"]
+                data[key] =value
 
-            json.dump(data, outfile)
+            json.dump(data,outfile)
 
     def register_and_onboard_provider(self) -> None:
         role = "provider"
@@ -1365,7 +1369,7 @@ class CAPIFProviderConnector:
             access_token, capif_onboarding_url
         )
         self.__write_to_file(
-            onboarding_response, capif_registration_id, ccf_publish_url
+            onboarding_response,capif_registration_id, ccf_publish_url
         )
 
     def publish_services(self, service_api_description_json_full_path) -> None:
@@ -1374,16 +1378,15 @@ class CAPIFProviderConnector:
         the endpoints that will be published
         """
         with open(
-            self.certificates_folder + "capif_provider_details.json", "r"
+                self.certificates_folder + "capif_provider_details.json", "r"
         ) as openfile:
             file = json.load(openfile)
             publish_url = file["publish_url"]
             AEF_api_prov_func_id = file["AEF_api_prov_func_id"]
             APF_api_prov_func_id = file["APF_api_prov_func_id"]
 
-        url = self.capif_https_url + publish_url.replace(
-            "<apfId>", APF_api_prov_func_id
-        )
+
+        url = self.capif_https_url + publish_url.replace("<apfId>",APF_api_prov_func_id)
 
         with open(service_api_description_json_full_path, "rb") as service_file:
             data = json.load(service_file)
@@ -1396,9 +1399,11 @@ class CAPIFProviderConnector:
                 headers={"Content-Type": "application/json"},
                 data=json.dumps(data),
                 cert=(
-                    # TODO:Ask Stavros should this be named like APF_dummy.crt  or like dummy_apf.crt? See line 1241
-                    self.certificates_folder + "APF_dummy.crt",
-                    self.certificates_folder + "APF_private.key",
+                    #TODO:Ask Stavros should this be named like APF_dummy.crt  or like dummy_apf.crt? Does the naming matters? Also we are passing the APF and not the AMF or the AEF keys?
+                    # When should AMF or AEF be passed? At which scenarios?
+                    # Is it fine that we have hardcoded these?
+                    self.certificates_folder + "dummy_apf.crt",
+                    self.certificates_folder + "APF_private_key.key"
                 ),
                 verify=self.certificates_folder + "ca.crt",
             )
@@ -1412,10 +1417,10 @@ class ServiceDiscoverer:
         pass
 
     def __init__(
-        self,
-        folder_path_for_certificates_and_api_key: str,
-        capif_host: str,
-        capif_https_port: int,
+            self,
+            folder_path_for_certificates_and_api_key: str,
+            capif_host: str,
+            capif_https_port: int,
     ):
         self.capif_host = capif_host
         self.capif_https_port = capif_https_port
@@ -1431,8 +1436,8 @@ class ServiceDiscoverer:
     def discover_service_apis(self):
 
         with open(
-            self.folder_to_store_certificates_and_api_key + "capif_api_details.json",
-            "r",
+                self.folder_to_store_certificates_and_api_key + "capif_api_details.json",
+                "r",
         ) as openfile:
             capif_api_details = json.load(openfile)
 
@@ -1443,9 +1448,9 @@ class ServiceDiscoverer:
         )
 
         signed_key_crt_path = (
-            self.folder_to_store_certificates_and_api_key
-            + capif_api_details["csr_common_name"]
-            + ".crt"
+                self.folder_to_store_certificates_and_api_key
+                + capif_api_details["csr_common_name"]
+                + ".crt"
         )
         private_key_path = self.folder_to_store_certificates_and_api_key + "private.key"
         ca_root_path = self.folder_to_store_certificates_and_api_key + "ca.crt"
@@ -1507,6 +1512,36 @@ class ServiceDiscoverer:
                     api_name = api_name[:-1]
                 # construct the url
                 return api_name + "/" + version + uri
+
+
+class TSNManager:
+    """
+    Contains helper functions to apply Time-Sensitive Networking (TSN) standards to time-sensitive NetApps.
+    """
+
+    def __init__(
+            self,
+            https: bool,
+            tsn_https_host: str,
+            tsn_https_port: int,
+    ) -> None:
+        self.https = https
+        self.tsn_https_host = tsn_https_host
+        self.tsn_https_port = tsn_https_port
+        self.endpoints_prefix = "api/v1"
+
+    class TSNNetappIdentifier:
+        def __init__(self, netapp_name: str):
+            self.netapp_name = netapp_name
+            self.__identifier = self.__generate_random_identifier()
+
+        def __generate_random_identifier(self):
+            return "{netapp_name}_{random_uuid}".format(
+                netapp_name=self.netapp_name, random_uuid=uuid4().hex
+            )
+
+        def value(self):
+            return self.__identifier
 
 
 class TSNManager:
