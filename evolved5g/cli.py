@@ -82,7 +82,8 @@ def register_and_onboard_to_capif(ctx, config_file_full_path: str):
     --tsn_api_host: The host of the TSN API Server (Ex. <TBD> if you are running the docker container) 
     --tsn_api_port: The http port of the TSN API Server (Ex. <TBD> if you are running the docker container) 
     --netapp_name: The name of your netapp --folder_to_store_clearance_token: The folder where tokens that can be 
-    used to reset TSN configurations will be stored at """,
+    used to reset TSN configurations will be stored at
+    """,
 )
 @click.pass_context
 def get_tsn_profiles(ctx, config_file_full_path: str):
