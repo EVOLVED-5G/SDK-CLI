@@ -2,8 +2,8 @@ import random
 from evolved5g.sdk import TSNManager
 
 
-tsn_https_host = "localhost"  # TSN server hostname
-tsn_https_port = 5000  # TSN server port
+tsn_http_host = "localhost"  # TSN server hostname
+tsn_http_port = 8888  # TSN server port
 netapp_name_ids = {}  # Stores the generated TNS identifiers for each NetApp
 netapp_ids_tokens = (
     {}
@@ -11,7 +11,7 @@ netapp_ids_tokens = (
 netapp_name = "MyNetapp"  # The name of our NetApp
 
 tsn = TSNManager(  # Initialization of the TNSManager
-    https=False, tsn_https_host=tsn_https_host, tsn_https_port=tsn_https_port
+    https=False, tsn_http_host=tsn_http_host, tsn_http_port=tsn_http_port
 )
 
 
