@@ -84,9 +84,7 @@ def showcase_apply_tsn_profile_with_overriden_parameters():
     profile_configuration = profile_to_apply.get_configuration_for_tsn_profile()
     profile_parameters = profile_configuration.get_profile_configuration_parameters()
     for parameter, value in profile_parameters.items():
-        profile_parameters[parameter] = (
-            value + 1 if isinstance(value, int) or isinstance(value, float) else ""
-        )
+        profile_parameters[parameter] = not value if isinstance(value, bool) else value
 
     tsn_netapp_identifier = tsn.TSNNetappIdentifier(netapp_name=netapp_name)
     netapp_name_ids[netapp_name] = tsn_netapp_identifier.value()
