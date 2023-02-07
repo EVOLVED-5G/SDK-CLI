@@ -79,8 +79,9 @@ def register_and_onboard_to_capif(ctx, config_file_full_path: str):
     "--config_file_full_path",
     type=str,
     help="""The configuration file used to apply Time-Sensitive Network Functionalities to your NetApp. 
-    --tsn_api_host: The host of the TSN API Server (Ex. <TBD> if you are running the docker container) 
-    --tsn_api_port: The http port of the TSN API Server (Ex. <TBD> if you are running the docker container) 
+    --https: True to use HTTPS, False to use HTTP
+    --tsn_api_host: The host of the TSN API Server 
+    --tsn_api_port: The http port of the TSN API Server (Ex. 8888 if you are running the docker container) 
     --netapp_name: The name of your netapp --folder_to_store_clearance_token: The folder where tokens that can be 
     used to reset TSN configurations will be stored at
     """,
@@ -89,3 +90,25 @@ def register_and_onboard_to_capif(ctx, config_file_full_path: str):
 def get_tsn_profiles(ctx, config_file_full_path: str):
     """Lists all available TSN profiles"""
     ctx.obj["helper"].get_tsn_profiles(config_file_full_path)
+
+
+@cli.command()
+@click.option(
+    "--config_file_full_path",
+    type=str,
+    help="""The configuration file used to apply Time-Sensitive Network Functionalities to your NetApp. 
+    --https: True to use HTTPS, False to use HTTP
+    --tsn_api_host: The host of the TSN API Server 
+    --tsn_api_port: The http port of the TSN API Server (Ex. 8888 if you are running the docker container) 
+    --netapp_name: The name of your netapp --folder_to_store_clearance_token: The folder where tokens that can be 
+    used to reset TSN configurations will be stored at
+    """,
+)
+@click.option(
+    "--profile_name",
+    type=str,
+    help="""The name of the TSN profile you would like to apply to the NetApp""",
+)
+@click.pass_context
+def apply_tsn_profile(ctx, config_file_full_path: str, profile_name: str):
+    ctx.obj["helper"].apply_tsn_profile(config_file_full_path, profile_name)

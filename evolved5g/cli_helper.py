@@ -321,8 +321,45 @@ class CLI_helper:
 
         tsn = TSNManager(  # Initialization of the TNSManager
             https=config["https"],
-            tsn_https_host=config["tsn_api_host"],
-            tsn_https_port=config["tsn_api_port"],
+            tsn_http_host=config["tsn_api_host"],
+            tsn_http_port=config["tsn_api_port"],
+        )
+        echo("Profiles:")
+        echo(
+            "\t\n".join(
+                [
+                    str(
+                        {
+                            profile.name: profile.get_configuration_for_tsn_profile().get_profile_configuration_parameters()
+                        }
+                    )
+                    for profile in tsn.get_tsn_profiles()
+                ]
+            )
         )
 
-        echo(" ".join([profile.name for profile in tsn.get_tsn_profiles()]))
+    def apply_tsn_profile(self, config_file_full_path: str, profile_name: str) -> None:
+
+        with open(config_file_full_path, "r") as openfile:
+            config = json.load(openfile)
+
+        tsn = TSNManager(  # Initialization of the TNSManager
+            https=config["https"],
+            tsn_http_host=config["tsn_api_host"],
+            tsn_http_port=config["tsn_api_port"],
+        )
+        netapp_name = config["netapp_name"]
+        netapp_tsn_id = tsn.TSNNetappIdentifier(netapp_name=netapp_name)
+        tsn_profiles = tsn.get_tsn_profiles()
+        matched_profiles = [p for p in tsn_profiles if p.name == profile_name]
+        if not matched_profiles:
+            raise ValueError(
+                f"Error: the profile name {profile_name} does not match an available TSN profile.\n"
+                f"Available TSN profile are the following: [{', '.join([p.name for p in tsn_profiles])}]"
+            )
+        profile = matched_profiles[0]
+        clearance_token = tsn.apply_tsn_profile_to_netapp(netapp_tsn_id, profile)
+        echo(
+            f'The TSN profile "{profile_name}" has been successfully applied to your netapp "{netapp_name}".'
+            f'\nStore the token "{clearance_token}" to clear the profile if you wish in the future.'
+        )
