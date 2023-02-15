@@ -1462,8 +1462,25 @@ class ServiceDiscoverer:
         :param aef_id: The relevant aef_id that is returned by discover services
          :return: The access token (jwt)
         """
-        self.__register_security_service(api_id,aef_id)
+        if not self.__aef_id_already_registered(aef_id):
+            self.__register_security_service(api_id,aef_id)
+            self.__save_aef_id_to_already_registered_cached_list(aef_id)
+
         return self.__get_security_token(api_name,aef_id)
+
+    def __aef_id_already_registered(self,aef_id):
+       return "registered_aef_ids" in self.capif_api_details and \
+            aef_id in self.capif_api_details["registered_aef_ids"]
+
+    def __save_aef_id_to_already_registered_cached_list(self,aef_id):
+        if "registered_aef_ids" not in self.capif_api_details:
+            self.capif_api_details["registered_aef_ids"] =[]
+
+        self.capif_api_details["registered_aef_ids"].append(aef_id)
+        with open(
+                self.folder_to_store_certificates_and_api_key + "capif_api_details.json", "w"
+        ) as outfile:
+            json.dump(self.capif_api_details,outfile)
 
     def __register_security_service(self,  api_id, aef_id):
         """

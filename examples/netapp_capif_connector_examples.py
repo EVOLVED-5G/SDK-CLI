@@ -11,7 +11,7 @@ def showcase_capif_connector():
                                             capif_host="capifcore",
                                             capif_http_port="8080",
                                             capif_https_port="443",
-                                            capif_netapp_username="customnetapp07",
+                                            capif_netapp_username="custom_netapp12",
                                             capif_netapp_password="pass123",
                                             capif_callback_url="http://localhost:5000",
                                             description= "Dummy NetApp",
@@ -41,12 +41,13 @@ def showcase_access_token_retrieval_from_capif():
                                            )
     endpoints = service_discoverer.discover_service_apis()
     if len(endpoints)>0:
-        print("no endpoints have been registered. Make sure NEF has registered to CAPIF first")
         api_name = endpoints["serviceAPIDescriptions"][0]["apiName"]
         api_id =  endpoints["serviceAPIDescriptions"][0]["apiId"]
         aef_id =  endpoints["serviceAPIDescriptions"][0]["aefProfiles"][0]["aefId"]
         access_token = service_discoverer.get_access_token(api_name,api_id,aef_id)
         print(access_token)
+    else:
+        print("no endpoints have been registered. Make sure NEF has registered to CAPIF first")
 
 if __name__ == "__main__":
     #Let's register NetApp to CAPIF. This should happen exactly once
