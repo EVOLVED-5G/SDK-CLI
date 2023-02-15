@@ -1434,41 +1434,145 @@ class ServiceDiscoverer:
         self.folder_to_store_certificates_and_api_key = os.path.join(
             folder_path_for_certificates_and_api_key.strip(), ""
         )
+        self.capif_api_details = self.__load_netapp_api_details()
+        self.signed_key_crt_path = (
+                self.folder_to_store_certificates_and_api_key
+                + self.capif_api_details["csr_common_name"]+ ".crt"
+        )
+        self.private_key_path = self.folder_to_store_certificates_and_api_key + "private.key"
+        self.ca_root_path = self.folder_to_store_certificates_and_api_key + "ca.crt"
+
+
+    def __load_netapp_api_details(self):
+        with open(
+                self.folder_to_store_certificates_and_api_key + "capif_api_details.json",
+                "r",
+        ) as openfile:
+            return json.load(openfile)
 
     def _add_trailing_slash_to_url_if_missing(self, url):
         if url[len(url) - 1] != "/":
             url = url + "/"
         return url
 
-    def discover_service_apis(self):
+    def get_access_token(self,api_name,api_id,aef_id):
+        """
+        :param api_name: The api id name is returned by discover services
+         :param api_id: The api id that is returned by discover services
+        :param aef_id: The relevant aef_id that is returned by discover services
+         :return: The access token (jwt)
+        """
+        self.__register_security_service(api_id,aef_id)
+        return self.__get_security_token(api_name,aef_id)
 
-        with open(
-            self.folder_to_store_certificates_and_api_key + "capif_api_details.json",
-            "r",
-        ) as openfile:
-            capif_api_details = json.load(openfile)
+    def __register_security_service(self,  api_id, aef_id):
+        """
+
+        :param api_id: The api id that is returned by discover services
+        :param aef_id: The aef_id that is returned by discover services
+        :return: None
+        """
+        url = "https://{}/capif-security/v1/trustedInvokers/{}".format(self.capif_host,
+                                                                       self.capif_api_details["api_invoker_id"])
+
+        #todo: clarify with Stavros, what is this? why do we need it
+        payload = {
+            "securityInfo": [
+                {
+                    "prefSecurityMethods": [
+                        #TODO: What should we put here?, PKI returns error
+                        "PSK"
+                        # "PKI",
+
+                    ],
+                    "authenticationInfo": "string",
+                    "authorizationInfo": "string"
+                },
+                {
+                    "prefSecurityMethods": [
+                        "Oauth"
+                    ],
+                    "authenticationInfo": "string",
+                    "authorizationInfo": "string"
+                }
+            ],
+            #todo: what are these?
+            "notificationDestination": "https://mynotificationdest.com",
+            "requestTestNotification": True,
+            "websockNotifConfig": {
+                "websocketUri": "string",
+                "requestWebsocketUri": True
+            },
+            "supportedFeatures": "fff"
+        }
+
+
+        for profile in payload["securityInfo"]:
+            profile["aefId"] = aef_id
+            profile["apiId"] = api_id
+
+        #todo: in dummy net app this is not utilized
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.put(url,
+                                #todo: in dummy net app this is not utilized
+                                #headers={"Content-Type": "application/json"},
+                                json=payload,
+                                cert=(self.signed_key_crt_path, self.private_key_path),
+                                verify=self.ca_root_path
+                                )
+        response.raise_for_status()
+        response_payload = response.json()
+
+    def __get_security_token(self,api_name,aef_id ):
+        """
+        :param api_name: The api id name is returned by discover services
+        :param aef_id: The relevant aef_id that is returned by discover services
+        :return: The access token (jwt)
+        """
+
+        url = "https://{}/capif-security/v1/securities/{}/token".format(self.capif_host,self.capif_api_details["api_invoker_id"] )
+
+        payload= {
+            "grant_type": "client_credentials",
+            "client_id": self.capif_api_details["api_invoker_id"],
+            "client_secret": "string",
+            "scope": "3gpp#"+aef_id+":"+api_name
+        }
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+
+        response = requests.post(url,
+                                 headers=headers,
+                                 data=payload,
+                                 cert=(self.signed_key_crt_path, self.private_key_path),
+                                 verify=self.ca_root_path
+                                 )
+        response.raise_for_status()
+        response_payload = json.loads(response.text)
+        return response_payload
+
+
+    def discover_service_apis(self):
 
         url = "https://{}/{}{}".format(
             self.capif_host,
-            capif_api_details["discover_services_url"],
-            capif_api_details["api_invoker_id"],
+            self.capif_api_details["discover_services_url"],
+            self.capif_api_details["api_invoker_id"],
         )
 
-        signed_key_crt_path = (
-            self.folder_to_store_certificates_and_api_key
-            + capif_api_details["csr_common_name"]
-            + ".crt"
-        )
-        private_key_path = self.folder_to_store_certificates_and_api_key + "private.key"
-        ca_root_path = self.folder_to_store_certificates_and_api_key + "ca.crt"
+
         response = requests.request(
             "GET",
             url,
             headers={"Content-Type": "application/json"},
             data={},
             files={},
-            cert=(signed_key_crt_path, private_key_path),
-            verify=ca_root_path,
+            cert=(self.signed_key_crt_path, self.private_key_path),
+            verify=self.ca_root_path
         )
         response.raise_for_status()
         response_payload = json.loads(response.text)
