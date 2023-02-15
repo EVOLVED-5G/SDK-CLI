@@ -933,7 +933,8 @@ class CAPIFInvokerConnector:
         self.capif_netapp_username = capif_netapp_username
         self.capif_netapp_password = capif_netapp_password
         self.description = description
-        self.csr_common_name = csr_common_name
+        # adding invoker_ prefix is required by CAPIF v3
+        self.csr_common_name = "invoker_" + csr_common_name
         self.csr_organizational_unit = csr_organizational_unit
         self.csr_organization = csr_organization
         self.crs_locality = crs_locality
