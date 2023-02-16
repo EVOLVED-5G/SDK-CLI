@@ -50,6 +50,7 @@ class MonitoringSubscriber(ABC):
     ):
         configuration = swagger_client.Configuration()
         configuration.host = host
+
         configuration.access_token = nef_bearer_access_token
         service_discoverer = ServiceDiscoverer(
             folder_path_for_certificates_and_capif_api_key, capif_host, capif_https_port
@@ -525,6 +526,7 @@ class QosAwareness:
 
         configuration = swagger_client.Configuration()
         configuration.host = nef_url
+        # TODO: retrieve the access token from CAPIF
         configuration.access_token = nef_bearer_access_token
         service_discoverer = ServiceDiscoverer(
             folder_path_for_certificates_and_capif_api_key, capif_host, capif_https_port
@@ -1492,28 +1494,13 @@ class ServiceDiscoverer:
         url = "https://{}/capif-security/v1/trustedInvokers/{}".format(self.capif_host,
                                                                        self.capif_api_details["api_invoker_id"])
 
-        #todo: clarify with Stavros, what is this? why do we need it
+
         payload = {
             "securityInfo": [
                 {
-                    "prefSecurityMethods": [
-                        #TODO: What should we put here?, PKI returns error
-                        "PSK"
-                        # "PKI",
-
-                    ],
-                    "authenticationInfo": "string",
-                    "authorizationInfo": "string"
-                },
-                {
-                    "prefSecurityMethods": [
-                        "Oauth"
-                    ],
-                    "authenticationInfo": "string",
-                    "authorizationInfo": "string"
+                    "prefSecurityMethods": ["Oauth"]
                 }
             ],
-            #todo: what are these?
             "notificationDestination": "https://mynotificationdest.com",
             "requestTestNotification": True,
             "websockNotifConfig": {
@@ -1523,19 +1510,11 @@ class ServiceDiscoverer:
             "supportedFeatures": "fff"
         }
 
-
         for profile in payload["securityInfo"]:
             profile["aefId"] = aef_id
             profile["apiId"] = api_id
 
-        #todo: in dummy net app this is not utilized
-        headers = {
-            'Content-Type': 'application/json'
-        }
-
         response = requests.put(url,
-                                #todo: in dummy net app this is not utilized
-                                #headers={"Content-Type": "application/json"},
                                 json=payload,
                                 cert=(self.signed_key_crt_path, self.private_key_path),
                                 verify=self.ca_root_path
