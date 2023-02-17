@@ -1460,7 +1460,8 @@ class ServiceDiscoverer:
             self.__register_security_service(api_id,aef_id)
             self.__save_aef_id_to_already_registered_cached_list(aef_id)
 
-        return self.__get_security_token(api_name,aef_id)
+        token_dic = self.__get_security_token(api_name,aef_id)
+        return token_dic["access_token"]
 
     def __aef_id_already_registered(self,aef_id):
        return "registered_aef_ids" in self.capif_api_details and \
