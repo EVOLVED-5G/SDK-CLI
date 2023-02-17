@@ -58,7 +58,7 @@ class MonitoringSubscriber(ABC):
                                                                                                  "MONITORING_SUBSCRIPTION_SINGLE"),
         }
         api_resource_description = service_discoverer.retrieve_api_description_by_name(api_name)
-        configuration.access_token =service_discoverer.get_access_token(api_name,api_resource_description["api_id"],api_resource_description["aef_profiles"][0]["aefId"])
+        configuration.access_token =service_discoverer.get_access_token(api_name,api_resource_description["apiId"],api_resource_description["aefProfiles"][0]["aefId"])
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.monitoring_event_api = MonitoringEventAPIApi(api_client)
         self.cell_api = CellsApi(api_client)
@@ -530,7 +530,7 @@ class QosAwareness:
             ),
         }
         api_resource_description = service_discoverer.retrieve_api_description_by_name(api_name)
-        configuration.access_token =service_discoverer.get_access_token(api_name,api_resource_description["api_id"],api_resource_description["aef_profiles"][0]["aefId"])
+        configuration.access_token =service_discoverer.get_access_token(api_name,api_resource_description["apiId"],api_resource_description["aefProfiles"][0]["aefId"])
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.qos_api = SessionWithQoSAPIApi(api_client)
 
