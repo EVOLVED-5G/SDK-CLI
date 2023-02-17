@@ -34,6 +34,18 @@ def showcase_service_discovery():
     endpoints = service_discoverer.discover_service_apis()
     print(endpoints)
 
+def showcase_retrieve_endpoint_url():
+    service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_api_key="/home/alex/Projects/test_certificate_folder",
+                                           capif_host="capifcore",
+                                           capif_https_port=443
+                                           )
+    url = service_discoverer.retrieve_specific_resource_name(
+        "/nef/api/v1/3gpp-monitoring-event/",
+        "MONITORING_SUBSCRIPTIONS"
+    )
+    print(url)
+
+
 def showcase_access_token_retrieval_from_capif():
     service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_api_key="/home/alex/Projects/test_certificate_folder",
                                            capif_host="capifcore",
@@ -51,6 +63,8 @@ def showcase_access_token_retrieval_from_capif():
 
 if __name__ == "__main__":
     #Let's register NetApp to CAPIF. This should happen exactly once
-    showcase_capif_connector()
+    #showcase_capif_connector()
+
     showcase_service_discovery()
+    showcase_retrieve_endpoint_url()
     showcase_access_token_retrieval_from_capif()

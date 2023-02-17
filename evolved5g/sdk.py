@@ -43,26 +43,22 @@ class MonitoringSubscriber(ABC):
     def __init__(
         self,
         host: str,
-        nef_bearer_access_token: str,
         folder_path_for_certificates_and_capif_api_key: str,
         capif_host: str,
         capif_https_port: int,
     ):
         configuration = swagger_client.Configuration()
         configuration.host = host
-
-        configuration.access_token = nef_bearer_access_token
-        service_discoverer = ServiceDiscoverer(
-            folder_path_for_certificates_and_capif_api_key, capif_host, capif_https_port
-        )
+        service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_capif_api_key, capif_host, capif_https_port)
+        api_name = "/nef/api/v1/3gpp-monitoring-event/"
         configuration.available_endpoints = {
-            "MONITORING_SUBSCRIPTIONS": service_discoverer.retrieve_specific_resource_name(
-                "/nef/api/v1/3gpp-monitoring-event/", "MONITORING_SUBSCRIPTIONS"
-            ),
-            "MONITORING_SUBSCRIPTION_SINGLE": service_discoverer.retrieve_specific_resource_name(
-                "/nef/api/v1/3gpp-monitoring-event/", "MONITORING_SUBSCRIPTION_SINGLE"
-            ),
+            "MONITORING_SUBSCRIPTIONS": service_discoverer.retrieve_specific_resource_name(api_name,
+                                                                                           "MONITORING_SUBSCRIPTIONS"),
+            "MONITORING_SUBSCRIPTION_SINGLE": service_discoverer.retrieve_specific_resource_name(api_name,
+                                                                                                 "MONITORING_SUBSCRIPTION_SINGLE"),
         }
+        api_resource_description = service_discoverer.retrieve_api_description_by_name(api_name)
+        configuration.access_token =service_discoverer.get_access_token(api_name,api_resource_description["api_id"],api_resource_description["aef_profiles"][0]["aefId"])
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.monitoring_event_api = MonitoringEventAPIApi(api_client)
         self.cell_api = CellsApi(api_client)
@@ -129,7 +125,6 @@ class LocationSubscriber(MonitoringSubscriber):
     def __init__(
         self,
         nef_url: str,
-        nef_bearer_access_token: str,
         folder_path_for_certificates_and_capif_api_key: str,
         capif_host: str,
         capif_https_port: int,
@@ -141,11 +136,9 @@ class LocationSubscriber(MonitoringSubscriber):
         A notification is sent to a callback url you will provide, everytime the user device changes Cell
 
          :param str nef_url: The url of the 5G-API
-         :param str nef_bearer_access_token: The bearer access token that will be used to authenticate with the 5G-API
         """
         super().__init__(
             nef_url,
-            nef_bearer_access_token,
             folder_path_for_certificates_and_capif_api_key,
             capif_host,
             capif_https_port,
@@ -273,7 +266,6 @@ class ConnectionMonitor(MonitoringSubscriber):
     def __init__(
         self,
         nef_url: str,
-        nef_bearer_access_token: str,
         folder_path_for_certificates_and_capif_api_key: str,
         capif_host: str,
         capif_https_port: int,
@@ -288,7 +280,6 @@ class ConnectionMonitor(MonitoringSubscriber):
         Connection is alive (for example the user device has been connected to the 5G network for the past 10 seconds)
 
         :param str nef_url: The url of the 5G-API
-        :param str nef_bearer_access_token: The bearer access token that will be used to authenticate with the 5G-API
         :param folder_path_for_certificates_and_capif_api_key: The folder that contains the NetApp certificates and
          CAPIF API Key. These are created  while registering and onboarding the NetApp to the CAPIF Server
         :param capif_host: The host of the CAPIF Server (ex. "capifcore")
@@ -296,7 +287,6 @@ class ConnectionMonitor(MonitoringSubscriber):
         """
         super().__init__(
             nef_url,
-            nef_bearer_access_token,
             folder_path_for_certificates_and_capif_api_key,
             capif_host,
             capif_https_port,
@@ -526,19 +516,21 @@ class QosAwareness:
 
         configuration = swagger_client.Configuration()
         configuration.host = nef_url
-        # TODO: retrieve the access token from CAPIF
-        configuration.access_token = nef_bearer_access_token
+
         service_discoverer = ServiceDiscoverer(
             folder_path_for_certificates_and_capif_api_key, capif_host, capif_https_port
         )
+        api_name = "/nef/api/v1/3gpp-as-session-with-qos/"
         configuration.available_endpoints = {
             "QOS_SUBSCRIPTIONS": service_discoverer.retrieve_specific_resource_name(
-                "/nef/api/v1/3gpp-as-session-with-qos/", "QOS_SUBSCRIPTIONS"
+                api_name, "QOS_SUBSCRIPTIONS"
             ),
             "QOS_SUBSCRIPTION_SINGLE": service_discoverer.retrieve_specific_resource_name(
-                "/nef/api/v1/3gpp-as-session-with-qos/", "QOS_SUBSCRIPTION_SINGLE"
+                api_name, "QOS_SUBSCRIPTION_SINGLE"
             ),
         }
+        api_resource_description = service_discoverer.retrieve_api_description_by_name(api_name)
+        configuration.access_token =service_discoverer.get_access_token(api_name,api_resource_description["api_id"],api_resource_description["aef_profiles"][0]["aefId"])
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.qos_api = SessionWithQoSAPIApi(api_client)
 
@@ -1551,7 +1543,6 @@ class ServiceDiscoverer:
         response_payload = json.loads(response.text)
         return response_payload
 
-
     def discover_service_apis(self):
 
         url = "https://{}/{}{}".format(
@@ -1574,51 +1565,55 @@ class ServiceDiscoverer:
         response_payload = json.loads(response.text)
         return response_payload
 
-    def retrieve_specific_resource_name(self, api_name, resource_name):
-        """
-        Can be used to locate specific resources inside APIS.
-        For example the NEF emulator exposes an api with name "nef_emulator_endpoints" that contains two resources (two endpoints)
-        1. '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions' with resource name:MONITORING_SUBSCRIPTIONS
-        2. '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}' with resource name : MONITORING_SUBSCRIPTION_SINGLE
-        """
+    def retrieve_api_description_by_name(self,api_name):
         capif_apifs = self.discover_service_apis()
-        nef_endpoints = list(
-            filter(lambda api: api["api_name"] == api_name, capif_apifs)
+        endpoints = list(
+            filter(lambda api: api["apiName"] == api_name, capif_apifs["serviceAPIDescriptions"])
         )
-        if len(nef_endpoints) == 0:
+        if len(endpoints) == 0:
             raise ServiceDiscoverer.ServiceDiscovererException(
                 "Could not find available endpoints for api_name: "
                 + api_name
                 + ".Make sure that a) your NetApp is registered and onboarded to CAPIF and b) the NEF emulator has been registered and onboarded to CAPIF"
             )
         else:
-            version_dictionary = nef_endpoints[0]["aef_profiles"][0]["versions"][0]
-            version = version_dictionary["api_version"]
-            resources = version_dictionary["resources"]
-            uris = list(
-                filter(
-                    lambda resource: resource["resource_name"] == resource_name,
-                    resources,
-                )
-            )
+            return endpoints[0]
 
-            if len(uris) == 0:
-                raise ServiceDiscoverer.ServiceDiscovererException(
-                    "Could not find resource_name: "
-                    + resource_name
-                    + "at api_name"
-                    + api_name
-                )
-            else:
-                uri = uris[0]["uri"]
-                # make sure the uri starts with /
-                if not uri.startswith("/"):
-                    uri = "/" + uri
-                # make sure the API doesn't have a trailing /
-                if api_name.endswith("/"):
-                    api_name = api_name[:-1]
-                # construct the url
-                return api_name + "/" + version + uri
+    def retrieve_specific_resource_name(self, api_name, resource_name):
+        """
+        Can be used to retrieve the URL for specific resources inside APIS.
+        For example the NEF emulator exposes an api with name "nef_emulator_endpoints" that contains two resources (two endpoints)
+        1. '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions' with resource name:MONITORING_SUBSCRIPTIONS
+        2. '/nef/api/v1/3gpp-monitoring-event/v1/{scsAsId}/subscriptions/{subscriptionId}' with resource name : MONITORING_SUBSCRIPTION_SINGLE
+        """
+        api_description = self.retrieve_api_description_by_name(api_name)
+        version_dictionary = api_description["aefProfiles"][0]["versions"][0]
+        version = version_dictionary["apiVersion"]
+        resources = version_dictionary["resources"]
+        uris = list(
+            filter(
+                lambda resource: resource["resourceName"] == resource_name,
+                resources,
+            )
+        )
+
+        if len(uris) == 0:
+            raise ServiceDiscoverer.ServiceDiscovererException(
+                "Could not find resource_name: "
+                + resource_name
+                + "at api_name"
+                + api_name
+            )
+        else:
+            uri = uris[0]["uri"]
+            # make sure the uri starts with /
+            if not uri.startswith("/"):
+                uri = "/" + uri
+            # make sure the API doesn't have a trailing /
+            if api_name.endswith("/"):
+                api_name = api_name[:-1]
+            # construct the url
+            return api_name + "/" + version + uri
 
 
 class TSNManager:
