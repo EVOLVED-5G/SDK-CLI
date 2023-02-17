@@ -13,7 +13,7 @@ def get_api_client(token) -> swagger_client.ApiClient:
 
 
 def get_url_of_the_nef_emulator() -> str:
-    return "http://localhost:8888"
+    return "https://localhost:4443"
 
 def get_folder_path_for_certificated_and_capif_api_key()->str:
     """

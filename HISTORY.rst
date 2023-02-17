@@ -1,11 +1,18 @@
 =======
 History
 =======
-0.9.0 (2023-01-03)
+0.9.0 (2023-17-07)
 -------------------
-* CAPIFExposerConnector has been a) refactored to conform to the latest CAPIF API and b) renamed to CAPIFProviderConnector
+* CAPIFExposerConnector has been a) refactored to conform to the latest CAPIF API and b) renamed to `CAPIFProviderConnector`
     * CAPIFProviderConnector registers, onboards and publishes a Provider (ex. NEF) to the CAPIF instance.
+    * Breaking changes:  'CAPIFExposerConnector' class has been renamed to `CAPIFProviderConnector`
 
+* All Libraries classes (`LocationSubscriber`,`ConnectionMonitor`,`QosAwareness`) now communicate with CAPIF server to get authorization tokens
+    * Breaking changes: Parameter `nef_bearer_access_token` has been removed from constructors: `LocationSubscriber`,`ConnectionMonitor`,`QosAwareness`
+
+* ServiceDiscoverer SDK class has been updated in order to:
+    * Conform with the description of resources at CAPIF v3 (method
+    *
 * New class TSNManager that communicates with the TSN API
 
 0.8.9 (2023-01-03)
