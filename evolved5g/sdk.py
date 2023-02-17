@@ -48,6 +48,7 @@ class MonitoringSubscriber(ABC):
         capif_https_port: int,
     ):
         configuration = swagger_client.Configuration()
+        configuration.verify_ssl = False
         configuration.host = host
         service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_capif_api_key, capif_host, capif_https_port)
         api_name = "/nef/api/v1/3gpp-monitoring-event/"
@@ -516,6 +517,7 @@ class QosAwareness:
 
         configuration = swagger_client.Configuration()
         configuration.host = nef_url
+        configuration.verify_ssl = False
 
         service_discoverer = ServiceDiscoverer(
             folder_path_for_certificates_and_capif_api_key, capif_host, capif_https_port
