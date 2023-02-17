@@ -22,7 +22,6 @@ def showcase_create_subscription_and_retrieve_call_backs():
     netapp_id = "myNetapp"
 
     location_subscriber = LocationSubscriber(nef_url=emulator_utils.get_url_of_the_nef_emulator(),
-                                             nef_bearer_access_token= emulator_utils.get_token_for_nef_emulator().access_token,
                                              folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_certificated_and_capif_api_key(),
                                              capif_host=emulator_utils.get_capif_host(),
                                              capif_https_port=emulator_utils.get_capif_https_port())
@@ -66,7 +65,6 @@ def showcase_create_single_request_for_location_info():
     netapp_id = "myNetapp"
 
     location_subscriber = LocationSubscriber(nef_url=emulator_utils.get_url_of_the_nef_emulator(),
-                                             nef_bearer_access_token= emulator_utils.get_token_for_nef_emulator().access_token,
                                              folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_certificated_and_capif_api_key(),
                                              capif_host=emulator_utils.get_capif_host(),
                                              capif_https_port=emulator_utils.get_capif_https_port())
@@ -91,7 +89,6 @@ def read_and_delete_all_existing_subscriptions():
     # How to get all subscriptions
     netapp_id = "myNetapp"
     location_subscriber = LocationSubscriber(nef_url=emulator_utils.get_url_of_the_nef_emulator(),
-                                             nef_bearer_access_token= emulator_utils.get_token_for_nef_emulator().access_token,
                                              folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_certificated_and_capif_api_key(),
                                              capif_host=emulator_utils.get_capif_host(),
                                              capif_https_port=emulator_utils.get_capif_https_port())
