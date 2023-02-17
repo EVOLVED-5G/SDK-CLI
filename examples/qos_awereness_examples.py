@@ -10,7 +10,7 @@ def showcase_create_quaranteed_bit_rate_subscription_for_conversational_voice():
         a Guaranteed Bit Rate (NON-GBR) QoS.
 
         In order to run this example, to follow the instructions in  readme.md (https://evolved5g-cli.readthedocs.io/en/latest/libraries.html) in order to
-        a) run the CAPIF server
+        a) run the CAPIF server (this should run always first, because NEF in step b) has to communicate with NEF)
         b) run the NEF emulator
         c) connect your NetAPP to the CAPIF server (you have to do this only once)
         d) run a local webserver that will print the notifications it retrieves from the emulator. A testing local webserver (Flask webserver) can be initiated by running the examples/api.py

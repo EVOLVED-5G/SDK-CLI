@@ -63,8 +63,7 @@ def showcase_access_token_retrieval_from_capif():
 
 if __name__ == "__main__":
     #Let's register NetApp to CAPIF. This should happen exactly once
-    #showcase_capif_connector()
-
+    showcase_capif_connector()
     showcase_service_discovery()
     showcase_retrieve_endpoint_url()
     showcase_access_token_retrieval_from_capif()

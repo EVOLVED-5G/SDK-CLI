@@ -11,8 +11,8 @@ def showcase_create_subscription_and_retrieve_call_backs():
     """
     This example showcases how you can create a subscription to the 5G-API in order to monitor devices that are connected or disconnected to the network.
     In order to run this example, to follow the instructions in  readme.md (https://evolved5g-cli.readthedocs.io/en/latest/libraries.html) in order to
-     a) run the NEF emulator
-     b) run the CAPIF server
+     a) run the CAPIF server (this should run always first, because NEF in step b) has to communicate with NEF)
+     b) run the NEF emulator
      c) connect your NetAPP to the CAPIF server (you have to do this only once)
      d) run a local webserver that will print the notifications it retrieves from the emulator. A testing local webserver (Flask webserver) can be initiated by running the examples/api.py
     """
