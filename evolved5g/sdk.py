@@ -1208,7 +1208,7 @@ class CAPIFProviderConnector:
         req = X509Req()
 
         # The role should always be put in the certificate .lower() by convention
-        req.get_subject().CN = self.csr_common_name + api_prov_func_role.lower()
+        req.get_subject().CN = api_prov_func_role.lower()
         req.get_subject().O = self.csr_organization
         req.get_subject().OU = self.csr_organizational_unit
         req.get_subject().L = self.crs_locality
@@ -1235,30 +1235,21 @@ class CAPIFProviderConnector:
                     "regInfo": {"apiProvPubKey": ""},
                     "apiProvFuncRole": "AEF",
                     "apiProvFuncInfo": "dummy_aef",
-                    # TODO: ASK STAVROS. Should this match the .csr file?
-                    # What the about the Common Name that we are specificing in the constructor.
-                    # This seems similar to NET APP REGISTRATION: "apiInvokerInformation": self.csr_common_name,
                 },
                 {
                     "regInfo": {"apiProvPubKey": ""},
                     "apiProvFuncRole": "APF",
                     "apiProvFuncInfo": "dummy_apf",
-                    # TODO: ASK STAVROS. Should this match the .csr file?
-                    # What the about the Common Name that we are specificing in the constructor.
-                    # This seems similar to NET APP REGISTRATION: "apiInvokerInformation": self.csr_common_name,
                 },
                 {
                     "regInfo": {"apiProvPubKey": ""},
                     "apiProvFuncRole": "AMF",
                     "apiProvFuncInfo": "dummy_amf",
-                    # TODO: ASK STAVROS. Should this match the .csr file?
-                    # What the about the Common Name that we are specificing in the constructor.
-                    # This seems similar to NET APP REGISTRATION: "apiInvokerInformation": self.csr_common_name,
                 },
             ],
-            "apiProvDomInfo": "This is provider",  # TODO: MAY BE HERE WE NEED TO PUT THE csr_common_name? This seems similar to NET APP REGISTRATION: "apiInvokerInformation": self.csr_common_name,
+            "apiProvDomInfo": "This is provider",
             "suppFeat": "fff",
-            "failReason": "string",
+            "failReason": "string"
         }
         for api_func in payload["apiProvFuncs"]:
             public_key = self.__create_private_and_public_keys(
