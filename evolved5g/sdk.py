@@ -1681,17 +1681,21 @@ class TSNManager:
             :return: the default TSN profile configuration
             """
 
+            url =self.tsn_manager.url_prefix +\
+                self.tsn_manager.service_discoverer.\
+                    retrieve_specific_resource_name(self.tsn_manager.api_name, "TSN_DETAIL_PROFILE").\
+                    format(profile_name=self.name)
 
-            url = "{protocol}://{hostname_port}".format(
-                protocol="https" if self.tsn_manager.https else "http",
-                hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-                    host=self.tsn_manager.tsn_host,
-                    port=str(self.tsn_manager.tsn_port),
-                    prefix=self.tsn_manager.api_name,
-                    route_name="profile",
-                    profile_name=self.name,
-                ),
-            )
+            # url = "{protocol}://{hostname_port}".format(
+            #     protocol="https" if self.tsn_manager.https else "http",
+            #     hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
+            #         host=self.tsn_manager.tsn_host,
+            #         port=str(self.tsn_manager.tsn_port),
+            #         prefix=self.tsn_manager.api_name,
+            #         route_name="profile",
+            #         profile_name=self.name,
+            #     ),
+            # )
             response = requests.get(url=url, headers={"Accept": "application/json"})
             response.raise_for_status()
             parameters_dict = json.loads(response.text)[self.name]
@@ -1708,17 +1712,6 @@ class TSNManager:
             retrieve_specific_resource_name(self.api_name, "TSN_LIST_PROFILES").\
             format(scsAsId=self.api_invoker_id)
 
-
-        #
-        # url = "{protocol}://{hostname_port}".format(
-        #     protocol="https" if self.https else "http",
-        #     hostname_port="{host}:{port}/{prefix}/{route_name}".format(
-        #         host=self.tsn_host,
-        #         port=str(self.tsn_port),
-        #         prefix=self.endpoints_prefix,
-        #         route_name="profile",
-        #     ),
-        # )
         response = requests.get(url=url, headers={"Accept": "application/json"})
         response.raise_for_status()
         response_dict = json.loads(response.text)
@@ -1739,23 +1732,26 @@ class TSNManager:
         :param profile: the TSN profile whose configuration will be applied to the NetApp
         :return: token which can be used to clear the configuration from the NetApp
         """
-        url = "{protocol}://{hostname_port}".format(
-            protocol="https" if self.https else "http",
-            hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-                host=self.tsn_host,
-                port=str(self.tsn_port),
-                prefix=self.api_name,
-                route_name="apply",
-                profile_name=profile.name,
-            ),
-        )
+        # url = "{protocol}://{hostname_port}".format(
+        #     protocol="https" if self.https else "http",
+        #     hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
+        #         host=self.tsn_host,
+        #         port=str(self.tsn_port),
+        #         prefix=self.api_name,
+        #         route_name="apply",
+        #         profile_name=profile.name,
+        #     ),
+        # )
         data = {
             "identifier": tsn_netapp_identifier.value(),
             "profile": profile.name,
             "overrides": None,
         }
+        url = self.url_prefix+ self.service_discoverer.retrieve_specific_resource_name(self.api_name, "TSN_APPLY_CONFIGURATION")
+
+
         response = requests.post(
-            url=url, json=data, headers={"Content-type": "application/json"}
+                url=url, json=data, headers={"Content-type": "application/json"}
         )
         response.raise_for_status()
         response = json.loads(response.text)
@@ -1783,16 +1779,7 @@ class TSNManager:
                 profile=base_profile,
             )
 
-        url = "{protocol}://{hostname_port}".format(
-            protocol="https" if self.https else "http",
-            hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-                host=self.tsn_host,
-                port=str(self.tsn_port),
-                prefix=self.api_name,
-                route_name="apply",
-                profile_name=base_profile.name,
-            ),
-        )
+
         profile_base_params = (
             base_profile.get_configuration_for_tsn_profile().get_profile_configuration_parameters()
         )
@@ -1811,6 +1798,18 @@ class TSNManager:
             "profile": base_profile.name,
             "overrides": modified_params,
         }
+        url = self.url_prefix+ self.service_discoverer.retrieve_specific_resource_name(self.api_name, "TSN_APPLY_CONFIGURATION")
+
+        # url = "{protocol}://{hostname_port}".format(
+        #     protocol="https" if self.https else "http",
+        #     hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
+        #         host=self.tsn_host,
+        #         port=str(self.tsn_port),
+        #         prefix=self.api_name,
+        #         route_name="apply",
+        #         profile_name=base_profile.name,
+        #     ),
+        # )
         response = requests.post(
             url=url, json=data, headers={"Content-type": "application/json"}
         )
@@ -1828,15 +1827,18 @@ class TSNManager:
         :param tsn_netapp_identifier: the TSN identifier class of the NetApp
         :param clearance_token: used to clear the applied TSN configuration from the NetApp
         """
-        url = "{protocol}://{hostname_port}".format(
-            protocol="https" if self.https else "http",
-            hostname_port="{host}:{port}/{prefix}/{route_name}".format(
-                host=self.tsn_host,
-                port=str(self.tsn_port),
-                prefix=self.api_name,
-                route_name="clear",
-            ),
-        )
+
+        url = self.url_prefix+ self.service_discoverer.retrieve_specific_resource_name(self.api_name, "TSN_CLEAR_CONFIGURATION")
+
+        # url = "{protocol}://{hostname_port}".format(
+        #     protocol="https" if self.https else "http",
+        #     hostname_port="{host}:{port}/{prefix}/{route_name}".format(
+        #         host=self.tsn_host,
+        #         port=str(self.tsn_port),
+        #         prefix=self.api_name,
+        #         route_name="clear",
+        #     ),
+        # )
         data = {
             "identifier": tsn_netapp_identifier.value(),
             "token": clearance_token,
