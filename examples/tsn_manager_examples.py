@@ -14,7 +14,7 @@ netapp_ids_tokens = (
 netapp_name = "MyNetapp"  # The name of our NetApp
 
 tsn = TSNManager(  # Initialization of the TNSManager
-    folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_certificated_and_capif_api_key(),
+    folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_netapp_certificates_and_capif_api_key(),
     capif_host=emulator_utils.get_capif_host(),
     capif_https_port=emulator_utils.get_capif_https_port(),
     https=False,

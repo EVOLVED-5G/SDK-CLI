@@ -1,11 +1,9 @@
 from evolved5g.sdk import CAPIFProviderConnector
-
+import capif_exposer_utils
 def showcase_capif_tsn_connector():
 
-    certificates_folder_path ="/home/alex/Projects/test_tsn_certificate_folder"
-    service_api_description_json_full_path ="/home/alex/Projects/maggioli/evolved-5g/SDK-CLI/examples/capif_exposer_sample_files/tsn_api_description_sample.json"
 
-    capif_connector = CAPIFProviderConnector(certificates_folder=certificates_folder_path,
+    capif_connector = CAPIFProviderConnector(certificates_folder=capif_exposer_utils.tsn_exposer_get_certificate_folder(),
                                              capif_host="capifcore",
                                              capif_http_port="8080",
                                              capif_https_port="443",
@@ -24,7 +22,7 @@ def showcase_capif_tsn_connector():
     capif_connector.register_and_onboard_provider()
 
     capif_connector.publish_services(
-        service_api_description_json_full_path=service_api_description_json_full_path)
+        service_api_description_json_full_path=capif_exposer_utils.nef_exposer_get_sample_api_description_path())
 
 
 if __name__ == "__main__":
