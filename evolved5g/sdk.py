@@ -43,6 +43,7 @@ class MonitoringSubscriber(ABC):
     def __init__(
         self,
         host: str,
+        nef_bearer_access_token: str,
         folder_path_for_certificates_and_capif_api_key: str,
         capif_host: str,
         capif_https_port: int,
@@ -59,7 +60,7 @@ class MonitoringSubscriber(ABC):
                                                                                                  "MONITORING_SUBSCRIPTION_SINGLE"),
         }
         api_resource_description = service_discoverer.retrieve_api_description_by_name(api_name)
-        configuration.access_token =service_discoverer.get_access_token(api_name,api_resource_description["apiId"],api_resource_description["aefProfiles"][0]["aefId"])
+        configuration.access_token = nef_bearer_access_token + "," + service_discoverer.get_access_token(api_name,api_resource_description["apiId"],api_resource_description["aefProfiles"][0]["aefId"])
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.monitoring_event_api = MonitoringEventAPIApi(api_client)
         self.cell_api = CellsApi(api_client)
@@ -126,6 +127,7 @@ class LocationSubscriber(MonitoringSubscriber):
     def __init__(
         self,
         nef_url: str,
+        nef_bearer_access_token: str,
         folder_path_for_certificates_and_capif_api_key: str,
         capif_host: str,
         capif_https_port: int,
@@ -140,6 +142,7 @@ class LocationSubscriber(MonitoringSubscriber):
         """
         super().__init__(
             nef_url,
+            nef_bearer_access_token,
             folder_path_for_certificates_and_capif_api_key,
             capif_host,
             capif_https_port,
@@ -267,6 +270,7 @@ class ConnectionMonitor(MonitoringSubscriber):
     def __init__(
         self,
         nef_url: str,
+        nef_bearer_access_token:str,
         folder_path_for_certificates_and_capif_api_key: str,
         capif_host: str,
         capif_https_port: int,
@@ -288,6 +292,7 @@ class ConnectionMonitor(MonitoringSubscriber):
         """
         super().__init__(
             nef_url,
+            nef_bearer_access_token,
             folder_path_for_certificates_and_capif_api_key,
             capif_host,
             capif_https_port,
@@ -532,7 +537,7 @@ class QosAwareness:
             ),
         }
         api_resource_description = service_discoverer.retrieve_api_description_by_name(api_name)
-        configuration.access_token =service_discoverer.get_access_token(api_name,api_resource_description["apiId"],api_resource_description["aefProfiles"][0]["aefId"])
+        configuration.access_token =nef_bearer_access_token + "," + service_discoverer.get_access_token(api_name,api_resource_description["apiId"],api_resource_description["aefProfiles"][0]["aefId"])
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.qos_api = SessionWithQoSAPIApi(api_client)
 
