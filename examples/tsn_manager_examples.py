@@ -1,9 +1,12 @@
 import random
 from evolved5g.sdk import TSNManager
+import emulator_utils
 
 
-tsn_http_host = "localhost"  # TSN server hostname
-tsn_http_port = 8888  # TSN server port
+#
+
+tsn_host = "localhost"  # TSN server hostname
+tsn_port = 8899  # TSN server port
 netapp_name_ids = {}  # Stores the generated TNS identifiers for each NetApp
 netapp_ids_tokens = (
     {}
@@ -11,9 +14,13 @@ netapp_ids_tokens = (
 netapp_name = "MyNetapp"  # The name of our NetApp
 
 tsn = TSNManager(  # Initialization of the TNSManager
-    https=False, tsn_http_host=tsn_http_host, tsn_http_port=tsn_http_port
+    folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_certificated_and_capif_api_key(),
+    capif_host=emulator_utils.get_capif_host(),
+    capif_https_port=emulator_utils.get_capif_https_port(),
+    https=False,
+    tsn_host=tsn_host,
+    tsn_port=tsn_port
 )
-
 
 def showcase_get_tsn_profiles():
     """

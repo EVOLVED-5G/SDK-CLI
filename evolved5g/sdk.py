@@ -1429,6 +1429,8 @@ class ServiceDiscoverer:
         self.private_key_path = self.folder_to_store_certificates_and_api_key + "private.key"
         self.ca_root_path = self.folder_to_store_certificates_and_api_key + "ca.crt"
 
+    def get_api_invoker_id(self):
+        return self.capif_api_details["api_invoker_id"]
 
     def __load_netapp_api_details(self):
         with open(
@@ -1614,19 +1616,31 @@ class TSNManager:
     """
     Contains helper functions to apply Time-Sensitive Networking (TSN) standards to time-sensitive NetApps.
     Allows the configuration of certain parameters in the underlying TSN infrastructure of the testbed.
-    These parameters indicate the expected QoS of the communication.
+    These parameters indicate the expected QoS of the communication. Read more at https://github.com/EVOLVED-5G/TSN_AF
     """
 
     def __init__(
         self,
+        folder_path_for_certificates_and_capif_api_key:str,
+        capif_host: str,
+        capif_https_port: int,
         https: bool,
-        tsn_http_host: str,
-        tsn_http_port: int,
+        tsn_host: str,
+        tsn_port: int,
     ) -> None:
-        self.https = https
-        self.tsn_http_host = tsn_http_host
-        self.tsn_http_port = tsn_http_port
-        self.endpoints_prefix = "api/v1"
+
+        self.folder_path_for_certificates_and_capif_api_key = os.path.join(
+            folder_path_for_certificates_and_capif_api_key.strip(), ""
+        )
+        self.api_name = "/tsn/api/"
+        self.service_discoverer = ServiceDiscoverer(self.folder_path_for_certificates_and_capif_api_key,capif_host, capif_https_port)
+        self.api_invoker_id = self.service_discoverer.get_api_invoker_id()
+        self.url_prefix = "{protocol}://{host}:{port}".format(
+                                  protocol="https" if https else "http",
+                                  host=tsn_host,
+                                  port=tsn_port
+                            )
+
 
     class TSNNetappIdentifier:
         def __init__(self, netapp_name: str):
@@ -1666,12 +1680,14 @@ class TSNManager:
 
             :return: the default TSN profile configuration
             """
+
+
             url = "{protocol}://{hostname_port}".format(
                 protocol="https" if self.tsn_manager.https else "http",
                 hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-                    host=self.tsn_manager.tsn_http_host,
-                    port=str(self.tsn_manager.tsn_http_port),
-                    prefix=self.tsn_manager.endpoints_prefix,
+                    host=self.tsn_manager.tsn_host,
+                    port=str(self.tsn_manager.tsn_port),
+                    prefix=self.tsn_manager.api_name,
                     route_name="profile",
                     profile_name=self.name,
                 ),
@@ -1688,15 +1704,21 @@ class TSNManager:
         :return: a list of TSN profiles. Each TSN profile is a TSNProfile class.
 
         """
-        url = "{protocol}://{hostname_port}".format(
-            protocol="https" if self.https else "http",
-            hostname_port="{host}:{port}/{prefix}/{route_name}".format(
-                host=self.tsn_http_host,
-                port=str(self.tsn_http_port),
-                prefix=self.endpoints_prefix,
-                route_name="profile",
-            ),
-        )
+        url =self.url_prefix+  self.service_discoverer.\
+            retrieve_specific_resource_name(self.api_name, "TSN_LIST_PROFILES").\
+            format(scsAsId=self.api_invoker_id)
+
+
+        #
+        # url = "{protocol}://{hostname_port}".format(
+        #     protocol="https" if self.https else "http",
+        #     hostname_port="{host}:{port}/{prefix}/{route_name}".format(
+        #         host=self.tsn_host,
+        #         port=str(self.tsn_port),
+        #         prefix=self.endpoints_prefix,
+        #         route_name="profile",
+        #     ),
+        # )
         response = requests.get(url=url, headers={"Accept": "application/json"})
         response.raise_for_status()
         response_dict = json.loads(response.text)
@@ -1720,9 +1742,9 @@ class TSNManager:
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
             hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-                host=self.tsn_http_host,
-                port=str(self.tsn_http_port),
-                prefix=self.endpoints_prefix,
+                host=self.tsn_host,
+                port=str(self.tsn_port),
+                prefix=self.api_name,
                 route_name="apply",
                 profile_name=profile.name,
             ),
@@ -1764,9 +1786,9 @@ class TSNManager:
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
             hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-                host=self.tsn_http_host,
-                port=str(self.tsn_http_port),
-                prefix=self.endpoints_prefix,
+                host=self.tsn_host,
+                port=str(self.tsn_port),
+                prefix=self.api_name,
                 route_name="apply",
                 profile_name=base_profile.name,
             ),
@@ -1809,9 +1831,9 @@ class TSNManager:
         url = "{protocol}://{hostname_port}".format(
             protocol="https" if self.https else "http",
             hostname_port="{host}:{port}/{prefix}/{route_name}".format(
-                host=self.tsn_http_host,
-                port=str(self.tsn_http_port),
-                prefix=self.endpoints_prefix,
+                host=self.tsn_host,
+                port=str(self.tsn_port),
+                prefix=self.api_name,
                 route_name="clear",
             ),
         )

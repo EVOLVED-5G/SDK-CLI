@@ -321,8 +321,8 @@ class CLI_helper:
 
         tsn = TSNManager(  # Initialization of the TNSManager
             https=config["https"],
-            tsn_http_host=config["tsn_api_host"],
-            tsn_http_port=config["tsn_api_port"],
+            tsn_host=config["tsn_api_host"],
+            tsn_port=config["tsn_api_port"],
         )
         echo("Profiles:")
         echo(
@@ -345,8 +345,8 @@ class CLI_helper:
 
         tsn = TSNManager(  # Initialization of the TNSManager
             https=config["https"],
-            tsn_http_host=config["tsn_api_host"],
-            tsn_http_port=config["tsn_api_port"],
+            tsn_host=config["tsn_api_host"],
+            tsn_port=config["tsn_api_port"],
         )
         netapp_name = config["netapp_name"]
         netapp_tsn_id = tsn.TSNNetappIdentifier(netapp_name=netapp_name)
