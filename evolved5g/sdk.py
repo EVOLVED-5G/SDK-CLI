@@ -1731,16 +1731,7 @@ class TSNManager:
         :param profile: the TSN profile whose configuration will be applied to the NetApp
         :return: token which can be used to clear the configuration from the NetApp
         """
-        # url = "{protocol}://{hostname_port}".format(
-        #     protocol="https" if self.https else "http",
-        #     hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-        #         host=self.tsn_host,
-        #         port=str(self.tsn_port),
-        #         prefix=self.api_name,
-        #         route_name="apply",
-        #         profile_name=profile.name,
-        #     ),
-        # )
+
         data = {
             "identifier": tsn_netapp_identifier.value,
             "profile": profile.name,
@@ -1793,22 +1784,12 @@ class TSNManager:
                 )
 
         data = {
-            "identifier": tsn_netapp_identifier.value(),
+            "identifier": tsn_netapp_identifier.value,
             "profile": base_profile.name,
             "overrides": modified_params,
         }
         url = self.url_prefix+ self.service_discoverer.retrieve_specific_resource_name(self.api_name, "TSN_APPLY_CONFIGURATION")
 
-        # url = "{protocol}://{hostname_port}".format(
-        #     protocol="https" if self.https else "http",
-        #     hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-        #         host=self.tsn_host,
-        #         port=str(self.tsn_port),
-        #         prefix=self.api_name,
-        #         route_name="apply",
-        #         profile_name=base_profile.name,
-        #     ),
-        # )
         response = requests.post(
             url=url, json=data, headers={"Content-type": "application/json"}
         )
@@ -1829,15 +1810,6 @@ class TSNManager:
 
         url = self.url_prefix+ self.service_discoverer.retrieve_specific_resource_name(self.api_name, "TSN_CLEAR_CONFIGURATION")
 
-        # url = "{protocol}://{hostname_port}".format(
-        #     protocol="https" if self.https else "http",
-        #     hostname_port="{host}:{port}/{prefix}/{route_name}".format(
-        #         host=self.tsn_host,
-        #         port=str(self.tsn_port),
-        #         prefix=self.api_name,
-        #         route_name="clear",
-        #     ),
-        # )
         data = {
             "identifier": tsn_netapp_identifier.value,
             "token": clearance_token,
