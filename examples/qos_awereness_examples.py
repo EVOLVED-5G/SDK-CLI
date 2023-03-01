@@ -19,7 +19,7 @@ def showcase_create_quaranteed_bit_rate_subscription_for_conversational_voice():
 
     token = emulator_utils.get_token_for_nef_emulator()
     qos_awereness = QosAwareness(nef_url=emulator_utils.get_url_of_the_nef_emulator(),
-                                 nef_bearer_access_token=token,
+                                 nef_bearer_access_token=token.access_token,
                                  folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_netapp_certificates_and_capif_api_key(),
                                  capif_host=emulator_utils.get_capif_host(),
                                  capif_https_port=emulator_utils.get_capif_https_port())
@@ -100,7 +100,7 @@ def showcase_create_non_quaranteed_bit_rate_subscription_for_live_streaming():
     netapp_id = "myNetapp"
     token = emulator_utils.get_token_for_nef_emulator()
     qos_awereness = QosAwareness(nef_url=emulator_utils.get_url_of_the_nef_emulator(),
-                                 nef_bearer_access_token=token,
+                                 nef_bearer_access_token=token.access_token,
                                  folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_netapp_certificates_and_capif_api_key(),
                                  capif_host=emulator_utils.get_capif_host(),
                                  capif_https_port=emulator_utils.get_capif_https_port())
@@ -150,7 +150,7 @@ def read_and_delete_all_existing_subscriptions():
     netapp_id = "myNetapp"
     token = emulator_utils.get_token_for_nef_emulator()
     qos_awareness = QosAwareness(nef_url=emulator_utils.get_url_of_the_nef_emulator(),
-                                 nef_bearer_access_token=token,
+                                 nef_bearer_access_token=token.access_token,
                                  folder_path_for_certificates_and_capif_api_key=emulator_utils.get_folder_path_for_netapp_certificates_and_capif_api_key(),
                                  capif_host=emulator_utils.get_capif_host(),
                                  capif_https_port=emulator_utils.get_capif_https_port())
