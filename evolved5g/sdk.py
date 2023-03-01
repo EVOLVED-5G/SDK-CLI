@@ -1653,12 +1653,16 @@ class TSNManager:
             self.__identifier = self.__generate_random_identifier()
 
         def __generate_random_identifier(self):
-            return "{netapp_name}_{random_uuid}".format(
-                netapp_name=self.netapp_name, random_uuid=uuid4().hex
-            )
 
+             return "{netapp_name}_{random_uuid}".format(
+                 netapp_name=self.netapp_name, random_uuid=uuid4().hex
+             )
+
+        @property
         def value(self):
             return self.__identifier
+
+
 
     class TSNProfile:
         def __init__(self, tsn_manager, profile_name):
@@ -1689,18 +1693,8 @@ class TSNManager:
             url =self.tsn_manager.url_prefix +\
                 self.tsn_manager.service_discoverer.\
                     retrieve_specific_resource_name(self.tsn_manager.api_name, "TSN_DETAIL_PROFILE").\
-                    format(profile_name=self.name)
+                    format(profileName=self.name)
 
-            # url = "{protocol}://{hostname_port}".format(
-            #     protocol="https" if self.tsn_manager.https else "http",
-            #     hostname_port="{host}:{port}/{prefix}/{route_name}?name={profile_name}".format(
-            #         host=self.tsn_manager.tsn_host,
-            #         port=str(self.tsn_manager.tsn_port),
-            #         prefix=self.tsn_manager.api_name,
-            #         route_name="profile",
-            #         profile_name=self.name,
-            #     ),
-            # )
             response = requests.get(url=url, headers={"Accept": "application/json"})
             response.raise_for_status()
             parameters_dict = json.loads(response.text)[self.name]
@@ -1748,9 +1742,9 @@ class TSNManager:
         #     ),
         # )
         data = {
-            "identifier": tsn_netapp_identifier.value(),
+            "identifier": tsn_netapp_identifier.value,
             "profile": profile.name,
-            "overrides": None,
+            "overrides": {},
         }
         url = self.url_prefix+ self.service_discoverer.retrieve_specific_resource_name(self.api_name, "TSN_APPLY_CONFIGURATION")
 
@@ -1845,7 +1839,7 @@ class TSNManager:
         #     ),
         # )
         data = {
-            "identifier": tsn_netapp_identifier.value(),
+            "identifier": tsn_netapp_identifier.value,
             "token": clearance_token,
         }
         response = requests.post(
