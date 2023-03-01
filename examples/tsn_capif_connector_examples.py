@@ -22,7 +22,7 @@ def showcase_capif_tsn_connector():
     capif_connector.register_and_onboard_provider()
 
     capif_connector.publish_services(
-        service_api_description_json_full_path=capif_exposer_utils.nef_exposer_get_sample_api_description_path())
+        service_api_description_json_full_path=capif_exposer_utils.tsn_exposer_get_sample_api_description_path())
 
 
 if __name__ == "__main__":
