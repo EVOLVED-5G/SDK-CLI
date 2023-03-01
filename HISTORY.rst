@@ -1,6 +1,28 @@
 =======
 History
 =======
+1.0.0 (2023-01-03)
+-------------------
+* CAPIFExposerConnector has been a) refactored to conform to the latest CAPIF API and b) renamed to `CAPIFProviderConnector`
+    * CAPIFProviderConnector registers, onboards and publishes a Provider (ex. NEF) to the CAPIF instance.
+    * Breaking changes:  'CAPIFExposerConnector' class has been renamed to `CAPIFProviderConnector`
+
+* All Libraries classes (`LocationSubscriber`,`ConnectionMonitor`,`QosAwareness`) now communicate with CAPIF server to get authorization tokens
+
+* ServiceDiscoverer SDK class has been updated:
+    * It now conforms with the latest version of CAPIF
+    * Provides a way to retrieve an access token from CAPIF for a specified API Name and resource name (ex. api_name: "/tsn/api/" and resource_name: "TSN_LIST_PROFILES")
+    * Provides methods to get the endpoint for a specified API Name and resource name (ex. api_name: "/tsn/api/" and resource_name: "TSN_LIST_PROFILES")
+
+* New class TSNManager, that encapsulates call to the Time Sensitive Network (TSN) API.
+
+* The examples folder has been updated
+    * Added examples for registering to CAPIF (both for NEF and TSN)
+    * Added Examples for using the service discovered in order to retrieve endpoints
+    * Added examples for using the TSNManager
+
+
+
 0.8.9 (2023-01-03)
 -------------------
 * Bug fix on LocationSubscriber on method get_location_information.
