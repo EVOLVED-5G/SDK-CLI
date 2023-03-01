@@ -32,8 +32,9 @@ def get_url_of_the_nef_emulator() -> str:
 
 def get_folder_path_for_netapp_certificates_and_capif_api_key()->str:
     """
-    This is the folder that was provided when you registered the NetApp to CAPIF.
-    It contains the certificates and the api.key needed to communicate with the CAPIF server
+    This is the folder that is provided when you registered the NetApp to CAPIF.
+    It contains the certificates and the api.key needed to communicate with the CAPIF server.
+    Make sure to change this path name to match your environment!
     :return:
     """
     return "/home/alex/Projects/test_certificate_folder"

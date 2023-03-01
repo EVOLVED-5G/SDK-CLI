@@ -1,5 +1,5 @@
 from evolved5g.sdk import CAPIFInvokerConnector, ServiceDiscoverer
-
+import emulator_utils
 
 def showcase_capif_connector():
     """
@@ -7,7 +7,8 @@ def showcase_capif_connector():
         This class is intended for use within the evolved5G Command Line interface.
         It is a low level class part of the SDK that is not required to use while creating NetApps
     """
-    capif_connector = CAPIFInvokerConnector(folder_to_store_certificates="/home/alex/Projects/test_certificate_folder",
+
+    capif_connector = CAPIFInvokerConnector(folder_to_store_certificates=emulator_utils.get_folder_path_for_netapp_certificates_and_capif_api_key(),
                                             capif_host="capifcore",
                                             capif_http_port="8080",
                                             capif_https_port="443",
