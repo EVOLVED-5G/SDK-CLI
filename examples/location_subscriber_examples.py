@@ -98,9 +98,7 @@ def read_and_delete_all_existing_subscriptions():
                                              capif_https_port=emulator_utils.get_capif_https_port())
 
     try:
-        print("TEST WITH NEW NEF LOGIC")
         all_subscriptions = location_subscriber.get_all_subscriptions(netapp_id, 0, 100)
-        print("END TEST WITH NEW NEF LOGIC")
 
         print(all_subscriptions)
 
