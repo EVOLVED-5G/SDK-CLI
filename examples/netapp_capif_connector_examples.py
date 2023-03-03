@@ -12,7 +12,7 @@ def showcase_capif_connector():
                                             capif_host="capifcore",
                                             capif_http_port="8080",
                                             capif_https_port="443",
-                                            capif_netapp_username="custom_netapp17",
+                                            capif_netapp_username="custom_netapp16",
                                             capif_netapp_password="pass123",
                                             capif_callback_url="http://localhost:5000",
                                             description= "Dummy NetApp",
