@@ -1189,7 +1189,7 @@ class CAPIFProviderConnector:
         Retrieves and stores the cert_server.pem from CAPIF
         """
         print("Retrieve capif_cert_server.pem , process may take a few minutes")
-        cmd = "openssl s_client -connect {0}:443  | openssl x509 -text >> {1}/capif_cert_server.pem".format(
+        cmd = "openssl s_client -connect {0}:443  | openssl x509 -text > {1}/capif_cert_server.pem".format(
             self.capif_host, self.certificates_folder
         )
         os.system(cmd)
