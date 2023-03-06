@@ -1,6 +1,9 @@
 =======
 History
 =======
+1.0.1 (2023-03-03)
+* Bug fix on CAPIFProviderConnector: If you run it twice (for example for testing purposes) the .pem certificate should be overriden.
+-------------------
 1.0.0 (2023-01-03)
 -------------------
 * CAPIFExposerConnector has been a) refactored to conform to the latest CAPIF API and b) renamed to `CAPIFProviderConnector`
