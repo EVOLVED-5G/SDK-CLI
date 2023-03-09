@@ -19,7 +19,7 @@ test_requirements = [
 
 setup(
     author="EVOLVED5G project",
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
