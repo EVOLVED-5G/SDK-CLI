@@ -1,8 +1,17 @@
 =======
 History
 =======
+
+-------------------
+1.0.2 (2023-03-09)
+-------------------
+* Bug fix on minimum python version. Change it from 3.6 to 3.7. Installing the SDK in older ubuntu distribution raises an error at runtime requiring higher python version coming from Cookiecutter. 
+
+-------------------
 1.0.1 (2023-03-03)
+-------------------
 * Bug fix on CAPIFProviderConnector: If you run it twice (for example for testing purposes) the .pem certificate should be overriden.
+
 -------------------
 1.0.0 (2023-01-03)
 -------------------
@@ -26,7 +35,7 @@ History
 
 
 
-0.8.9 (2023-01-03)
+0.8.9 (2023-01-23)
 -------------------
 * Bug fix on LocationSubscriber on method get_location_information.
     * Previously when calling this method the response object returned two properties:  a) cell_id and b) enode_b_id.  enode_b_id has been dropped in latest versions of the NEF emulator so it was always returned as None by the SDK.
