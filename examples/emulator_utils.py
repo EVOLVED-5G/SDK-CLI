@@ -3,14 +3,6 @@ from evolved5g.swagger_client import LoginApi, User
 from evolved5g.swagger_client.models import Token
 
 
-
-def get_api_client_for_nef_emulator(token) -> swagger_client.ApiClient:
-    configuration = swagger_client.Configuration()
-    configuration.host = get_url_of_the_nef_emulator()
-    configuration.access_token = token.access_token
-    api_client = swagger_client.ApiClient(configuration=configuration)
-    return api_client
-
 def get_token_for_nef_emulator() -> Token:
 
     username = "admin@my-email.com"
