@@ -3,9 +3,14 @@ History
 =======
 
 -------------------
+1.0.3 (2023-03-28)
+-------------------
+* Update TSN Manager class, apply security improvements.  Now each request to the TSN API uses JWT Bearer authentication. Access tokens are retrieved via CAPIF.
+
+-------------------
 1.0.2 (2023-03-09)
 -------------------
-* Bug fix on minimum python version. Change it from 3.6 to 3.7. Installing the SDK in older ubuntu distribution raises an error at runtime requiring higher python version coming from Cookiecutter. 
+* Bug fix on minimum python version. Change it from 3.6 to 3.7. Installing the SDK in older ubuntu distribution raises an error at runtime requiring higher python version coming from Cookiecutter.
 
 -------------------
 1.0.1 (2023-03-03)

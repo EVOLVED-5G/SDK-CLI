@@ -1639,6 +1639,12 @@ class TSNManager:
         )
         self.api_name = "/tsn/api/"
         self.service_discoverer = ServiceDiscoverer(self.folder_path_for_certificates_and_capif_api_key,capif_host, capif_https_port)
+        api_resource_description = self.service_discoverer.retrieve_api_description_by_name(self.api_name)
+        self.access_token = self.service_discoverer.get_access_token(self.api_name,api_resource_description["apiId"],api_resource_description["aefProfiles"][0]["aefId"])
+        self.headers_auth = {
+            "Accept": "application/json",
+            'Authorization': 'Basic ' + self.access_token
+        }
         self.api_invoker_id = self.service_discoverer.get_api_invoker_id()
         self.url_prefix = "{protocol}://{host}:{port}".format(
                                   protocol="https" if https else "http",
@@ -1695,7 +1701,7 @@ class TSNManager:
                     retrieve_specific_resource_name(self.tsn_manager.api_name, "TSN_DETAIL_PROFILE").\
                     format(profileName=self.name)
 
-            response = requests.get(url=url, headers={"Accept": "application/json"})
+            response = requests.get(url=url, headers=self.tsn_manager.headers_auth)
             response.raise_for_status()
             parameters_dict = json.loads(response.text)[self.name]
             return self.TSNProfileConfiguration(parameters_dict)
@@ -1711,7 +1717,7 @@ class TSNManager:
             retrieve_specific_resource_name(self.api_name, "TSN_LIST_PROFILES").\
             format(scsAsId=self.api_invoker_id)
 
-        response = requests.get(url=url, headers={"Accept": "application/json"})
+        response = requests.get(url=url, headers=self.headers_auth)
         response.raise_for_status()
         response_dict = json.loads(response.text)
         return [
@@ -1741,7 +1747,7 @@ class TSNManager:
 
 
         response = requests.post(
-                url=url, json=data, headers={"Content-type": "application/json"}
+                url=url, json=data, headers=self.headers_auth
         )
         response.raise_for_status()
         response = json.loads(response.text)
@@ -1769,20 +1775,6 @@ class TSNManager:
                 profile=base_profile,
             )
 
-
-        profile_base_params = (
-            base_profile.get_configuration_for_tsn_profile().get_profile_configuration_parameters()
-        )
-        for param_to_override, new_param_value in modified_params.items():
-            try:
-                _ = profile_base_params[param_to_override]
-            except KeyError:
-                warnings.warn(
-                    f'parameter value of "{param_to_override}" has no effect since it is not a configuration parameter '
-                    f'of the base profile "{base_profile.name}".\nOverridable parameters are '
-                    f'the following [{",".join(profile_base_params.keys())}]'
-                )
-
         data = {
             "identifier": tsn_netapp_identifier.value,
             "profile": base_profile.name,
@@ -1791,7 +1783,9 @@ class TSNManager:
         url = self.url_prefix+ self.service_discoverer.retrieve_specific_resource_name(self.api_name, "TSN_APPLY_CONFIGURATION")
 
         response = requests.post(
-            url=url, json=data, headers={"Content-type": "application/json"}
+            url=url,
+            json=data,
+            headers=self.headers_auth
         )
         response.raise_for_status()
         response = json.loads(response.text)
@@ -1815,7 +1809,7 @@ class TSNManager:
             "token": clearance_token,
         }
         response = requests.post(
-            url=url, json=data, headers={"Content-type": "application/json"}
+            url=url, json=data, headers=self.headers_auth
         )
         response.raise_for_status()
         assert "success" in json.loads(response.text)["message"]
