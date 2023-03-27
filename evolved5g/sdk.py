@@ -1643,7 +1643,7 @@ class TSNManager:
         self.access_token = self.service_discoverer.get_access_token(self.api_name,api_resource_description["apiId"],api_resource_description["aefProfiles"][0]["aefId"])
         self.headers_auth = {
             "Accept": "application/json",
-            'Authorization': 'Basic ' + self.access_token
+            'Authorization': 'Bearer ' + self.access_token
         }
         self.api_invoker_id = self.service_discoverer.get_api_invoker_id()
         self.url_prefix = "{protocol}://{host}:{port}".format(
