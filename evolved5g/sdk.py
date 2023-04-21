@@ -1855,7 +1855,21 @@ class CAPIFLogger:
     @dataclass
     class LogEntry:
         """
+           A class representing a LogEntry that will be saved to CAPIF Invocation logs.
 
+      Attributes:
+            apiId (str): The ID of the API invoked.
+            apiVersion (str): The version of the API that was invoked.
+            apiName (str): The name of the API.
+            resourceName (str): The name of the resource being invoked
+            uri (str): Full URI  of the request.
+            protocol (str): The protocol used for the request (ex. HTTP_1_1)
+            invocationLatency (int): The time taken to process the request, in milliseconds.
+            invocationTime (datetime): Date on which the request was invoked.
+            operation (str): The HTTP operation being performed (Ex. GET,POST,PUT,DELETE)
+            result (int): The HTTP status code of the results (ex. 200)
+            inputParameters (dict): The input parameters for the request.
+            outputParameters (dict): The output / response parameters
         """
         apiId:str
         apiVersion:str
@@ -1866,7 +1880,7 @@ class CAPIFLogger:
         invocationLatency:int
         invocationTime:datetime
         operation:str
-        result:str
+        result:int
         inputParameters:dict
         outputParameters:dict
 
@@ -1888,7 +1902,7 @@ class CAPIFLogger:
         payload = {
             "aefId": self.aef_id,
             "apiInvokerId": api_invoker_id,
-            "logs": log_entries,
+            "logs": list(map(lambda logentry: logentry.__dict__ , log_entries)),
             "supportedFeatures": ""
         }
 
@@ -1896,13 +1910,14 @@ class CAPIFLogger:
             'Content-Type': 'application/json'
         }
 
-        response = requests.request("POST", self.capif_logger_url, headers=headers,
-                                    data=payload,
+        response = requests.request("POST", self.capif_logger_url,
+                                    headers=headers,
+                                    data=json.dumps(payload) ,
                                     cert=(
                                         self.certificates_folder + "dummy_aef.crt",
                                         self.certificates_folder + "AEF_private_key.key",
                                     ),
-                                    verify='ca.crt')
+                                    verify=  self.certificates_folder +  'ca.crt')
         response.raise_for_status()
         response_payload = json.loads(response.text)
 
