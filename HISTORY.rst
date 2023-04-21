@@ -3,6 +3,14 @@ History
 =======
 
 -------------------
+1.0.4 (2023-03-28)
+-------------------
+* New SDK Class CAPIFLogger, that allows a provider to save Log information.
+* At CAPIFProviderConnector class when using the publish_services() method, a copy of the published to CAPIF api is saved to the local certificates folder. This is useful if you want to retrieve the relevant CAPIF ids for this service like aef_id or api_id.
+
+
+
+-------------------
 1.0.3 (2023-03-28)
 -------------------
 * Update TSN Manager class, apply security improvements.  Now each request to the TSN API uses JWT Bearer authentication. Access tokens are retrieved via CAPIF.
