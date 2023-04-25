@@ -1895,9 +1895,6 @@ class CAPIFLogger(CAPIFLogCommon):
             result (int): The HTTP status code of the results (ex. 200)
             inputParameters (dict): The input parameters for the request.
             outputParameters (dict): The output / response parameters
-            srcInterface (str): A dictionary containing the following properties  "ipv4Addr" (ex. python-aef), "port": (ex 8080), "securityMethods": (ex. ["PKI"])
-            destInterface (str): A dictionary containing the following properties  "ipv4Addr" (ex. netapp address), "port": (ex 8087), "securityMethods": (ex. ["PKI"])
-
         """
         apiId: str
         apiVersion: str
@@ -1911,8 +1908,7 @@ class CAPIFLogger(CAPIFLogCommon):
         result: int
         inputParameters: dict
         outputParameters: dict
-        # srcInterface: str
-        # destInterface: str
+
 
 
 
@@ -2010,14 +2006,6 @@ class CAPIFAuditor(CAPIFLogCommon):
 
         if operation is not None:
             params.update({'operation': operation})
-
-
-        # response = requests.request("GET", self.capif_query_log_url, params=params,
-        #                             cert=(
-        #                                 self.certificates_folder + "dummy_aef.crt",
-        #                                 self.certificates_folder + "AEF_private_key.key",
-        #                             ),
-        #                             verify=self.certificates_folder + 'ca.crt')
 
         response = requests.request("GET", self.capif_query_log_url, params=params,
                                     cert=(

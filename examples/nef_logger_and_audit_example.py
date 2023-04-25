@@ -42,9 +42,7 @@ def showcase_save_log_to_capif():
                                      operation="POST",
                                      result="200",
                                      inputParameters={},
-                                     outputParameters={},
-                                     #srcInterface=None,
-                                     #destInterface=None
+                                     outputParameters={}
                                      )
 
     log_entries.append(log_entry)
