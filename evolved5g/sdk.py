@@ -1421,7 +1421,7 @@ class CAPIFProviderConnector:
         capif_response = response.text
 
         file_name = os.path.basename(service_api_description_json_full_path)
-        with open(self.certificates_folder + "CAPIF_"+file_name, "w") as outfile:
+        with open(self.certificates_folder + "CAPIF_" + file_name, "w") as outfile:
             outfile.write(capif_response)
 
         return json.loads(capif_response)
@@ -1831,10 +1831,8 @@ class TSNManager:
         assert "success" in json.loads(response.text)["message"]
 
 
-class CAPIFLogger:
-
-    def __init__(self,
-                 certificates_folder,
+class CAPIFLogCommon(ABC):
+    def __init__(self,  certificates_folder,
                  capif_host,
                  capif_https_port):
 
@@ -1850,7 +1848,34 @@ class CAPIFLogger:
         ) as openfile:
             self.capif_provider_details = json.load(openfile)
             self.aef_id = self.capif_provider_details["AEF_api_prov_func_id"]
-            self.capif_logger_url = self.capif_https_url + "api-invocation-logs/v1/" + self.aef_id + "/logs"
+
+    def get_capif_service_description(self, capif_service_api_description_json_full_path):
+        """
+        Use this method to read the api_id of  your service from the relevant file or other relevant information
+
+        :param capif_service_api_description_json_full_path:
+        This file  is generated when you register your Provider to CAPIF. It is stored inside your certificate folder.
+        :return: The service description json that is stored in CAPIF
+        """
+        with open(
+                capif_service_api_description_json_full_path, "r"
+        ) as openfile:
+            return json.load(openfile)
+
+class CAPIFLogger(CAPIFLogCommon):
+
+    def __init__(self,
+                 certificates_folder,
+                 capif_host,
+                 capif_https_port):
+
+        """
+          :param certificates_folder: The certificated folder you used during registration of the Provider to CAPIF
+          :param capif_host: The CAPIF host name
+          :param capif_https_port: The CAPIF https port
+        """
+        super().__init__(certificates_folder,capif_host,capif_https_port)
+        self.capif_logger_url = self.capif_https_url + "api-invocation-logs/v1/" + self.aef_id + "/logs"
 
     @dataclass
     class LogEntry:
@@ -1870,40 +1895,35 @@ class CAPIFLogger:
             result (int): The HTTP status code of the results (ex. 200)
             inputParameters (dict): The input parameters for the request.
             outputParameters (dict): The output / response parameters
-        """
-        apiId:str
-        apiVersion:str
-        apiName:str
-        resourceName:str
-        uri:str
-        protocol:str
-        invocationLatency:int
-        invocationTime:datetime
-        operation:str
-        result:int
-        inputParameters:dict
-        outputParameters:dict
+            srcInterface (str): A dictionary containing the following properties  "ipv4Addr" (ex. python-aef), "port": (ex 8080), "securityMethods": (ex. ["PKI"])
+            destInterface (str): A dictionary containing the following properties  "ipv4Addr" (ex. netapp address), "port": (ex 8087), "securityMethods": (ex. ["PKI"])
 
-    def get_capif_service_description(self,capif_service_api_description_json_full_path):
         """
-        Use this method to read the api_id of  your service from the relevant file or other relevant information
+        apiId: str
+        apiVersion: str
+        apiName: str
+        resourceName: str
+        uri: str
+        protocol: str
+        invocationLatency: int
+        invocationTime: datetime
+        operation: str
+        result: int
+        inputParameters: dict
+        outputParameters: dict
+        # srcInterface: str
+        # destInterface: str
 
-        :param capif_service_api_description_json_full_path:
-        This file  is generated when you register your Provider to CAPIF. It is stored inside your certificate folder.
-        :return: The service description json that is stored in CAPIF
-        """
-        with open(
-                capif_service_api_description_json_full_path, "r"
-        ) as openfile:
-            return json.load(openfile)
+
+
 
     def save_log(self, api_invoker_id, log_entries: List[LogEntry]):
 
         payload = {
             "aefId": self.aef_id,
             "apiInvokerId": api_invoker_id,
-            "logs": list(map(lambda logentry: logentry.__dict__ , log_entries)),
-            "supportedFeatures": ""
+            "logs": list(map(lambda logentry: logentry.__dict__, log_entries)),
+            "supportedFeatures": "fffffff"
         }
 
         headers = {
@@ -1912,17 +1932,99 @@ class CAPIFLogger:
 
         response = requests.request("POST", self.capif_logger_url,
                                     headers=headers,
-                                    data=json.dumps(payload) ,
+                                    data=json.dumps(payload),
                                     cert=(
                                         self.certificates_folder + "dummy_aef.crt",
                                         self.certificates_folder + "AEF_private_key.key",
                                     ),
-                                    verify=  self.certificates_folder +  'ca.crt')
+                                    verify=self.certificates_folder + 'ca.crt')
         response.raise_for_status()
         response_payload = json.loads(response.text)
 
         return response_payload
 
 
-class CAPIFAuditor:
-    pass
+
+
+class CAPIFAuditor(CAPIFLogCommon):
+
+    def __init__(self,
+                 certificates_folder,
+                 capif_host,
+                 capif_https_port):
+        """
+        :param certificates_folder: The certificated folder you used during registration of the Provider to CAPIF
+        :param capif_host: The CAPIF host name
+        :param capif_https_port: The CAPIF https port
+        """
+        super().__init__(certificates_folder,capif_host,capif_https_port)
+        self.capif_query_log_url = self.capif_https_url + "logs/v1/apiInvocationLogs"
+
+    def query_log(self, api_invoker_id=None, time_start=None, time_end=None, api_id=None,
+              api_name=None, api_version=None, result=None, resource_name=None, protocol=None,
+              operation=None):
+
+        """
+        :param api_invoker_id:
+        :param time_start:    # e.g. 2022-10-24T00:00:00.000Z
+        :param time_end:  # e.g. 2022-10-25T00:00:00.000Z
+        :param api_id:  # e.g. f7ba97e8f08a7f53365ba81be60a0c
+        :param api_name:   # e.g. dummy-aef
+        :param api_version:   # e.g. v1
+        :param result:   # e.g. 201
+        :param resource_name:   # e.g. MONITORING_SUBSCRIPTION_SINGLE
+        :param protocol:  # e.g. HTTP_1_1 or HTTP_2
+        :param operation:    # e.g. POST
+        :return: The Log entries found in the CAPIF database
+        """
+
+        params = dict()
+        params.update({'aef-id':self.aef_id})
+
+        if api_invoker_id is not None:
+            params.update({'api-invoker-id': api_invoker_id})
+
+        if time_start is not None:
+            params.update({'time-range-start': time_start})
+
+        if time_end is not None:
+            params.update({'time-range-end': time_end})
+
+        if api_id is not None:
+            params.update({'api-id': api_id})
+
+        if api_name is not None:
+            params.update({'api-name': api_name})
+
+        if api_version is not None:
+            params.update({'api-version': api_version})
+
+        if result is not None:
+            params.update({'result': result})
+
+        if resource_name is not None:
+            params.update({'resource-name': resource_name})
+
+        if protocol is not None:
+            params.update({'protocol': protocol})
+
+        if operation is not None:
+            params.update({'operation': operation})
+
+
+        # response = requests.request("GET", self.capif_query_log_url, params=params,
+        #                             cert=(
+        #                                 self.certificates_folder + "dummy_aef.crt",
+        #                                 self.certificates_folder + "AEF_private_key.key",
+        #                             ),
+        #                             verify=self.certificates_folder + 'ca.crt')
+
+        response = requests.request("GET", self.capif_query_log_url, params=params,
+                                    cert=(
+                                        self.certificates_folder + "dummy_amf.crt",
+                                        self.certificates_folder + "AMF_private_key.key",
+                                    ),
+                                    verify=self.certificates_folder + 'ca.crt')
+        response.raise_for_status()
+        response_payload = json.loads(response.text)
+        return response_payload
