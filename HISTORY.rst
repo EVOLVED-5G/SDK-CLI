@@ -3,9 +3,18 @@ History
 =======
 
 -------------------
+1.0.3 (2023-04-25)
+-------------------
+* New SDK Class CAPIFLogger, that allows a provider (like NEF Emulator) to save Log information, for example capture incoming requests and responses
+* New SDK Class CAPIFAuditor, that allows a provider (like NEF Emulator) to query the Log, for example filter all the Log information for a given Network APP
+* Added examples of usage for CAPIFLogger and CAPIFAuditor class in examples/nef_logger_and_audit_example.py
+* At CAPIFProviderConnector class when using the publish_services() method, a copy of the published to CAPIF api is saved to the local certificates folder. This is useful if you want to retrieve the relevant CAPIF ids for this service like aef_id or api_id.
+
+-------------------
 1.0.2 (2023-03-09)
 -------------------
-* Bug fix on minimum python version. Change it from 3.6 to 3.7. Installing the SDK in older ubuntu distribution raises an error at runtime requiring higher python version coming from Cookiecutter. 
+* Update TSN Manager class, apply security improvements.  Now each request to the TSN API uses JWT Bearer authentication. Access tokens are retrieved via CAPIF.
+* Bug fix on minimum python version. Change it from 3.6 to 3.7. Installing the SDK in older ubuntu distribution raises an error at runtime requiring higher python version coming from Cookiecutter.
 
 -------------------
 1.0.1 (2023-03-03)
