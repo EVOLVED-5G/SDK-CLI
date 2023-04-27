@@ -1506,7 +1506,7 @@ class ServiceDiscoverer:
         payload = {
             "securityInfo": [
                 {
-                    "prefSecurityMethods": ["Oauth"]
+                    "prefSecurityMethods": ["OAUTH"]
                 }
             ],
             "notificationDestination": "https://mynotificationdest.com",
