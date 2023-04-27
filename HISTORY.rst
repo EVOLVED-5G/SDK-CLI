@@ -3,6 +3,10 @@ History
 =======
 
 -------------------
+1.0.4 (2023-04-27)
+-------------------
+* Bug fix on ServiceDiscoverer: When creating the security context we now pass OAUTH as prefSecurityMethod
+-------------------
 1.0.3 (2023-04-25)
 -------------------
 * New SDK Class CAPIFLogger, that allows a provider (like NEF Emulator) to save Log information, for example capture incoming requests and responses
