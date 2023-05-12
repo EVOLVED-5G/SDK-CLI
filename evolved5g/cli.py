@@ -70,9 +70,8 @@ def check_job(ctx, id):
 )
 @click.pass_context
 def register_and_onboard_to_capif(ctx, config_file_full_path: str):
-
     ctx.obj["helper"].register_and_onboard_to_capif(config_file_full_path)
-    ctx.obj["helper"].test_capif_and_nef_endpoints(config_file_full_path)
+    ctx.obj["helper"].test_capif_and_nef_published_to_capif_endpoints(config_file_full_path)
 
 
 @cli.command()
