@@ -363,3 +363,9 @@ class CLI_helper:
             f'The TSN profile "{profile_name}" has been successfully applied to your netapp "{netapp_name}".'
             f'\nStore the token "{clearance_token}" to clear the profile if you wish in the future.'
         )
+
+    def test_capif_and_nef_endpoints(self, config_file_full_path: str)->None:
+        pass
+
+
+
