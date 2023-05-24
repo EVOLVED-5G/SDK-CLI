@@ -9,7 +9,7 @@ def showcase_capif_nef_connector():
                                              capif_host="capifcore",
                                              capif_http_port="8080",
                                              capif_https_port="443",
-                                             capif_netapp_username="test_nef_001",
+                                             capif_netapp_username="test_nef_002",
                                              capif_netapp_password="testpassword",
                                              description= "test_app_description",
                                              csr_common_name="test_test_",

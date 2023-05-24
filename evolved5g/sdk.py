@@ -1159,7 +1159,7 @@ class CAPIFProviderConnector:
         self.csr_common_name = capif_netapp_username
         # make sure the parameters are str
         capif_http_port = str(capif_http_port)
-        capif_https_port = str(capif_https_port)
+        self.capif_https_port = str(capif_https_port)
         if len(capif_http_port) == 0 or int(capif_http_port) == 80:
             self.capif_http_url = "http://" + capif_host.strip() + "/"
         else:
@@ -1167,11 +1167,11 @@ class CAPIFProviderConnector:
                     "http://" + capif_host.strip() + ":" + capif_http_port.strip() + "/"
             )
 
-        if len(capif_https_port) == 0 or int(capif_https_port) == 443:
+        if len(self.capif_https_port ) == 0 or int(self.capif_https_port ) == 443:
             self.capif_https_url = "https://" + capif_host.strip() + "/"
         else:
             self.capif_https_url = (
-                    "https://" + capif_host.strip() + ":" + capif_https_port.strip() + "/"
+                    "https://" + capif_host.strip() + ":" + self.capif_https_port .strip() + "/"
             )
 
         self.capif_host = capif_host.strip()
@@ -1201,8 +1201,10 @@ class CAPIFProviderConnector:
         Retrieves and stores the cert_server.pem from CAPIF
         """
         print("Retrieve capif_cert_server.pem , process may take a few minutes")
-        cmd = "openssl s_client -connect {0}:443  | openssl x509 -text > {1}/capif_cert_server.pem".format(
-            self.capif_host, self.certificates_folder
+        cmd = "openssl s_client -connect {0}:{1}  | openssl x509 -text > {2}/capif_cert_server.pem".format(
+            self.capif_host,
+            self.capif_https_port,
+            self.certificates_folder
         )
         os.system(cmd)
         print("cert_server.pem succesfully generated!")
