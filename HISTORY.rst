@@ -3,9 +3,15 @@ History
 =======
 
 -------------------
+1.0.5 (2023-05-24)
+-------------------
+* Bug fix on CAPIFProviderConnector. When storing the capif_cert_server.pem the port was hardcoded.
+
+-------------------
 1.0.4 (2023-04-27)
 -------------------
 * Bug fix on ServiceDiscoverer: When creating the security context we now pass OAUTH as prefSecurityMethod
+
 -------------------
 1.0.3 (2023-04-25)
 -------------------
