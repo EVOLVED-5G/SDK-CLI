@@ -34,7 +34,6 @@ def generate(ctx, config_file):
 @click.option("--repo", type=str, help="Enter repo name")
 @click.option("--user", type=str, help="Enter your username for pipelines")
 @click.option("--passwd", type=str, help="Enter repo password for pipelines")
-#@click.option("--version", is_flag=False, type=str, help="Enter the version for the Network App to be verified")
 
 @click.pass_context
 def run_verification_tests(ctx, mode, repo, user, passwd):
