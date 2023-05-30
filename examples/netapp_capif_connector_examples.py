@@ -27,6 +27,14 @@ def showcase_capif_connector():
 
     capif_connector.register_and_onboard_netapp()
 
+def showcase_offboard_netapp():
+    capif_connector = CAPIFInvokerConnector(folder_to_store_certificates=emulator_utils.get_folder_path_for_netapp_certificates_and_capif_api_key(),
+                                            capif_host="capifcore",
+                                            capif_http_port="8080",
+                                            capif_https_port="443"
+                                            )
+    capif_connector.offboard_netapp()
+
 
 if __name__ == "__main__":
     #Let's register NetApp to CAPIF. This should happen exactly once
