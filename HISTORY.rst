@@ -13,6 +13,9 @@ If this parameter is set to production then validation tests are running in the 
 1.0.5 (2023-05-24)
 -------------------
 * Bug fix on CAPIFProviderConnector. When storing the capif_cert_server.pem the port was hardcoded.
+* Improvement on verification pipelines. Required user and password.
+* TSN verification pipeline added.
+* Validation pipeline included.
 
 -------------------
 1.0.4 (2023-04-27)

@@ -27,23 +27,28 @@ def generate(ctx, config_file):
 @click.option(
     "--mode",
     type=click.Choice(
-        ["build", "deploy", "destroy", "capif_nef", "code_analysis", "security_scan"],
+        ["build", "deploy", "destroy", "capif_nef", "capif_tsn", "code_analysis", "security_scan", "validation"],
         case_sensitive=False,
     ),
 )
 @click.option("--repo", type=str, help="Enter repo name")
+@click.option("--user", type=str, help="Enter your username for pipelines")
+@click.option("--passwd", type=str, help="Enter repo password for pipelines")
+
 @click.pass_context
-def run_verification_tests(ctx, mode, repo):
+def run_verification_tests(ctx, mode, repo, user, passwd):
     """Launch different verification tests"""
-    ctx.obj["helper"].run_verification_tests(mode, repo)
+    ctx.obj["helper"].run_verification_tests(mode, repo, user, passwd)
 
 
 @cli.command()
 @click.option("--id", type=int, help="Enter pipeline id")
+@click.option("--user", type=str, help="Enter your username for pipelines")
+@click.option("--passwd", type=str, help="Enter repo password for pipelines")
 @click.pass_context
-def check_job(ctx, id):
+def check_job(ctx, id, user, passwd):
     """Check the status of a pipeline"""
-    ctx.obj["helper"].check_job(id)
+    ctx.obj["helper"].check_job(id, user, passwd)
 
 
 @cli.command()

@@ -1,4 +1,3 @@
-from .nef_and_tsn_api_service_tests import test_capif_and_nef_published_to_capif_endpoints
 from .nef_and_tsn_api_service_validation_pipeline import validate_all_endpoints_returned_by_service_discoverer
 from .utils import cookiecutter_generate
 import requests
@@ -13,28 +12,15 @@ import traceback
 class CLI_helper:
     def __init__(self):
 
-        self.url_curl = "https://epg-api.tid.es/api/executions"
-        self.url_token = "https://epg-api.tid.es/api/auth"
-        self.username_token = "usu_Evolved5g"
-        self.password_token = "evolved5g"
+        self.url_curl = "https://evolvedpipes.apps.ocp-epg.tid.es/launch"
+        self.url_curl_job = "https://evolvedpipes.apps.ocp-epg.tid.es/job"
         self.netapp_branch = "evolved5g"
         self.branch_cicd_repo = "develop"
         self.header = {
             "Content-Type": "application/json",
             "accept": "application/json",
-            "Authorization": None,
         }
         self.repository = "https://api.github.com/repos/EVOLVED-5G"
-        self.jenkinsjob = {
-            "bdd": "003-NETAPPS/999-ToReview/",
-            "code_analysis": "003-NETAPPS/003-Helpers/001-Static Code Analysis",
-            "capif_nef": "1001-DUMMY_NETAPP_VERIFICATION/test-dummy-netapp/verification-tests",
-            "security_scan": [
-                "003-NETAPPS/003-Helpers/002-Security Scan Code",
-                "003-NETAPPS/003-Helpers/003-Security Scan Secrets",
-                "003-NETAPPS/003-Helpers/004-Security Scan Docker Images",
-            ],
-        }
 
     def generate(self, config_file):
         """Generate EVOLVED-5G compliant NetApp from template"""
@@ -42,24 +28,7 @@ class CLI_helper:
         directory = "template"
         cookiecutter_generate(location, config_file, directory, no_input=True)
 
-    def generate_token(self):
-
-        self.header = {
-            "content-Type": "application/json",
-            "accept": None,
-            "Authorization": None,
-        }
-        data = (
-            '{ "username": "'
-            + self.username_token
-            + '", "password": "'
-            + self.password_token
-            + '" }'
-        )
-        resp = requests.post(self.url_token, headers=self.header, data=data)
-        return resp.json()["access_token"]
-
-    def run_verification_tests(self, mode, repo):
+    def run_verification_tests(self, mode, repo, user, passwd):
         """Run the build pipeline for the EVOLVED-5G NetApp"""
 
         if repo is None:
@@ -77,171 +46,217 @@ class CLI_helper:
                         self.header = {
                             "content-Type": "application/json",
                             "accept": "application/json",
-                            "Authorization": self.generate_token(),
+                            "username": user,
+                            "password": passwd,
                         }
+
                         data = (
-                            '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'
-                            + self.jenkinsjob["bdd"]
-                            + mode
-                            + '", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
-                            + repo
-                            + '", "GIT_NETAPP_BRANCH": "'
-                            + self.netapp_branch
-                            + '", "GIT_CICD_BRANCH": "'
-                            + self.branch_cicd_repo
-                            + '"} }'
+                                '{ "action": "'
+                                + mode
+                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
+                                + repo
+                                + '","GIT_NETAPP_BRANCH": "'
+                                + self.netapp_branch
+                                + '"} }'
                         )
+
                         resp = requests.post(
                             self.url_curl, headers=self.header, data=data
                         )
 
-                        echo(
-                            f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}."
-                        )
+                        if (len(resp.json()) > 3): #List
+                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
+                        else: #It is a List treated as Dictionary
+                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+
                     elif mode == "deploy":
                         self.header = {
                             "content-Type": "application/json",
                             "accept": "application/json",
-                            "Authorization": self.generate_token(),
+                            "username": user,
+                            "password": passwd,
                         }
+
                         data = (
-                            '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'
-                            + self.jenkinsjob["bdd"]
-                            + mode
-                            + '", "parameters": { "GIT_CICD_BRANCH": "'
-                            + self.branch_cicd_repo
-                            + '", "APP_REPLICAS": "1", "DEPLOYMENT_NAME": "'
-                            + repo
-                            + '", "DEPLOYMENT": "openshift" } }'
+                                '{ "action": "'
+                                + mode
+                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
+                                + repo
+                                + '","GIT_NETAPP_BRANCH": "'
+                                + self.netapp_branch
+                                + '"} }'
                         )
+
                         resp = requests.post(
                             self.url_curl, headers=self.header, data=data
                         )
 
-                        echo(
-                            f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}."
-                        )
+                        if (len(resp.json()) > 3): #List
+                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
+                        else: #It is a List treated as Dictionary
+                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+
                     elif mode == "destroy":
                         self.header = {
                             "content-Type": "application/json",
                             "accept": "application/json",
-                            "Authorization": self.generate_token(),
+                            "username": user,
+                            "password": passwd,
                         }
+
                         data = (
-                            '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'
-                            + self.jenkinsjob["bdd"]
-                            + mode
-                            + '", "parameters": { "VERSION": "1.0", "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
-                            + repo
-                            + '", "GIT_NETAPP_BRANCH": "'
-                            + self.netapp_branch
-                            + '", "GIT_CICD_BRANCH": "'
-                            + self.branch_cicd_repo
-                            + '"} }'
+                                '{ "action": "'
+                                + mode
+                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
+                                + repo
+                                + '","GIT_NETAPP_BRANCH": "'
+                                + self.netapp_branch
+                                + '"} }'
                         )
+
                         resp = requests.post(
                             self.url_curl, headers=self.header, data=data
                         )
 
-                        echo(
-                            f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}."
-                        )
+                        if (len(resp.json()) > 3): #List
+                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
+                        else: #It is a List treated as Dictionary
+                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+
+
                     elif mode == "code_analysis":
                         self.header = {
                             "content-Type": "application/json",
                             "accept": "application/json",
-                            "Authorization": self.generate_token(),
+                            "username": user,
+                            "password": passwd,
                         }
+
                         data = (
-                            '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'
-                            + self.jenkinsjob["code_analysis"]
-                            + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
-                            + repo
-                            + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "'
-                            + self.netapp_branch
-                            + '"} }'
+                                '{ "action": "'
+                                + mode
+                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
+                                + repo
+                                + '","GIT_NETAPP_BRANCH": "'
+                                + self.netapp_branch
+                                + '"} }'
                         )
+
                         resp = requests.post(
                             self.url_curl, headers=self.header, data=data
                         )
 
-                        echo(
-                            f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}."
-                        )
+                        if (len(resp.json()) > 3): #List
+                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
+                        else: #It is a List treated as Dictionary
+                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+
+
                     elif mode == "security_scan":
                         self.header = {
                             "content-Type": "application/json",
                             "accept": "application/json",
-                            "Authorization": self.generate_token(),
-                        }
-                        data1 = (
-                            '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'
-                            + self.jenkinsjob["security_scan"][0]
-                            + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
-                            + repo
-                            + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "'
-                            + self.netapp_branch
-                            + '"} }'
-                        )
-                        data2 = (
-                            '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'
-                            + self.jenkinsjob["security_scan"][1]
-                            + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
-                            + repo
-                            + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "'
-                            + self.netapp_branch
-                            + '"} }'
-                        )
-                        data3 = (
-                            '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'
-                            + self.jenkinsjob["security_scan"][2]
-                            + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
-                            + repo
-                            + '","GIT_CICD_BRANCH": "develop", "BUILD_ID": "0" , "REPORTING": "true" , "GIT_NETAPP_BRANCH": "'
-                            + self.netapp_branch
-                            + '"} }'
-                        )
-                        resp1 = requests.post(
-                            self.url_curl, headers=self.header, data=data1
-                        )
-                        resp2 = requests.post(
-                            self.url_curl, headers=self.header, data=data2
-                        )
-                        resp3 = requests.post(
-                            self.url_curl, headers=self.header, data=data3
-                        )
-
-                        echo(
-                            f"Your pipeline ID is: {resp1.json()['id']} and the actual status is: {resp1.json()['status']}."
-                        )
-                        echo(
-                            f"Your pipeline ID is: {resp2.json()['id']} and the actual status is: {resp2.json()['status']}."
-                        )
-                        echo(
-                            f"Your pipeline ID is: {resp3.json()['id']} and the actual status is: {resp3.json()['status']}."
-                        )
-                    elif mode == "capif_nef":
-                        self.header = {
-                            "content-Type": "application/json",
-                            "accept": "application/json",
-                            "Authorization": self.generate_token(),
+                            "username": user,
+                            "password": passwd,
                         }
                         data = (
-                            '{ "instance": "pro-dcip-evol5-01.hi.inet", "job": "'
-                            + self.jenkinsjob["capif_nef"]
-                            + '", "parameters": { "NetApp_repo": "'
-                            + repo
-                            + '","NetApp_repo_branch": "'
-                            + self.netapp_branch
-                            + '", "ROBOT_DOCKER_IMAGE_NAME": "dockerhub.hi.inet/dummy-netapp-testing/robot-test-image", "ROBOT_DOCKER_IMAGE_VERSION": "3.1.1"} }'
+                                '{ "action": "'
+                                + mode
+                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
+                                + repo
+                                + '","GIT_NETAPP_BRANCH": "'
+                                + self.netapp_branch
+                                + '"} }'
                         )
                         resp = requests.post(
                             self.url_curl, headers=self.header, data=data
                         )
 
-                        echo(
-                            f"Your pipeline ID is: {resp.json()['id']} and the actual status is: {resp.json()['status']}."
+                        if (len(resp.json()) > 3): #List
+                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
+                        else: #It is a List treated as Dictionary
+                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']}, {resp.json()[1]['job_id']} and {resp.json()[2]['job_id']} and the actual status for each is: {resp.json()[0]['status']}, "
+                                 f"{resp.json()[1]['status']} and {resp.json()[2]['status']}.")
+
+                    elif mode == "capif_nef":
+                        self.header = {
+                            "content-Type": "application/json",
+                            "accept": "application/json",
+                            "username": user,
+                            "password": passwd,
+                        }
+                        data = (
+                                '{ "action": "'
+                                + mode
+                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
+                                + repo
+                                + '","GIT_NETAPP_BRANCH": "'
+                                + self.netapp_branch
+                                + '"} }'
                         )
+                        resp = requests.post(
+                            self.url_curl, headers=self.header, data=data
+                        )
+
+                        if (len(resp.json()) > 3): #List
+                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
+                        else: #It is a List treated as Dictionary
+                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+
+                    elif mode == "capif_tsn":
+                        self.header = {
+                            "content-Type": "application/json",
+                            "accept": "application/json",
+                            "username": user,
+                            "password": passwd,
+                        }
+                        data = (
+                                '{ "action": "'
+                                + mode
+                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
+                                + repo
+                                + '","GIT_NETAPP_BRANCH": "'
+                                + self.netapp_branch
+                                + '"} }'
+                        )
+                        echo (data)
+                        resp = requests.post(
+                            self.url_curl, headers=self.header, data=data
+                        )
+
+                        if (len(resp.json()) > 3): #List
+                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
+                        else: #It is a List treated as Dictionary
+                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+
+                    elif mode == "validation":
+
+                        self.header = {
+                            "content-Type": "application/json",
+                            "accept": "application/json",
+                            "username": user,
+                            "password": passwd,
+                        }
+
+                        data = (
+                                '{ "action": "'
+                                + mode
+                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
+                                + repo
+                                + '","GIT_NETAPP_BRANCH": "'
+                                + self.netapp_branch
+                                + '"} }'
+                        )
+
+                        resp = requests.post(
+                            self.url_curl, headers=self.header, data=data
+                        )
+
+                        if (len(resp.json()) > 3): #List
+                            echo(f"{resp.json()['detail']}. Please wait until you received your result by email.")
+                        else:  # It is a List treated as Dictionary
+                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+
                     else:
                         echo(
                             f"The {mode} you have chosen does not exist, please check the modes and try again"
@@ -249,14 +264,14 @@ class CLI_helper:
 
                 except ValueError as e:
                     echo(
-                        "Please enter the correct command: evolved5g run-verification-tests --mode build --repo REPOSITORY_NAME"
+                        "Please enter the correct command: evolved5g run-verification-tests --mode build --repo <your_REPOSITORY_NAME>, --user <yourUSERNAME>, --passwd <yourPASSWORD>"
                     )
             else:
                 echo(
                     f"The {repo} repository you have chosen does not exist, please check the name you typed and try again."
                 )
 
-    def check_job(self, id):
+    def check_job(self, id, user, passwd):
 
         """Check the status of the pipeline for the EVOLVED-5G NetApp"""
 
@@ -264,12 +279,14 @@ class CLI_helper:
             self.header = {
                 "content-Type": "application/json",
                 "accept": "application/json",
-                "Authorization": self.generate_token(),
+                "username": user,
+                "password": passwd,
             }
-            resp = requests.get(f"{self.url_curl}/{id}", headers=self.header)
+            resp = requests.get(f"{self.url_curl_job}/{id}/status", headers=self.header)
             result = resp.json()
+            echo (result["status"])
 
-            if result["status"] == "QUEUED":
+            '''if result["status"] == "QUEUED":
                 echo(result)
             else:
                 console = json.dumps(result["console_log"]).split("\\n")
@@ -280,9 +297,10 @@ class CLI_helper:
                     elif "[Pipeline]" not in element:
                         echo(element)
                     elif "] stage" in element:
-                        echo(element)
+                        echo(element)'''
+
         except ValueError as e:
-            echo("Please add the ID: evolved5g check-job --id <yourID>")
+            echo("Please add the ID: evolved5g check-job --id <yourID>, --user <yourUSERNAME>, --passwd <yourPASSWORD>")
 
     def register_and_onboard_to_capif(self, config_file_full_path: str) -> None:
         with open(config_file_full_path, "r") as openfile:
