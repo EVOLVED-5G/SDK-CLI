@@ -983,6 +983,21 @@ class CAPIFInvokerConnector:
         )
         self.__write_to_file(self.csr_common_name, api_invoker_id, capif_discover_url)
 
+    def __load_netapp_api_details(self):
+        with open(
+                self.folder_to_store_certificates + "capif_api_details.json",
+                "r",
+        ) as openfile:
+            return json.load(openfile)
+    def offboard_netapp(self) ->None:
+        capif_api_details = self.__load_netapp_api_details()
+        url = self.capif_https_url + "api-invoker-management/v1/onboardedInvokers/" +capif_api_details["api_invoker_id"]
+        requests.request(
+            "DELETE",
+            url,
+            verify=self.folder_to_store_certificates + "ca.crt",
+        )
+
     def __create_private_and_public_keys(self) -> str:
         """
         Creates 2 keys in folder folder_to_store_certificates. A private.key and a cert_req.csr.
