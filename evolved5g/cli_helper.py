@@ -1,4 +1,5 @@
 from .nef_and_tsn_api_service_tests import test_capif_and_nef_published_to_capif_endpoints
+from .nef_and_tsn_api_service_validation_pipeline import validate_all_endpoints_returned_by_service_discoverer
 from .utils import cookiecutter_generate
 import requests
 import json
@@ -365,7 +366,7 @@ class CLI_helper:
             f'\nStore the token "{clearance_token}" to clear the profile if you wish in the future.'
         )
 
-    def test_capif_and_nef_published_to_capif_endpoints(self, config_file_full_path: str)->None:
-        test_capif_and_nef_published_to_capif_endpoints(config_file_full_path)
+    def validate_all_endpoints_returned_by_service_discoverer(self, config_file_full_path: str)->None:
+        validate_all_endpoints_returned_by_service_discoverer(config_file_full_path)
 
 

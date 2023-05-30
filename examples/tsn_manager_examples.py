@@ -5,7 +5,7 @@ import emulator_utils
 
 #
 
-tsn_host = "localhost"  # TSN server hostname
+tsn_host = "127.0.0.1"  # TSN server hostname
 tsn_port = 8899  # TSN server port
 
 
