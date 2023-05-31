@@ -995,8 +995,14 @@ class CAPIFInvokerConnector:
         requests.request(
             "DELETE",
             url,
-            verify=self.folder_to_store_certificates + "ca.crt",
+            verify=self.folder_to_store_certificates + "ca.crt"
         )
+
+
+    def offboard_and_deregister_netapp(self)->None:
+        self.offboard_netapp()
+        role = "invoker"
+        self.de_register_from_capif(role)
 
     def __create_private_and_public_keys(self) -> str:
         """
@@ -1052,6 +1058,25 @@ class CAPIFInvokerConnector:
         response_payload = json.loads(response.text)
         return response_payload
 
+    def de_register_from_capif(self,role):
+
+        url = self.capif_http_url + "remove"
+        payload = dict()
+        payload["username"] = self.capif_netapp_username
+        payload["password"] = self.capif_netapp_password
+        payload["role"] = role
+
+        response = requests.request(
+            "DELETE",
+            url,
+            headers={"Content-Type": "application/json"},
+            data=json.dumps(payload)
+        )
+        response.raise_for_status()
+
+        response_payload = json.loads(response.text)
+        return response_payload
+
     def __save_capif_ca_root_file_and_get_auth_token(self, role):
 
         url = self.capif_http_url + "getauth"
@@ -1080,7 +1105,6 @@ class CAPIFInvokerConnector:
         payload_dict = {
             "notificationDestination": self.capif_callback_url,
             "supportedFeatures": "fffffff",
-            # TODO: This works fine.  But what about CapifProviderConnector class where we onboard a Provider/Exposer. On onboarding there we dont pass the username. Is this a mistake in the flow? Or a different flow is implemented there
             "apiInvokerInformation": self.csr_common_name,
             "websockNotifConfig": {
                 "requestWebsocketUri": True,
@@ -1489,9 +1513,13 @@ class ServiceDiscoverer:
         :param aef_id: The relevant aef_id that is returned by discover services
          :return: The access token (jwt)
         """
+
+
         if not self.__aef_id_already_registered(aef_id):
             self.__register_security_service(api_id, aef_id)
             self.__save_aef_id_to_already_registered_cached_list(aef_id)
+
+
 
         token_dic = self.__get_security_token(api_name, aef_id)
         return token_dic["access_token"]
@@ -1544,6 +1572,13 @@ class ServiceDiscoverer:
                                 cert=(self.signed_key_crt_path, self.private_key_path),
                                 verify=self.ca_root_path
                                 )
+
+        #TODO I HAVE TO CREATE A POST METHOD, THAT WILL ADD AN EXTRA ITEM IN THE SECURITY INFO ARRAY
+        # THE DIFFERENCES WITH THIS METHOD ARE
+        # 1) THE POST METHOD to  $url/update
+        # 2) WE NEED TO SEND ALL THE BODY AGAIN..  I SHOULD CHANGE THE FILE capif_api_details.json so i can remember the whole security info
+        # "already_registered_security_contexts": [{ "api_id": blabla , "aef_id":"04fca5dbea1ac2619a82f0c50e355c"}]
+
         response.raise_for_status()
         response_payload = response.json()
 
