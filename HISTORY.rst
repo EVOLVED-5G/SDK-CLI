@@ -5,7 +5,8 @@ History
 -------------------
 1.0.6 (2023-05-30)
 -------------------
-* CAPIFProviderConnector has a new method offboard_netapp() that allows a network app to be offboarded from CAPIF.
+* CAPIFProviderConnector has a new method offboard_and_deregister_netapp() that allows a network app to be offboarded and deregistered from CAPIF.
+* The SDK classes LocationSubscriber,ConnectionMonitor,QosAwareness don't accept the parameter 'nef_bearer_access_token' any more.
 * The CLI method register_and_onboard_to_capif now accepts a second parameter --environment that takes values "production" or "development".
 If this parameter is set to production then validation tests are running in the background, just after the registration and onboarding of the network app finishes.
 
