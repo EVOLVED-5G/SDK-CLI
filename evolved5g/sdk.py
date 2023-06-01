@@ -948,6 +948,7 @@ class CAPIFInvokerConnector:
         self.csr_state_or_province_name = csr_state_or_province_name
         self.csr_country_name = csr_country_name
         self.csr_email_address = csr_email_address
+        self.capif_api_details_filename = "capif_api_security_context_details.json"
 
     def __add_trailing_slash_to_url_if_missing(self, url):
         if url[len(url) - 1] != "/":
@@ -959,7 +960,7 @@ class CAPIFInvokerConnector:
         Using this method a NetApp can get onboarded to CAPIF.
         After calling this method the following should happen:
          a) A signed certificate should exist in folder folder_to_store_certificates
-         b) A json file 'capif_api_details.json' should exist with the api_invoker_id and the api discovery url
+         b) A json file 'capif_api_security_context_details_.json' should exist with the api_invoker_id and the api discovery url
 
         These will be used  ServiceDiscoverer class in order to communicate with CAPIF and discover services
 
@@ -979,7 +980,7 @@ class CAPIFInvokerConnector:
 
     def __load_netapp_api_details(self):
         with open(
-                self.folder_to_store_certificates + "capif_api_details.json",
+                self.folder_to_store_certificates + self.capif_api_details_filename,
                 "r",
         ) as openfile:
             return json.load(openfile)
@@ -1135,7 +1136,7 @@ class CAPIFInvokerConnector:
 
     def __write_to_file(self, csr_common_name, api_invoker_id, discover_services_url):
         with open(
-                self.folder_to_store_certificates + "capif_api_details.json", "w"
+                self.folder_to_store_certificates + self.capif_api_details_filename, "w"
         ) as outfile:
             json.dump(
                 {
@@ -1490,7 +1491,7 @@ class ServiceDiscoverer:
 
     def __load_netapp_api_details(self):
         with open(
-                self.folder_to_store_certificates_and_api_key + "capif_api_details.json",
+                self.folder_to_store_certificates_and_api_key + "capif_api_security_context_details.json",
                 "r",
         ) as openfile:
             return json.load(openfile)
@@ -1508,29 +1509,76 @@ class ServiceDiscoverer:
          :return: The access token (jwt)
         """
 
-
-        if not self.__aef_id_already_registered(aef_id):
+        # if we dont have a security contenxt created before, create one
+        if self.__security_context_does_not_exist():
+            self.capif_api_details["registered_security_contexes"] = []
+            self.capif_api_details["registered_security_contexes"].append({ "api_id": api_id, "aef_id": aef_id})
             self.__register_security_service(api_id, aef_id)
-            self.__save_aef_id_to_already_registered_cached_list(aef_id)
+            self.__cache_security_context()
+        elif  self.__security_context_for_given_api_id_and_aef_id_does_not_exist(api_id,aef_id):
+            self.capif_api_details["registered_security_contexes"].append({ "api_id": api_id, "aef_id": aef_id})
+            self.__update_security_service(api_id,aef_id)
+            self.__cache_security_context()
 
 
 
         token_dic = self.__get_security_token(api_name, aef_id)
         return token_dic["access_token"]
 
-    def __aef_id_already_registered(self, aef_id):
-        return "registered_aef_ids" in self.capif_api_details and \
-            aef_id in self.capif_api_details["registered_aef_ids"]
+    def __security_context_does_not_exist(self):
+        return "registered_security_contexes" not in self.capif_api_details
 
-    def __save_aef_id_to_already_registered_cached_list(self, aef_id):
-        if "registered_aef_ids" not in self.capif_api_details:
-            self.capif_api_details["registered_aef_ids"] = []
 
-        self.capif_api_details["registered_aef_ids"].append(aef_id)
+    def __security_context_for_given_api_id_and_aef_id_does_not_exist(self,api_id,aef_id):
+        contexes = self.capif_api_details["registered_security_contexes"]
+        results = list(filter(lambda c: c['api_id']== api_id and c["aef_id"]==aef_id, contexes))
+        return len(results) == 0
+
+
+    def __cache_security_context(self):
         with open(
-                self.folder_to_store_certificates_and_api_key + "capif_api_details.json", "w"
+                self.folder_to_store_certificates_and_api_key + "capif_api_security_context_details.json", "w"
         ) as outfile:
             json.dump(self.capif_api_details, outfile)
+
+
+    def __update_security_service(self, api_id, aef_id):
+        """
+
+        :param api_id: The api id that is returned by discover services
+        :param aef_id: The aef_id that is returned by discover services
+        :return: None
+        """
+        url = "https://{}/capif-security/v1/trustedInvokers/{}/update".format(self.capif_host,
+                                                                       self.capif_api_details["api_invoker_id"])
+
+        payload = {
+            "securityInfo": [],
+            "notificationDestination": "https://mynotificationdest.com",
+            "requestTestNotification": True,
+            "websockNotifConfig": {
+                "websocketUri": "string",
+                "requestWebsocketUri": True
+            },
+            "supportedFeatures": "fff"
+        }
+
+        for security_info in self.capif_api_details["registered_security_contexes"]:
+            payload["securityInfo"].append({
+                "prefSecurityMethods": ["OAUTH"],
+                "aefId": security_info["aef_id"],
+                "apiId": security_info["api_id"]
+            })
+
+        response = requests.post(url,
+                                json=payload,
+                                cert=(self.signed_key_crt_path, self.private_key_path),
+                                verify=self.ca_root_path
+                                )
+
+        response.raise_for_status()
+        response.json()
+
 
     def __register_security_service(self, api_id, aef_id):
         """
@@ -1566,13 +1614,6 @@ class ServiceDiscoverer:
                                 cert=(self.signed_key_crt_path, self.private_key_path),
                                 verify=self.ca_root_path
                                 )
-
-        #TODO I HAVE TO CREATE A POST METHOD, THAT WILL ADD AN EXTRA ITEM IN THE SECURITY INFO ARRAY
-        # THE DIFFERENCES WITH THIS METHOD ARE
-        # 1) THE POST METHOD to  $url/update
-        # 2) WE NEED TO SEND ALL THE BODY AGAIN..  I SHOULD CHANGE THE FILE capif_api_details.json so i can remember the whole security info
-        # "already_registered_security_contexts": [{ "api_id": blabla , "aef_id":"04fca5dbea1ac2619a82f0c50e355c"}]
-
         response.raise_for_status()
         response_payload = response.json()
 
