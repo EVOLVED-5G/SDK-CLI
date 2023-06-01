@@ -61,6 +61,7 @@ class MonitoringSubscriber(ABC):
                                                                                      "MONITORING_SUBSCRIPTION_SINGLE"),
         }
         api_resource_description = service_discoverer.retrieve_api_description_by_name(api_name)
+
         configuration.access_token =  service_discoverer.get_access_token(api_name,
                                                                          api_resource_description[
                                                                              "apiId"],
@@ -1815,8 +1816,7 @@ class TSNManager:
 
         """
         url = self.url_prefix + self.service_discoverer. \
-            retrieve_specific_resource_name(self.api_name, "TSN_LIST_PROFILES"). \
-            format(scsAsId=self.api_invoker_id)
+            retrieve_specific_resource_name(self.api_name, "TSN_LIST_PROFILES")
 
         response = requests.get(url=url, headers=self.headers_auth)
         response.raise_for_status()
