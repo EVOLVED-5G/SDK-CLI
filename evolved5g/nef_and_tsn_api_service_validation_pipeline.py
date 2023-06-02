@@ -10,7 +10,7 @@ import datetime
 
 def validate_all_endpoints_returned_by_service_discoverer(config_file_full_path: str) -> bool:
     """
-    This method finds all the releases APIs in CAPIF and performs tests to make sure that they work as expected
+    This method finds all the released APIs in CAPIF (via ServiceDiscovery) and performs tests to make sure that they work as expected
     :param config_file_full_path:
     :return: True if the endpoints work as expected. Else an exception is raised
     """
