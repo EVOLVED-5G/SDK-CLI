@@ -249,21 +249,6 @@ def __test_tsn_manager(config,tsn_host,tsn_port):
     # If we reached this point with no exceptions, then we tested all the endpoints of TSN
 
 
-def get_token_for_nef_emulator(nef_url) -> Token:
-    username = "admin@my-email.com"
-    password = "pass"
-    # User name and pass matches are set in the .env of the docker of NEF_EMULATOR. See
-    # https://github.com/EVOLVED-5G/NEF_emulator
-    configuration = swagger_client.Configuration()
-    # The host of the 5G API (emulator)
-    configuration.host = nef_url
-    configuration.verify_ssl = False
-    api_client = swagger_client.ApiClient(configuration=configuration)
-    api_client.select_header_content_type(["application/x-www-form-urlencoded"])
-    api = LoginApi(api_client)
-    token = api.login_access_token_api_v1_login_access_token_post("", username, password, "", "", "")
-    return token
-
 
 
 if __name__ == "__main__":
