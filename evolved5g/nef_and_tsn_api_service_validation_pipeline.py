@@ -8,7 +8,12 @@ from evolved5g.swagger_client.models import Token
 import datetime
 
 
-def validate_all_endpoints_returned_by_service_discoverer(config_file_full_path: str) -> None:
+def validate_all_endpoints_returned_by_service_discoverer(config_file_full_path: str) -> bool:
+    """
+    This method finds all the releases APIs in CAPIF and performs tests to make sure that they work as expected
+    :param config_file_full_path:
+    :return: True if the endpoints work as expected. Else an exception is raised
+    """
     with open(config_file_full_path, "r") as openfile:
         config = json.load(openfile)
 
@@ -21,8 +26,10 @@ def validate_all_endpoints_returned_by_service_discoverer(config_file_full_path:
     # We iterate to all of the available published services.
     # Notice that if a new api is published and we dont have tests for it, an exception is raised
     for api_description in service_apis["serviceAPIDescriptions"]:
+        print("Starting testing endpoints for ApiName: " + api_description["apiName"] )
         host_info = api_description["aefProfiles"][0]['interfaceDescriptions'][0]
         if api_description["apiName"] == "/nef/api/v1/3gpp-monitoring-event/":
+
             # nef_url=  "https://localhost:4443"
             nef_url = "https://{host}:{port}".format(host=host_info["ipv4Addr"], port=host_info["port"])
             __test_location_subscriber(config,nef_url)
@@ -38,6 +45,9 @@ def validate_all_endpoints_returned_by_service_discoverer(config_file_full_path:
         else:
             raise NotImplementedError("Could not find Validation tests for ApiName" + api_description["apiName"])
 
+    print("All endpoints work as expected")
+    return True
+
 def __test_location_subscriber(config,url_of_the_nef_emulator) -> None:
     """
     Tests the NEF api name /nef/api/v1/3gpp-monitoring-event/ with dummy data
@@ -47,9 +57,7 @@ def __test_location_subscriber(config,url_of_the_nef_emulator) -> None:
     # Create a subscription, that will notify us 1000 times, for the next 1 day starting from now
     expire_time = (datetime.datetime.utcnow() + datetime.timedelta(days=1)).isoformat() + "Z"
     netapp_id = "myNetapp"
-    token = get_token_for_nef_emulator(url_of_the_nef_emulator)
     location_subscriber = LocationSubscriber(nef_url=url_of_the_nef_emulator,
-                                             nef_bearer_access_token=token.access_token,
                                              folder_path_for_certificates_and_capif_api_key=config["folder_to_store_certificates"],
                                              capif_host=config["capif_host"],
                                              capif_https_port=config["capif_https_port"])
@@ -91,9 +99,7 @@ def __test_connection_monitor(config,url_of_the_nef_emulator):
     # Create a subscription, that will notify us 1000 times, for the next 1 day starting from now
     expire_time = (datetime.datetime.utcnow() + datetime.timedelta(days=1)).isoformat() + "Z"
     netapp_id = "myNetapp"
-    token = get_token_for_nef_emulator(url_of_the_nef_emulator)
     connection_monitor = ConnectionMonitor(nef_url=url_of_the_nef_emulator,
-                                           nef_bearer_access_token=token.access_token,
                                            folder_path_for_certificates_and_capif_api_key=config["folder_to_store_certificates"],
                                            capif_host=config["capif_host"],
                                            capif_https_port=config["capif_https_port"])
@@ -133,9 +139,7 @@ def __test_qos_awereness(config,url_of_the_nef_emulator):
    """
     netapp_id = "myNetapp"
 
-    token = get_token_for_nef_emulator(url_of_the_nef_emulator)
     qos_awereness = QosAwareness(nef_url=url_of_the_nef_emulator,
-                                 nef_bearer_access_token=token.access_token,
                                  folder_path_for_certificates_and_capif_api_key=config["folder_to_store_certificates"],
                                  capif_host=config["capif_host"],
                                  capif_https_port=config["capif_https_port"])
