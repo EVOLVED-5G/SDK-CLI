@@ -1,6 +1,6 @@
 import json
 import json.decoder
-from evolved5g.sdk import TSNManager, LocationSubscriber, ConnectionMonitor, QosAwareness
+from evolved5g.sdk import TSNManager, LocationSubscriber, ConnectionMonitor, QosAwareness, ServiceDiscoverer
 from evolved5g.swagger_client.rest import ApiException
 from evolved5g import swagger_client
 from evolved5g.swagger_client import LoginApi, User, UsageThreshold
@@ -8,30 +8,47 @@ from evolved5g.swagger_client.models import Token
 import datetime
 
 
-def test_capif_and_nef_published_to_capif_endpoints(config_file_full_path: str) -> None:
+def validate_all_endpoints_returned_by_service_discoverer(config_file_full_path: str) -> bool:
+    """
+    This method finds all the released APIs in CAPIF (via ServiceDiscovery) and performs tests to make sure that they work as expected
+    :param config_file_full_path:
+    :return: True if the endpoints work as expected. Else an exception is raised
+    """
     with open(config_file_full_path, "r") as openfile:
         config = json.load(openfile)
 
-    test_nef_service_api(config)
-    test_tsn_service_api(config)
+    service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_api_key=config["folder_to_store_certificates"],
+                                           capif_host=config["capif_host"],
+                                           capif_https_port=config["capif_https_port"]
+                                           )
+    service_apis = service_discoverer.discover_service_apis()
 
+    # We iterate to all of the available published services.
+    # Notice that if a new api is published and we dont have tests for it, an exception is raised
+    for api_description in service_apis["serviceAPIDescriptions"]:
+        print("Starting testing endpoints for ApiName: " + api_description["apiName"] )
+        host_info = api_description["aefProfiles"][0]['interfaceDescriptions'][0]
+        if api_description["apiName"] == "/nef/api/v1/3gpp-monitoring-event/":
 
-def test_nef_service_api(config):
-    """
-    Test
-    :param config:
-    :return:
-    """
-    __test_location_subscriber(config)
-    __test_connection_monitor(config)
-    __test_qos_awereness(config)
+            # nef_url=  "https://localhost:4443"
+            nef_url = "https://{host}:{port}".format(host=host_info["ipv4Addr"], port=host_info["port"])
+            __test_location_subscriber(config,nef_url)
+            __test_connection_monitor(config,nef_url)
+        elif api_description["apiName"] == "/nef/api/v1/3gpp-as-session-with-qos/":
+            # nef_url=  "https://localhost:4443"
+            nef_url = "https://{host}:{port}".format(host=host_info["ipv4Addr"], port=host_info["port"])
+            __test_qos_awereness(config,nef_url)
+        elif api_description["apiName"] == "/tsn/api/":
+            #tsn_host = "localhost"  # TSN server hostname
+            #tsn_port = 8899  # TSN server port
+            __test_tsn_manager(config,host_info["ipv4Addr"],host_info["port"])
+        else:
+            raise NotImplementedError("Could not find Validation tests for ApiName" + api_description["apiName"])
 
+    print("All endpoints work as expected")
+    return True
 
-def test_tsn_service_api(config):
-    __test_tsn_manager(config)
-
-
-def __test_location_subscriber(config) -> None:
+def __test_location_subscriber(config,url_of_the_nef_emulator) -> None:
     """
     Tests the NEF api name /nef/api/v1/3gpp-monitoring-event/ with dummy data
     :param config:
@@ -40,12 +57,10 @@ def __test_location_subscriber(config) -> None:
     # Create a subscription, that will notify us 1000 times, for the next 1 day starting from now
     expire_time = (datetime.datetime.utcnow() + datetime.timedelta(days=1)).isoformat() + "Z"
     netapp_id = "myNetapp"
-    token = get_token_for_nef_emulator()
-    location_subscriber = LocationSubscriber(nef_url=get_url_of_the_nef_emulator(),
-                                             nef_bearer_access_token=token.access_token,
-                                             folder_path_for_certificates_and_capif_api_key=get_folder_path_for_netapp_certificates_and_capif_api_key(),
-                                             capif_host=get_capif_host(),
-                                             capif_https_port=get_capif_https_port())
+    location_subscriber = LocationSubscriber(nef_url=url_of_the_nef_emulator,
+                                             folder_path_for_certificates_and_capif_api_key=config["folder_to_store_certificates"],
+                                             capif_host=config["capif_host"],
+                                             capif_https_port=config["capif_https_port"])
     # The following external identifier was copy pasted by the NEF emulator. Go to the Map and click on a User icon. There you can retrieve the id
     external_id = "10003@domain.com"
 
@@ -75,7 +90,7 @@ def __test_location_subscriber(config) -> None:
             raise
 
 
-def __test_connection_monitor(config):
+def __test_connection_monitor(config,url_of_the_nef_emulator):
     """
      Tests the NEF api name /nef/api/v1/3gpp-monitoring-event/ with dummy data
      :param config:
@@ -84,12 +99,10 @@ def __test_connection_monitor(config):
     # Create a subscription, that will notify us 1000 times, for the next 1 day starting from now
     expire_time = (datetime.datetime.utcnow() + datetime.timedelta(days=1)).isoformat() + "Z"
     netapp_id = "myNetapp"
-    token = get_token_for_nef_emulator()
-    connection_monitor = ConnectionMonitor(nef_url=get_url_of_the_nef_emulator(),
-                                           nef_bearer_access_token=token.access_token,
-                                           folder_path_for_certificates_and_capif_api_key=get_folder_path_for_netapp_certificates_and_capif_api_key(),
-                                           capif_host=get_capif_host(),
-                                           capif_https_port=get_capif_https_port())
+    connection_monitor = ConnectionMonitor(nef_url=url_of_the_nef_emulator,
+                                           folder_path_for_certificates_and_capif_api_key=config["folder_to_store_certificates"],
+                                           capif_host=config["capif_host"],
+                                           capif_https_port=config["capif_https_port"])
     # The following external identifier was copy pasted by the NEF emulator. Go to the Map and click on a User icon. There you can retrieve the id
     external_id = "10003@domain.com"
 
@@ -119,19 +132,17 @@ def __test_connection_monitor(config):
             raise
 
 
-def __test_qos_awereness(config):
+def __test_qos_awereness(config,url_of_the_nef_emulator):
     """
      Tests the NEF api name  /nef/api/v1/3gpp-as-session-with-qos/  with dummy data
      :param config:
    """
     netapp_id = "myNetapp"
 
-    token = get_token_for_nef_emulator()
-    qos_awereness = QosAwareness(nef_url=get_url_of_the_nef_emulator(),
-                                 nef_bearer_access_token=token.access_token,
-                                 folder_path_for_certificates_and_capif_api_key=get_folder_path_for_netapp_certificates_and_capif_api_key(),
-                                 capif_host=get_capif_host(),
-                                 capif_https_port=get_capif_https_port())
+    qos_awereness = QosAwareness(nef_url=url_of_the_nef_emulator,
+                                 folder_path_for_certificates_and_capif_api_key=config["folder_to_store_certificates"],
+                                 capif_host=config["capif_host"],
+                                 capif_https_port=config["capif_https_port"])
     # The following external identifier was copy pasted by the NEF emulator.
     # Go to the Map and hover over a User icon.There you can retrieve the id address.
     # Notice that the NEF emulator is able to establish a guaranteed bit rate only if one and only one user is connected to a shell
@@ -197,19 +208,18 @@ def __test_qos_awereness(config):
             raise
 
 
-def __test_tsn_manager(config):
+def __test_tsn_manager(config,tsn_host,tsn_port):
     """
       Tests the TSN api name  with dummy data
      :param config:
    """
-    tsn_host = "localhost"  # TSN server hostname
-    tsn_port = 8899  # TSN server port
+
 
     netapp_name = "MyNetapp1"  # The name of our NetApp
     tsn = TSNManager(  # Initialization of the TNSManager
-        folder_path_for_certificates_and_capif_api_key=get_folder_path_for_netapp_certificates_and_capif_api_key(),
-        capif_host=get_capif_host(),
-        capif_https_port=get_capif_https_port(),
+        folder_path_for_certificates_and_capif_api_key=config["folder_to_store_certificates"],
+        capif_host=config["capif_host"],
+        capif_https_port=config["capif_https_port"],
         https=False,
         tsn_host=tsn_host,
         tsn_port=tsn_port
@@ -239,48 +249,9 @@ def __test_tsn_manager(config):
     # If we reached this point with no exceptions, then we tested all the endpoints of TSN
 
 
-def get_token_for_nef_emulator() -> Token:
-    username = "admin@my-email.com"
-    password = "pass"
-    # User name and pass matches are set in the .env of the docker of NEF_EMULATOR. See
-    # https://github.com/EVOLVED-5G/NEF_emulator
-    configuration = swagger_client.Configuration()
-    # The host of the 5G API (emulator)
-    configuration.host = get_url_of_the_nef_emulator()
-    configuration.verify_ssl = False
-    api_client = swagger_client.ApiClient(configuration=configuration)
-    api_client.select_header_content_type(["application/x-www-form-urlencoded"])
-    api = LoginApi(api_client)
-    token = api.login_access_token_api_v1_login_access_token_post("", username, password, "", "", "")
-    return token
 
 
-def get_url_of_the_nef_emulator() -> str:
-    return "https://localhost:4443"
+if __name__ == "__main__":
+    config_file_path= "/home/alex/Projects/maggioli/evolved-5g/SDK-CLI/examples/netapp_capif_config/netapp_capif_connector_config_file.json"
+    validate_all_endpoints_returned_by_service_discoverer(config_file_path)
 
-
-def get_folder_path_for_netapp_certificates_and_capif_api_key() -> str:
-    """
-    This is the folder that is provided when you registered the NetApp to CAPIF.
-    It contains the certificates and the api.key needed to communicate with the CAPIF server.
-    Make sure to change this path name to match your environment!
-    :return:
-    """
-    return "/home/alex/Projects/test_certificate_folder"
-
-
-def get_capif_host() -> str:
-    """
-    When running CAPIF via docker (by running ./run.sh) you should have at your /etc/hosts the following record
-    127.0.0.1       capifcore
-    :return:
-    """
-    return "capifcore"
-
-
-def get_capif_https_port() -> int:
-    """
-    This is the default https port when running CAPIF via docker
-    :return:
-    """
-    return 443
