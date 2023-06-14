@@ -15,7 +15,7 @@ def cli(ctx):
 
 @cli.command()
 @click.option(
-    "--config-file", type=str, help="Provide User config location for custom package"
+    "--config-file", required=True, type=str, help="Provide User config location for custom package"
 )
 @click.pass_context
 def generate(ctx, config_file):
@@ -27,29 +27,47 @@ def generate(ctx, config_file):
 @click.option(
     "--mode",
     type=click.Choice(
-        ["build", "deploy", "destroy", "capif_nef", "capif_tsn", "code_analysis", "security_scan", "validation"],
+        ["build", "deploy", "destroy", "capif_nef", "capif_tsn", "code_analysis", "security_scan"],
         case_sensitive=False,
     ),
+
 )
-@click.option("--repo", type=str, help="Enter repo name")
-@click.option("--user", type=str, help="Enter your username for pipelines")
-@click.option("--passwd", type=str, help="Enter repo password for pipelines")
+@click.option("--repo", required=True, type=str, help="Enter repo name")
+@click.option("--user", required=True, type=str, help="Enter your username for pipelines")
+@click.option("--passwd", required=True, type=str, help="Enter repo password for pipelines")
+@click.option("--capifpath", required=False, default=None, show_default=True, type=str, help="(Only for NEF and CAPIF) Path where to find the CAPIF registration configuration file (json)")
+@click.option("--certpath", required=False, default=None, show_default=True, type=str, help="(Only for NEF and CAPIF) Folder path where to store the certification files")
+@click.option("--verfpath", required=False, default=None, show_default=True, type=str, help="(Only for NEF and CAPIF) Path for the python file to verify")
+@click.option("--version", required=False, default=4.0, show_default=True, type=str, help="Network App version")
 
 @click.pass_context
-def run_verification_tests(ctx, mode, repo, user, passwd):
+def run_verification_tests(ctx, mode, repo, user, passwd, capifpath, certpath, verfpath, version):
     """Launch different verification tests"""
-    ctx.obj["helper"].run_verification_tests(mode, repo, user, passwd)
-
+    ctx.obj["helper"].run_verification_tests(mode, repo, user, passwd, capifpath, certpath, verfpath, version)
 
 @cli.command()
-@click.option("--id", type=int, help="Enter pipeline id")
-@click.option("--user", type=str, help="Enter your username for pipelines")
-@click.option("--passwd", type=str, help="Enter repo password for pipelines")
+@click.option("--id", required=True, type=int, help="Enter pipeline id")
+@click.option("--user", required=True, type=str, help="Enter your username for pipelines")
+@click.option("--passwd", required=True, type=str, help="Enter repo password for pipelines")
+
 @click.pass_context
 def check_job(ctx, id, user, passwd):
     """Check the status of a pipeline"""
     ctx.obj["helper"].check_job(id, user, passwd)
 
+@cli.command()
+@click.option("--repo", required=True, type=str, help="Enter repo name")
+@click.option("--user", required=True, type=str, help="Enter your username for pipelines")
+@click.option("--passwd", required=True, type=str, help="Enter repo password for pipelines")
+@click.option("--environment", required=False, show_default=True, default="openshift", type=str, help="Enter the environment to deploy the NetApp (openshift, kubernetes-athens, kubernetes-uma)")
+@click.option("--deploy", required=False, type=str, help="Network App deployment name")
+@click.option("--email", required=False, default=False, type=str, help="Developer email to receive the report")
+@click.option("--version", required=False, default=4.0, show_default=True, type=str, help="Network App version")
+
+@click.pass_context
+def validation(ctx, repo, user, passwd, environment, deploy, email, version):
+    """Launch the validation tests"""
+    ctx.obj["helper"].validation(repo, user, passwd, environment, deploy, email, version)
 
 @cli.command()
 @click.option(

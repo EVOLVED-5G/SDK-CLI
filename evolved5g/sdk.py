@@ -44,7 +44,6 @@ class MonitoringSubscriber(ABC):
     def __init__(
             self,
             host: str,
-            nef_bearer_access_token: str,
             folder_path_for_certificates_and_capif_api_key: str,
             capif_host: str,
             capif_https_port: int,
@@ -57,18 +56,19 @@ class MonitoringSubscriber(ABC):
         api_name = "/nef/api/v1/3gpp-monitoring-event/"
         configuration.available_endpoints = {
             "MONITORING_SUBSCRIPTIONS": service_discoverer.retrieve_specific_resource_name(api_name,
-                                                                                           "MONITORING_SUBSCRIPTIONS"),
+                                                                                   "MONITORING_SUBSCRIPTIONS"),
             "MONITORING_SUBSCRIPTION_SINGLE": service_discoverer.retrieve_specific_resource_name(api_name,
-                                                                                                 "MONITORING_SUBSCRIPTION_SINGLE"),
+                                                                                     "MONITORING_SUBSCRIPTION_SINGLE"),
         }
         api_resource_description = service_discoverer.retrieve_api_description_by_name(api_name)
-        configuration.access_token = nef_bearer_access_token + "," + service_discoverer.get_access_token(api_name,
-                                                                                                         api_resource_description[
-                                                                                                             "apiId"],
-                                                                                                         api_resource_description[
-                                                                                                             "aefProfiles"][
-                                                                                                             0][
-                                                                                                             "aefId"])
+
+        configuration.access_token =  service_discoverer.get_access_token(api_name,
+                                                                         api_resource_description[
+                                                                             "apiId"],
+                                                                         api_resource_description[
+                                                                             "aefProfiles"][
+                                                                             0][
+                                                                             "aefId"])
         api_client = swagger_client.ApiClient(configuration=configuration)
         self.monitoring_event_api = MonitoringEventAPIApi(api_client)
         self.cell_api = CellsApi(api_client)
@@ -135,7 +135,6 @@ class LocationSubscriber(MonitoringSubscriber):
     def __init__(
             self,
             nef_url: str,
-            nef_bearer_access_token: str,
             folder_path_for_certificates_and_capif_api_key: str,
             capif_host: str,
             capif_https_port: int,
@@ -150,7 +149,6 @@ class LocationSubscriber(MonitoringSubscriber):
         """
         super().__init__(
             nef_url,
-            nef_bearer_access_token,
             folder_path_for_certificates_and_capif_api_key,
             capif_host,
             capif_https_port,
@@ -278,7 +276,6 @@ class ConnectionMonitor(MonitoringSubscriber):
     def __init__(
             self,
             nef_url: str,
-            nef_bearer_access_token: str,
             folder_path_for_certificates_and_capif_api_key: str,
             capif_host: str,
             capif_https_port: int,
@@ -300,7 +297,6 @@ class ConnectionMonitor(MonitoringSubscriber):
         """
         super().__init__(
             nef_url,
-            nef_bearer_access_token,
             folder_path_for_certificates_and_capif_api_key,
             capif_host,
             capif_https_port,
@@ -507,7 +503,6 @@ class QosAwareness:
     def __init__(
             self,
             nef_url: str,
-            nef_bearer_access_token: str,
             folder_path_for_certificates_and_capif_api_key: str,
             capif_host: str,
             capif_https_port: int,
@@ -545,7 +540,7 @@ class QosAwareness:
             ),
         }
         api_resource_description = service_discoverer.retrieve_api_description_by_name(api_name)
-        configuration.access_token = nef_bearer_access_token + "," + service_discoverer.get_access_token(api_name,
+        configuration.access_token = service_discoverer.get_access_token(api_name,
                                                                                                          api_resource_description[
                                                                                                              "apiId"],
                                                                                                          api_resource_description[
@@ -954,6 +949,7 @@ class CAPIFInvokerConnector:
         self.csr_state_or_province_name = csr_state_or_province_name
         self.csr_country_name = csr_country_name
         self.csr_email_address = csr_email_address
+        self.capif_api_details_filename = "capif_api_security_context_details.json"
 
     def __add_trailing_slash_to_url_if_missing(self, url):
         if url[len(url) - 1] != "/":
@@ -965,7 +961,7 @@ class CAPIFInvokerConnector:
         Using this method a NetApp can get onboarded to CAPIF.
         After calling this method the following should happen:
          a) A signed certificate should exist in folder folder_to_store_certificates
-         b) A json file 'capif_api_details.json' should exist with the api_invoker_id and the api discovery url
+         b) A json file 'capif_api_security_context_details_.json' should exist with the api_invoker_id and the api discovery url
 
         These will be used  ServiceDiscoverer class in order to communicate with CAPIF and discover services
 
@@ -982,6 +978,27 @@ class CAPIFInvokerConnector:
             )
         )
         self.__write_to_file(self.csr_common_name, api_invoker_id, capif_discover_url)
+
+    def __load_netapp_api_details(self):
+        with open(
+                self.folder_to_store_certificates + self.capif_api_details_filename,
+                "r",
+        ) as openfile:
+            return json.load(openfile)
+    def offboard_netapp(self) ->None:
+        capif_api_details = self.__load_netapp_api_details()
+        url = self.capif_https_url + "api-invoker-management/v1/onboardedInvokers/" +capif_api_details["api_invoker_id"]
+        requests.request(
+            "DELETE",
+            url,
+            verify=self.folder_to_store_certificates + "ca.crt"
+        )
+
+
+    def offboard_and_deregister_netapp(self)->None:
+        self.offboard_netapp()
+        role = "invoker"
+        self.de_register_from_capif(role)
 
     def __create_private_and_public_keys(self) -> str:
         """
@@ -1037,6 +1054,25 @@ class CAPIFInvokerConnector:
         response_payload = json.loads(response.text)
         return response_payload
 
+    def de_register_from_capif(self,role):
+
+        url = self.capif_http_url + "remove"
+        payload = dict()
+        payload["username"] = self.capif_netapp_username
+        payload["password"] = self.capif_netapp_password
+        payload["role"] = role
+
+        response = requests.request(
+            "DELETE",
+            url,
+            headers={"Content-Type": "application/json"},
+            data=json.dumps(payload)
+        )
+        response.raise_for_status()
+
+        response_payload = json.loads(response.text)
+        return response_payload
+
     def __save_capif_ca_root_file_and_get_auth_token(self, role):
 
         url = self.capif_http_url + "getauth"
@@ -1065,7 +1101,6 @@ class CAPIFInvokerConnector:
         payload_dict = {
             "notificationDestination": self.capif_callback_url,
             "supportedFeatures": "fffffff",
-            # TODO: This works fine.  But what about CapifProviderConnector class where we onboard a Provider/Exposer. On onboarding there we dont pass the username. Is this a mistake in the flow? Or a different flow is implemented there
             "apiInvokerInformation": self.csr_common_name,
             "websockNotifConfig": {
                 "requestWebsocketUri": True,
@@ -1102,7 +1137,7 @@ class CAPIFInvokerConnector:
 
     def __write_to_file(self, csr_common_name, api_invoker_id, discover_services_url):
         with open(
-                self.folder_to_store_certificates + "capif_api_details.json", "w"
+                self.folder_to_store_certificates + self.capif_api_details_filename, "w"
         ) as outfile:
             json.dump(
                 {
@@ -1457,7 +1492,7 @@ class ServiceDiscoverer:
 
     def __load_netapp_api_details(self):
         with open(
-                self.folder_to_store_certificates_and_api_key + "capif_api_details.json",
+                self.folder_to_store_certificates_and_api_key + "capif_api_security_context_details.json",
                 "r",
         ) as openfile:
             return json.load(openfile)
@@ -1474,26 +1509,77 @@ class ServiceDiscoverer:
         :param aef_id: The relevant aef_id that is returned by discover services
          :return: The access token (jwt)
         """
-        if not self.__aef_id_already_registered(aef_id):
+
+        # if we dont have a security contenxt created before, create one
+        if self.__security_context_does_not_exist():
+            self.capif_api_details["registered_security_contexes"] = []
+            self.capif_api_details["registered_security_contexes"].append({ "api_id": api_id, "aef_id": aef_id})
             self.__register_security_service(api_id, aef_id)
-            self.__save_aef_id_to_already_registered_cached_list(aef_id)
+            self.__cache_security_context()
+        elif  self.__security_context_for_given_api_id_and_aef_id_does_not_exist(api_id,aef_id):
+            self.capif_api_details["registered_security_contexes"].append({ "api_id": api_id, "aef_id": aef_id})
+            self.__update_security_service(api_id,aef_id)
+            self.__cache_security_context()
+
+
 
         token_dic = self.__get_security_token(api_name, aef_id)
         return token_dic["access_token"]
 
-    def __aef_id_already_registered(self, aef_id):
-        return "registered_aef_ids" in self.capif_api_details and \
-            aef_id in self.capif_api_details["registered_aef_ids"]
+    def __security_context_does_not_exist(self):
+        return "registered_security_contexes" not in self.capif_api_details
 
-    def __save_aef_id_to_already_registered_cached_list(self, aef_id):
-        if "registered_aef_ids" not in self.capif_api_details:
-            self.capif_api_details["registered_aef_ids"] = []
 
-        self.capif_api_details["registered_aef_ids"].append(aef_id)
+    def __security_context_for_given_api_id_and_aef_id_does_not_exist(self,api_id,aef_id):
+        contexes = self.capif_api_details["registered_security_contexes"]
+        results = list(filter(lambda c: c['api_id']== api_id and c["aef_id"]==aef_id, contexes))
+        return len(results) == 0
+
+
+    def __cache_security_context(self):
         with open(
-                self.folder_to_store_certificates_and_api_key + "capif_api_details.json", "w"
+                self.folder_to_store_certificates_and_api_key + "capif_api_security_context_details.json", "w"
         ) as outfile:
             json.dump(self.capif_api_details, outfile)
+
+
+    def __update_security_service(self, api_id, aef_id):
+        """
+
+        :param api_id: The api id that is returned by discover services
+        :param aef_id: The aef_id that is returned by discover services
+        :return: None
+        """
+        url = "https://{}/capif-security/v1/trustedInvokers/{}/update".format(self.capif_host,
+                                                                       self.capif_api_details["api_invoker_id"])
+
+        payload = {
+            "securityInfo": [],
+            "notificationDestination": "https://mynotificationdest.com",
+            "requestTestNotification": True,
+            "websockNotifConfig": {
+                "websocketUri": "string",
+                "requestWebsocketUri": True
+            },
+            "supportedFeatures": "fff"
+        }
+
+        for security_info in self.capif_api_details["registered_security_contexes"]:
+            payload["securityInfo"].append({
+                "prefSecurityMethods": ["OAUTH"],
+                "aefId": security_info["aef_id"],
+                "apiId": security_info["api_id"]
+            })
+
+        response = requests.post(url,
+                                json=payload,
+                                cert=(self.signed_key_crt_path, self.private_key_path),
+                                verify=self.ca_root_path
+                                )
+
+        response.raise_for_status()
+        response.json()
+
 
     def __register_security_service(self, api_id, aef_id):
         """
@@ -1730,8 +1816,7 @@ class TSNManager:
 
         """
         url = self.url_prefix + self.service_discoverer. \
-            retrieve_specific_resource_name(self.api_name, "TSN_LIST_PROFILES"). \
-            format(scsAsId=self.api_invoker_id)
+            retrieve_specific_resource_name(self.api_name, "TSN_LIST_PROFILES")
 
         response = requests.get(url=url, headers=self.headers_auth)
         response.raise_for_status()
