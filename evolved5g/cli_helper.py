@@ -80,13 +80,14 @@ class CLI_helper:
                             "password": passwd,
                         }
 
+                        foldernetapp = repo.lower()
                         data = (
                                 '{ "action": "'
                                 + mode
-                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
+                                + '", "parameters": { "FOLDER_NETWORK_APP": "'
+                                + foldernetapp
+                                + '","RELEASE_NAME": "'
                                 + repo
-                                + '","GIT_NETAPP_BRANCH": "'
-                                + self.netapp_branch
                                 + '"} }'
                         )
 
@@ -111,12 +112,8 @@ class CLI_helper:
                         data = (
                                 '{ "action": "'
                                 + mode
-                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
+                                + '", "parameters": { "RELEASE_NAME": "'
                                 + repo
-                                + '", "VERSION_NETAPP": "'
-                                + version
-                                + '","GIT_NETAPP_BRANCH": "'
-                                + self.netapp_branch
                                 + '"} }'
                         )
 
