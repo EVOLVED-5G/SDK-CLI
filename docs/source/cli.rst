@@ -60,15 +60,17 @@ Now, you can execute ``evolved5g generate --config-file <path-to-your-config.yam
 
    .. figure:: images/generate.gif
 
-If you access GitHub once you have seen that output in your terminal, you will see that the repository has been successfully created:
+Then the repository is created in your local computer as well as remotely in GitHub.
+
+   .. figure:: images/netapp_creation.gif
+
+If you go to https://github.com/EVOLVED-5G you will see that the repository has been successfully created:
 
    .. image:: images/repo_creation.png
 
-It will create a specific branch (evolved5g) which will be used by the CI/CD for verification purposes. A dummy example will be created in both branches (master and evolved5g) which allow to directly run a pipeline using such branch. You will see a Dockerfile and inside the src folder a dummy html file as an example. Below can see the file structure created.
+It will create a specific branch (evolved5g) which will be used by the CI/CD for verification and validation purposes. An example is provided in master branch. You will see the src folder with a docker compose and a script (run.sh) to launch the Network App.
+It is important to remind that in order to have a fully functional example, it is mandatory to have NEF and CAPIF already up and running in your machine/container. Below can see the file structure created.
 
    .. image:: images/repo_structure.png
 
-
-   .. image:: images/dummy_html_example.png
-
-When the repository is created you will be at branch evolved5g, so the push must be done there, in case you want to work with master (branch) you have to execute git checkout master and then do the push ``git push -u origin master``, to know in which branch you are, just execute git branch.
+   .. figure:: images/netapp_repo.gif
