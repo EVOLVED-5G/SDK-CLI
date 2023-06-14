@@ -1,4 +1,4 @@
-from .nef_and_tsn_api_service_validation_pipeline import validate_all_endpoints_returned_by_service_discoverer
+from .nef_and_tsn_api_service_tests import test_capif_and_nef_published_to_capif_endpoints
 from .utils import cookiecutter_generate
 import requests
 import json
@@ -28,7 +28,7 @@ class CLI_helper:
         directory = "template"
         cookiecutter_generate(location, config_file, directory, no_input=True)
 
-    def run_verification_tests(self, mode, repo, user, passwd):
+    def run_verification_tests(self, mode, repo, user, passwd, capifpath, certpath, verfpath, version):
         """Run the build pipeline for the EVOLVED-5G NetApp"""
 
         if repo is None:
@@ -55,6 +55,8 @@ class CLI_helper:
                                 + mode
                                 + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
                                 + repo
+                                + '", "VERSION_NETAPP": "'
+                                + version
                                 + '","GIT_NETAPP_BRANCH": "'
                                 + self.netapp_branch
                                 + '"} }'
@@ -64,10 +66,11 @@ class CLI_helper:
                             self.url_curl, headers=self.header, data=data
                         )
 
-                        if (len(resp.json()) > 3): #List
-                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
-                        else: #It is a List treated as Dictionary
-                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+                        if (resp.json()['status'] == 403):
+                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has finished.")
+                        else:
+                            echo(
+                                f"Your pipeline ID is: {resp.json()['job_id']} and the actual status is: {resp.json()['status']}.")
 
                     elif mode == "deploy":
                         self.header = {
@@ -90,11 +93,12 @@ class CLI_helper:
                         resp = requests.post(
                             self.url_curl, headers=self.header, data=data
                         )
-
-                        if (len(resp.json()) > 3): #List
-                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
-                        else: #It is a List treated as Dictionary
-                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+                        
+                        if (resp.json()['status'] == 403):
+                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has finished.")
+                        else:
+                            echo(
+                                f"Your pipeline ID is: {resp.json()['job_id']} and the actual status is: {resp.json()['status']}.")
 
                     elif mode == "destroy":
                         self.header = {
@@ -109,6 +113,8 @@ class CLI_helper:
                                 + mode
                                 + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
                                 + repo
+                                + '", "VERSION_NETAPP": "'
+                                + version
                                 + '","GIT_NETAPP_BRANCH": "'
                                 + self.netapp_branch
                                 + '"} }'
@@ -118,10 +124,11 @@ class CLI_helper:
                             self.url_curl, headers=self.header, data=data
                         )
 
-                        if (len(resp.json()) > 3): #List
-                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
-                        else: #It is a List treated as Dictionary
-                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+                        if (resp.json()['status'] == 403):
+                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has finished.")
+                        else:
+                            echo(
+                                f"Your pipeline ID is: {resp.json()['job_id']} and the actual status is: {resp.json()['status']}.")
 
 
                     elif mode == "code_analysis":
@@ -146,10 +153,10 @@ class CLI_helper:
                             self.url_curl, headers=self.header, data=data
                         )
 
-                        if (len(resp.json()) > 3): #List
-                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
-                        else: #It is a List treated as Dictionary
-                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+                        if (resp.json()['status'] == 403):
+                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has finished.")
+                        else:
+                            echo(f"Your pipeline ID is: {resp.json()['job_id']} and the actual status is: {resp.json()['status']}.")
 
 
                     elif mode == "security_scan":
@@ -172,91 +179,97 @@ class CLI_helper:
                             self.url_curl, headers=self.header, data=data
                         )
 
-                        if (len(resp.json()) > 3): #List
+                        if (len(resp.json()) > 3):  # List
                             echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
-                        else: #It is a List treated as Dictionary
-                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']}, {resp.json()[1]['job_id']} and {resp.json()[2]['job_id']} and the actual status for each is: {resp.json()[0]['status']}, "
-                                 f"{resp.json()[1]['status']} and {resp.json()[2]['status']}.")
+                        else:  # It is a List treated as Dictionary
+                            echo(
+                                f"Your pipeline ID is: {resp.json()[0]['job_id']}, {resp.json()[1]['job_id']} and {resp.json()[2]['job_id']} and the actual status for each is: {resp.json()[0]['status']}, "
+                                f"{resp.json()[1]['status']} and {resp.json()[2]['status']}.")
 
                     elif mode == "capif_nef":
-                        self.header = {
-                            "content-Type": "application/json",
-                            "accept": "application/json",
-                            "username": user,
-                            "password": passwd,
-                        }
-                        data = (
-                                '{ "action": "'
-                                + mode
-                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
-                                + repo
-                                + '","GIT_NETAPP_BRANCH": "'
-                                + self.netapp_branch
-                                + '"} }'
-                        )
-                        resp = requests.post(
-                            self.url_curl, headers=self.header, data=data
-                        )
 
-                        if (len(resp.json()) > 3): #List
-                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
-                        else: #It is a List treated as Dictionary
-                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+                        if (not capifpath or  not certpath or not verfpath):
+                            print (f"Please provide all the files and folder required to launch the NEF pipeline.\n"
+                                   f"You must provide the path for capif registration file, the path where to store the certification files"
+                                   f"and the path of the file to be verified. You have actually provided:\n"
+                                   f"Path for CAPIF registration file (json): {capifpath}\nPath for certification files: {certpath}\nPath for verification file: {verfpath}")
+                        else:
+                            self.header = {
+                                "content-Type": "application/json",
+                                "accept": "application/json",
+                                "username": user,
+                                "password": passwd,
+                            }
+
+                            data = (
+                                    '{ "action": "'
+                                    + mode
+                                    + '", "parameters": { "NetApp_repo": "'
+                                    + repo
+                                    + '","CAPIF_REGISTRATION_CONFIG_PATH": "'
+                                    + capifpath
+                                    + '","CERTIFICATES_FOLDER_PATH": "'
+                                    + certpath
+                                    + '","VERIFICATION_FILE": "'
+                                    + verfpath
+                                    + '","NetApp_repo_branch": "'
+                                    + self.netapp_branch
+                                    + '"} }'
+                            )
+
+                            resp = requests.post(
+                                self.url_curl, headers=self.header, data=data
+                            )
+
+                            if (resp.json()['status'] == 403):
+                                echo(f"{resp.json()['detail']} Please wait until your previous pipeline has finished.")
+                            else:
+                                echo(
+                                    f"Your pipeline ID is: {resp.json()['job_id']} and the actual status is: {resp.json()['status']}.")
 
                     elif mode == "capif_tsn":
-                        self.header = {
-                            "content-Type": "application/json",
-                            "accept": "application/json",
-                            "username": user,
-                            "password": passwd,
-                        }
-                        data = (
-                                '{ "action": "'
-                                + mode
-                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
-                                + repo
-                                + '","GIT_NETAPP_BRANCH": "'
-                                + self.netapp_branch
-                                + '"} }'
-                        )
-                        echo (data)
-                        resp = requests.post(
-                            self.url_curl, headers=self.header, data=data
-                        )
+                        if (not capifpath or  not certpath or not verfpath):
+                            print (f"Please provide all the files and folder required to launch the NEF pipeline.\n"
+                                   f"You must provide the path for capif registration file, the path where to store the certification files"
+                                   f"and the path of the file to be verified. You have actually provided:\n"
+                                   f"Path for CAPIF registration file (json): {capifpath}\nPath for certification files: {certpath}\nPath for verification file: {verfpath}")
+                        else:
+                            self.header = {
+                                "content-Type": "application/json",
+                                "accept": "application/json",
+                                "username": user,
+                                "password": passwd,
+                            }
 
-                        if (len(resp.json()) > 3): #List
-                            echo(f"{resp.json()['detail']} Please wait until your previous pipeline has been finished.")
-                        else: #It is a List treated as Dictionary
-                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
+                            data = (
+                                    '{ "action": "'
+                                    + mode
+                                    + '", "parameters": { "NetApp_repo": "'
+                                    + repo
+                                    + '","CAPIF_REGISTRATION_CONFIG_PATH": "'
+                                    + capifpath
+                                    + '","CERTIFICATES_FOLDER_PATH": "'
+                                    + certpath
+                                    + '","VERIFICATION_FILE": "'
+                                    + verfpath
+                                    + '","NetApp_repo_branch": "'
+                                    + self.netapp_branch
+                                    + '"} }'
+                            )
 
-                    elif mode == "validation":
+                            #echo (data)
 
-                        self.header = {
-                            "content-Type": "application/json",
-                            "accept": "application/json",
-                            "username": user,
-                            "password": passwd,
-                        }
+                            resp = requests.post(
+                                self.url_curl, headers=self.header, data=data
+                            )
+                            print (resp.json())
 
-                        data = (
-                                '{ "action": "'
-                                + mode
-                                + '", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
-                                + repo
-                                + '","GIT_NETAPP_BRANCH": "'
-                                + self.netapp_branch
-                                + '"} }'
-                        )
-
-                        resp = requests.post(
-                            self.url_curl, headers=self.header, data=data
-                        )
-
-                        if (len(resp.json()) > 3): #List
-                            echo(f"{resp.json()['detail']}. Please wait until you received your result by email.")
-                        else:  # It is a List treated as Dictionary
-                            echo(f"Your pipeline ID is: {resp.json()[0]['job_id']} and the actual status is: {resp.json()[0]['status']}.")
-
+                            if (resp.json()['status'] == 403):
+                                echo(f"{resp.json()['detail']} Please wait until your previous pipeline has finished.")
+                            else:
+                                echo(
+                                    f"Your pipeline ID is: {resp.json()['job_id']} and the actual status is: {resp.json()['status']}.")
+                            
                     else:
                         echo(
                             f"The {mode} you have chosen does not exist, please check the modes and try again"
@@ -271,6 +284,64 @@ class CLI_helper:
                     f"The {repo} repository you have chosen does not exist, please check the name you typed and try again."
                 )
 
+    def validation(self, repo, user, passwd, environment, deploy, email, version):
+        """Run the build pipeline for the EVOLVED-5G NetApp"""
+
+        if deploy is None: deploy = repo
+
+        if repo is None:
+            echo(
+                "'None' value provided.\nPlease enter the correct command: evolved5g run-verification-tests --repo REPOSITORY_NAME ")
+        else:
+            r = requests.get(f"{self.repository}/{repo}")
+            repo_exist = r.json()
+
+            if "message" not in repo_exist:
+                try:
+                    self.header = {
+                        "content-Type": "application/json",
+                        "accept": "application/json",
+                        "username": user,
+                        "password": passwd,
+                    }
+
+                    data = (
+                            '{ "action": "validation", "parameters": { "GIT_NETAPP_URL": "https://github.com/EVOLVED-5G/'
+                            + repo
+                            + '", "ENVIRONMENT": "'
+                            + environment
+                            + '", "SEND_DEV_EMAIL": "'
+                            + email
+                            + '", "VERSION_NETAPP": "'
+                            + version
+                            + '", "DEPLOY_NAME": "'
+                            + deploy
+                            + '","GIT_NETAPP_BRANCH": "'
+                            + self.netapp_branch
+                            + '"} }'
+                    )
+
+                    #print(data)
+
+                    resp = requests.post(
+                        self.url_curl, headers=self.header, data=data
+                    )
+
+                    #echo(f"{resp.json()}")
+
+                    if (resp.json()['status'] == 403):
+                        echo(f"{resp.json()['detail']} Please wait until your previous pipeline has finished.")
+                    else:
+                        echo(f"Your pipeline ID is: {resp.json()['job_id']} and the actual status is: {resp.json()['status']}.")
+
+
+                except ValueError as e:
+                    echo(
+                        "Please enter the correct command: evolved5g run-verification-tests --mode build --repo <your_REPOSITORY_NAME>, --user <yourUSERNAME>, --passwd <yourPASSWORD>")
+            else:
+                echo(
+                    f"The {repo} repository you have chosen does not exist, please check the name you typed and try again.")
+
     def check_job(self, id, user, passwd):
 
         """Check the status of the pipeline for the EVOLVED-5G NetApp"""
@@ -284,12 +355,12 @@ class CLI_helper:
             }
             resp = requests.get(f"{self.url_curl_job}/{id}/status", headers=self.header)
             result = resp.json()
-            echo (result["status"])
 
-            '''if result["status"] == "QUEUED":
-                echo(result)
+            if result["status"] == "QUEUED":
+                # echo(result)
+                echo(f"Your pipeline {id} status is {result['status']}, please {result['status'].split(',')[1]}")
             else:
-                console = json.dumps(result["console_log"]).split("\\n")
+                console = json.dumps(result["log"]).split("\\n")
 
                 for element in console:
                     if "] { (" in element:
@@ -297,7 +368,8 @@ class CLI_helper:
                     elif "[Pipeline]" not in element:
                         echo(element)
                     elif "] stage" in element:
-                        echo(element)'''
+                        echo(element)
+                echo(result["status"])
 
         except ValueError as e:
             echo("Please add the ID: evolved5g check-job --id <yourID>, --user <yourUSERNAME>, --passwd <yourPASSWORD>")
@@ -384,7 +456,7 @@ class CLI_helper:
             f'\nStore the token "{clearance_token}" to clear the profile if you wish in the future.'
         )
 
-    def validate_all_endpoints_returned_by_service_discoverer(self, config_file_full_path: str)->None:
-        validate_all_endpoints_returned_by_service_discoverer(config_file_full_path)
+    def test_capif_and_nef_published_to_capif_endpoints(self, config_file_full_path: str) -> None:
+        test_capif_and_nef_published_to_capif_endpoints(config_file_full_path)
 
 
