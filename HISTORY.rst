@@ -3,6 +3,13 @@ History
 =======
 
 -------------------
+1.0.7 (2023-06-15)
+-------------------
+* Bug fix on CLI method register_and_onboard_to_capif: Now accepts a second parameter --environment that takes values "production" or "development".
+If this parameter is set to production then validation tests are running in the background, just after the registration and onboarding of the network app finishes.
+
+
+-------------------
 1.0.6 (2023-06-14)
 -------------------
 
