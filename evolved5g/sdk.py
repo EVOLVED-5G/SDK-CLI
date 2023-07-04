@@ -1070,8 +1070,6 @@ class CAPIFInvokerConnector:
         )
         response.raise_for_status()
 
-        response_payload = json.loads(response.text)
-        return response_payload
 
     def __save_capif_ca_root_file_and_get_auth_token(self, role):
 

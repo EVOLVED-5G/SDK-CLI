@@ -3,6 +3,12 @@ History
 =======
 
 -------------------
+1.0.8 (2023-07-04)
+-------------------
+* Bug fix on CAPIFConnector.offboard_and_deregister_netapp method
+* Update on documentation
+
+-------------------
 1.0.7 (2023-06-15)
 -------------------
 * Bug fix on CLI method register_and_onboard_to_capif: Now accepts a second parameter --environment that takes values "production" or "development".
