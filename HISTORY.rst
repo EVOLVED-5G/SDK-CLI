@@ -3,6 +3,11 @@ History
 =======
 
 -------------------
+1.0.8 (2023-07-05)
+-------------------
+* Bug fix on CAPIFConnector.offboard_and_deregister_netapp method
+
+-------------------
 1.0.7 (2023-06-15)
 -------------------
 * Bug fix on CLI method register_and_onboard_to_capif: Now accepts a second parameter --environment that takes values "production" or "development".
@@ -10,7 +15,7 @@ If this parameter is set to production then validation tests are running in the 
 
 
 -------------------
-1.0.6 (2023-06-14)
+1.0.6 (2023-07-14)
 -------------------
 
 * The CLI command run-verification-tests now required three inputs (capif registration file, certificates folder and verification file) to launch NEF and TSN verification pipelines.
