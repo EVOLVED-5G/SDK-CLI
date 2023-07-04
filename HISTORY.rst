@@ -15,7 +15,7 @@ If this parameter is set to production then validation tests are running in the 
 
 
 -------------------
-1.0.6 (2023-07-14)
+1.0.6 (2023-06-14)
 -------------------
 
 * The CLI command run-verification-tests now required three inputs (capif registration file, certificates folder and verification file) to launch NEF and TSN verification pipelines.
