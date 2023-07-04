@@ -35,7 +35,8 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/EVOLVED-5G/SDK-CLI
+    $ git clone git@github.com:EVOLVED-5G/SDK-CLI.git
+    $ git clone https://github.com/EVOLVED-5G/SDK-CLI.git
 
 Or download the `tarball`_.
 
