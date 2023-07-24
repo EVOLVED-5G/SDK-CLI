@@ -988,11 +988,17 @@ class CAPIFInvokerConnector:
     def offboard_netapp(self) ->None:
         capif_api_details = self.__load_netapp_api_details()
         url = self.capif_https_url + "api-invoker-management/v1/onboardedInvokers/" +capif_api_details["api_invoker_id"]
-        requests.request(
+
+        signed_key_crt_path = self.folder_to_store_certificates + capif_api_details["csr_common_name"] + ".crt"
+        private_key_path = self.folder_to_store_certificates + "private.key"
+
+        response = requests.request(
             "DELETE",
             url,
+            cert=(signed_key_crt_path, private_key_path),
             verify=self.folder_to_store_certificates + "ca.crt"
         )
+        response.raise_for_status()
 
 
     def offboard_and_deregister_netapp(self)->None:
