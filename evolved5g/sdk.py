@@ -1554,7 +1554,8 @@ class ServiceDiscoverer:
         :param aef_id: The aef_id that is returned by discover services
         :return: None
         """
-        url = "https://{}/capif-security/v1/trustedInvokers/{}/update".format(self.capif_host,
+        url = "https://{}:{}/capif-security/v1/trustedInvokers/{}/update".format(self.capif_host,
+                                                                                 self.capif_https_port,
                                                                        self.capif_api_details["api_invoker_id"])
 
         payload = {
@@ -1592,7 +1593,8 @@ class ServiceDiscoverer:
         :param aef_id: The aef_id that is returned by discover services
         :return: None
         """
-        url = "https://{}/capif-security/v1/trustedInvokers/{}".format(self.capif_host,
+        url = "https://{}:{}/capif-security/v1/trustedInvokers/{}".format(self.capif_host,
+                                                                          self.capif_https_port,
                                                                        self.capif_api_details["api_invoker_id"])
 
         payload = {
@@ -1629,7 +1631,8 @@ class ServiceDiscoverer:
         :return: The access token (jwt)
         """
 
-        url = "https://{}/capif-security/v1/securities/{}/token".format(self.capif_host,
+        url = "https://{}:{}/capif-security/v1/securities/{}/token".format(self.capif_host,
+                                                                           self.capif_https_port
                                                                         self.capif_api_details["api_invoker_id"])
 
         payload = {
@@ -1654,8 +1657,9 @@ class ServiceDiscoverer:
 
     def discover_service_apis(self):
 
-        url = "https://{}/{}{}".format(
+        url = "https://{}:{}/{}{}".format(
             self.capif_host,
+            self.capif_https_port,
             self.capif_api_details["discover_services_url"],
             self.capif_api_details["api_invoker_id"],
         )
