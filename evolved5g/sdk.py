@@ -1632,7 +1632,7 @@ class ServiceDiscoverer:
         """
 
         url = "https://{}:{}/capif-security/v1/securities/{}/token".format(self.capif_host,
-                                                                           self.capif_https_port
+                                                                           self.capif_https_port,
                                                                         self.capif_api_details["api_invoker_id"])
 
         payload = {
