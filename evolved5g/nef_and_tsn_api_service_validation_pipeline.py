@@ -27,26 +27,36 @@ def validate_all_endpoints_returned_by_service_discoverer(config_file_full_path:
     # Notice that if a new api is published and we dont have tests for it, an exception is raised
     for api_description in service_apis["serviceAPIDescriptions"]:
         print("Starting testing endpoints for ApiName: " + api_description["apiName"] )
-        host_info = api_description["aefProfiles"][0]['interfaceDescriptions'][0]
+        aef_profile = api_description["aefProfiles"][0]
         if api_description["apiName"] == "/nef/api/v1/3gpp-monitoring-event/":
-
-            # nef_url=  "https://localhost:4443"
-            nef_url = "https://{host}:{port}".format(host=host_info["ipv4Addr"], port=host_info["port"])
+            nef_url = __get_nef_url(aef_profile)
             __test_location_subscriber(config,nef_url)
             __test_connection_monitor(config,nef_url)
         elif api_description["apiName"] == "/nef/api/v1/3gpp-as-session-with-qos/":
-            # nef_url=  "https://localhost:4443"
-            nef_url = "https://{host}:{port}".format(host=host_info["ipv4Addr"], port=host_info["port"])
+            nef_url = __get_nef_url(aef_profile)
             __test_qos_awereness(config,nef_url)
         elif api_description["apiName"] == "/tsn/api/":
-            #tsn_host = "localhost"  # TSN server hostname
-            #tsn_port = 8899  # TSN server port
-            __test_tsn_manager(config,host_info["ipv4Addr"],host_info["port"])
+            host_info = aef_profile['interfaceDescriptions'][0]
+            tsn_port = host_info["port"]
+
+            if aef_profile['domainName']!=None:
+               tsn_host = aef_profile['domainName']
+            else:
+                tsn_host = host_info["ipv4Addr"]
+
+            __test_tsn_manager(config, tsn_host, tsn_port)
         else:
             raise NotImplementedError("Could not find Validation tests for ApiName" + api_description["apiName"])
 
     print("All endpoints work as expected")
     return True
+
+def __get_nef_url(aef_profile) -> str:
+    if aef_profile['domainName']!=None:
+        return "https://{domain_name}".format(domain_name=aef_profile['domainName'])
+    else:
+        host_info = aef_profile['interfaceDescriptions'][0]
+        return "https://{host}:{port}".format(host=host_info["ipv4Addr"], port=host_info["port"])
 
 def __test_location_subscriber(config,url_of_the_nef_emulator) -> None:
     """
@@ -213,7 +223,6 @@ def __test_tsn_manager(config,tsn_host,tsn_port):
       Tests the TSN api name  with dummy data
      :param config:
    """
-
 
     netapp_name = "MyNetapp1"  # The name of our NetApp
     tsn = TSNManager(  # Initialization of the TNSManager

@@ -1,6 +1,12 @@
 =======
 History
 =======
+-------------------
+1.0.9 (2023-09-05)
+-------------------
+* Bug fix on CAPIFConnector.offboard method
+* Update validation pipeline, take into account the domainName in the service description, if it exists
+* Bug fix: On Service Discoverer make sure the https port parameter is utilized properly
 
 -------------------
 1.0.8 (2023-07-04)
