@@ -21,7 +21,7 @@ From package manager
 
 .. code-block:: console
 
-    $ pip3 install evolved5g
+    $ sudo pip3 install evolved5g
 
 This is the preferred method to install Evolved5G_CLI, as it will always install the most recent stable release.
 

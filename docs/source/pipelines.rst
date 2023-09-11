@@ -37,7 +37,7 @@ Examples of usage
 
 .. code-block:: console
 
-    evolved5g validation --repo FogusNetApp --user USERNAME --passwd USER_PASSWORD --environment ENVIRONMENT_TO_DEPLOY
+    evolved5g validation --repo REPOSITORY_NAME --user USERNAME --passwd USER_PASSWORD --environment ENVIRONMENT_TO_DEPLOY
 
 .. code-block:: console
 
