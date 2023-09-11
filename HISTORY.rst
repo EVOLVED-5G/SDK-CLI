@@ -9,6 +9,18 @@ History
 * Bug fix: On Service Discoverer make sure the https port parameter is utilized properly
 
 -------------------
+1.0.10 (2023-09-11)
+-------------------
+* Bug fix: On Service Discoverer class, missed a comma on security token method.
+
+-------------------
+1.0.9 (2023-09-05)
+-------------------
+* Bug fix on CAPIFConnector.offboard method
+* Update validation pipeline, take into account the domainName in the service description, if it exists
+* Bug fix: On Service Discoverer make sure the https port parameter is utilized properly
+
+-------------------
 1.0.8 (2023-07-04)
 -------------------
 * Bug fix on CAPIFConnector.offboard_and_deregister_netapp method
