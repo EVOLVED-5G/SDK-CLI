@@ -1,6 +1,12 @@
 =======
 History
 =======
+
+-------------------
+1.0.10 (2023-09-11)
+-------------------
+* Bug fix: On Service Discoverer class, missed a comma on security token method.
+
 -------------------
 1.0.9 (2023-09-05)
 -------------------
