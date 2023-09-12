@@ -229,7 +229,7 @@ def __test_tsn_manager(config,tsn_host,tsn_port):
         folder_path_for_certificates_and_capif_api_key=config["folder_to_store_certificates"],
         capif_host=config["capif_host"],
         capif_https_port=config["capif_https_port"],
-        https=False,
+        https=True,
         tsn_host=tsn_host,
         tsn_port=tsn_port
     )
