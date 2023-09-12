@@ -1,12 +1,11 @@
 =======
 History
 =======
+
 -------------------
-1.0.9 (2023-09-05)
+1.0.11 (2023-09-12)
 -------------------
-* Bug fix on CAPIFConnector.offboard method
-* Update validation pipeline, take into account the domainName in the service description, if it exists
-* Bug fix: On Service Discoverer make sure the https port parameter is utilized properly
+* Bug fix on validation pipeline. Take into account that domainName may not be present in the service description (aefProfile)
 
 -------------------
 1.0.10 (2023-09-11)

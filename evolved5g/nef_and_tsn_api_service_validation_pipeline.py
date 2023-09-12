@@ -39,7 +39,7 @@ def validate_all_endpoints_returned_by_service_discoverer(config_file_full_path:
             host_info = aef_profile['interfaceDescriptions'][0]
             tsn_port = host_info["port"]
 
-            if aef_profile['domainName']!=None:
+            if "domainName" in aef_profile and aef_profile['domainName']!=None:
                tsn_host = aef_profile['domainName']
             else:
                 tsn_host = host_info["ipv4Addr"]
@@ -52,7 +52,7 @@ def validate_all_endpoints_returned_by_service_discoverer(config_file_full_path:
     return True
 
 def __get_nef_url(aef_profile) -> str:
-    if aef_profile['domainName']!=None:
+    if "domainName" in aef_profile and aef_profile['domainName']!=None:
         return "https://{domain_name}".format(domain_name=aef_profile['domainName'])
     else:
         host_info = aef_profile['interfaceDescriptions'][0]
