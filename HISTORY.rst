@@ -3,6 +3,11 @@ History
 =======
 
 -------------------
+1.0.11 (2023-09-12)
+-------------------
+* Bug fix on validation pipeline. Take into account that domainName may not be present in the service description (aefProfile)
+
+-------------------
 1.0.10 (2023-09-11)
 -------------------
 * Bug fix: On Service Discoverer class, missed a comma on security token method.
