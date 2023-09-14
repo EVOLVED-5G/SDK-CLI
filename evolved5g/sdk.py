@@ -1,6 +1,6 @@
 """SDK module"""
 import os
-from typing import List
+from typing import List, Union, Optional
 
 from evolved5g import swagger_client
 from abc import ABC, abstractmethod
@@ -1742,7 +1742,7 @@ class TSNManager:
             capif_https_port: int,
             https: bool,
             tsn_host: str,
-            tsn_port: int,
+            tsn_port: Optional[int] = None,
     ) -> None:
 
         self.folder_path_for_certificates_and_capif_api_key = os.path.join(
@@ -1760,11 +1760,18 @@ class TSNManager:
             'Authorization': 'Bearer ' + self.access_token
         }
         self.api_invoker_id = self.service_discoverer.get_api_invoker_id()
-        self.url_prefix = "{protocol}://{host}:{port}".format(
-            protocol="https" if https else "http",
-            host=tsn_host,
-            port=tsn_port
-        )
+
+        if tsn_port is None:
+            self.url_prefix = "{protocol}://{host}".format(
+                protocol="https" if https else "http",
+                host=tsn_host
+            )
+        else:
+            self.url_prefix = "{protocol}://{host}:{port}".format(
+                protocol="https" if https else "http",
+                host=tsn_host,
+                port=tsn_port
+            )
 
     class TSNNetappIdentifier:
         def __init__(self, netapp_name: str):

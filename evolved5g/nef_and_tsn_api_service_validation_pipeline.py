@@ -17,32 +17,33 @@ def validate_all_endpoints_returned_by_service_discoverer(config_file_full_path:
     with open(config_file_full_path, "r") as openfile:
         config = json.load(openfile)
 
-    service_discoverer = ServiceDiscoverer(folder_path_for_certificates_and_api_key=config["folder_to_store_certificates"],
-                                           capif_host=config["capif_host"],
-                                           capif_https_port=config["capif_https_port"]
-                                           )
+    service_discoverer = ServiceDiscoverer(
+        folder_path_for_certificates_and_api_key=config["folder_to_store_certificates"],
+        capif_host=config["capif_host"],
+        capif_https_port=config["capif_https_port"]
+        )
     service_apis = service_discoverer.discover_service_apis()
 
     # We iterate to all of the available published services.
     # Notice that if a new api is published and we dont have tests for it, an exception is raised
     for api_description in service_apis["serviceAPIDescriptions"]:
-        print("Starting testing endpoints for ApiName: " + api_description["apiName"] )
+        print("Starting testing endpoints for ApiName: " + api_description["apiName"])
         aef_profile = api_description["aefProfiles"][0]
         if api_description["apiName"] == "/nef/api/v1/3gpp-monitoring-event/":
             nef_url = __get_nef_url(aef_profile)
-            __test_location_subscriber(config,nef_url)
-            __test_connection_monitor(config,nef_url)
+            __test_location_subscriber(config, nef_url)
+            __test_connection_monitor(config, nef_url)
         elif api_description["apiName"] == "/nef/api/v1/3gpp-as-session-with-qos/":
             nef_url = __get_nef_url(aef_profile)
-            __test_qos_awereness(config,nef_url)
+            __test_qos_awereness(config, nef_url)
         elif api_description["apiName"] == "/tsn/api/":
-            host_info = aef_profile['interfaceDescriptions'][0]
-            tsn_port = host_info["port"]
-
-            if "domainName" in aef_profile and aef_profile['domainName']!=None:
-               tsn_host = aef_profile['domainName']
+            if "domainName" in aef_profile and aef_profile['domainName'] != None:
+                tsn_host = aef_profile['domainName']
+                tsn_port = None
             else:
+                host_info = aef_profile['interfaceDescriptions'][0]
                 tsn_host = host_info["ipv4Addr"]
+                tsn_port = host_info["port"]
 
             __test_tsn_manager(config, tsn_host, tsn_port)
         else:
@@ -51,14 +52,16 @@ def validate_all_endpoints_returned_by_service_discoverer(config_file_full_path:
     print("All endpoints work as expected")
     return True
 
+
 def __get_nef_url(aef_profile) -> str:
-    if "domainName" in aef_profile and aef_profile['domainName']!=None:
+    if "domainName" in aef_profile and aef_profile['domainName'] != None:
         return "https://{domain_name}".format(domain_name=aef_profile['domainName'])
     else:
         host_info = aef_profile['interfaceDescriptions'][0]
         return "https://{host}:{port}".format(host=host_info["ipv4Addr"], port=host_info["port"])
 
-def __test_location_subscriber(config,url_of_the_nef_emulator) -> None:
+
+def __test_location_subscriber(config, url_of_the_nef_emulator) -> None:
     """
     Tests the NEF api name /nef/api/v1/3gpp-monitoring-event/ with dummy data
     :param config:
@@ -68,7 +71,8 @@ def __test_location_subscriber(config,url_of_the_nef_emulator) -> None:
     expire_time = (datetime.datetime.utcnow() + datetime.timedelta(days=1)).isoformat() + "Z"
     netapp_id = "myNetapp"
     location_subscriber = LocationSubscriber(nef_url=url_of_the_nef_emulator,
-                                             folder_path_for_certificates_and_capif_api_key=config["folder_to_store_certificates"],
+                                             folder_path_for_certificates_and_capif_api_key=config[
+                                                 "folder_to_store_certificates"],
                                              capif_host=config["capif_host"],
                                              capif_https_port=config["capif_https_port"])
     # The following external identifier was copy pasted by the NEF emulator. Go to the Map and click on a User icon. There you can retrieve the id
@@ -100,7 +104,7 @@ def __test_location_subscriber(config,url_of_the_nef_emulator) -> None:
             raise
 
 
-def __test_connection_monitor(config,url_of_the_nef_emulator):
+def __test_connection_monitor(config, url_of_the_nef_emulator):
     """
      Tests the NEF api name /nef/api/v1/3gpp-monitoring-event/ with dummy data
      :param config:
@@ -110,7 +114,8 @@ def __test_connection_monitor(config,url_of_the_nef_emulator):
     expire_time = (datetime.datetime.utcnow() + datetime.timedelta(days=1)).isoformat() + "Z"
     netapp_id = "myNetapp"
     connection_monitor = ConnectionMonitor(nef_url=url_of_the_nef_emulator,
-                                           folder_path_for_certificates_and_capif_api_key=config["folder_to_store_certificates"],
+                                           folder_path_for_certificates_and_capif_api_key=config[
+                                               "folder_to_store_certificates"],
                                            capif_host=config["capif_host"],
                                            capif_https_port=config["capif_https_port"])
     # The following external identifier was copy pasted by the NEF emulator. Go to the Map and click on a User icon. There you can retrieve the id
@@ -142,7 +147,7 @@ def __test_connection_monitor(config,url_of_the_nef_emulator):
             raise
 
 
-def __test_qos_awereness(config,url_of_the_nef_emulator):
+def __test_qos_awereness(config, url_of_the_nef_emulator):
     """
      Tests the NEF api name  /nef/api/v1/3gpp-as-session-with-qos/  with dummy data
      :param config:
@@ -218,7 +223,7 @@ def __test_qos_awereness(config,url_of_the_nef_emulator):
             raise
 
 
-def __test_tsn_manager(config,tsn_host,tsn_port):
+def __test_tsn_manager(config, tsn_host, tsn_port):
     """
       Tests the TSN api name  with dummy data
      :param config:
@@ -258,9 +263,6 @@ def __test_tsn_manager(config,tsn_host,tsn_port):
     # If we reached this point with no exceptions, then we tested all the endpoints of TSN
 
 
-
-
 if __name__ == "__main__":
-    config_file_path= "/home/alex/Projects/maggioli/evolved-5g/SDK-CLI/examples/netapp_capif_config/netapp_capif_connector_config_file.json"
+    config_file_path = "/home/alex/Projects/maggioli/evolved-5g/SDK-CLI/examples/netapp_capif_config/netapp_capif_connector_config_file.json"
     validate_all_endpoints_returned_by_service_discoverer(config_file_path)
-
