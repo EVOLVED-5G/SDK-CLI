@@ -37,12 +37,11 @@ def validate_all_endpoints_returned_by_service_discoverer(config_file_full_path:
             nef_url = __get_nef_url(aef_profile)
             __test_qos_awereness(config, nef_url)
         elif api_description["apiName"] == "/tsn/api/":
-            host_info = aef_profile['interfaceDescriptions'][0]
-
             if "domainName" in aef_profile and aef_profile['domainName'] != None:
                 tsn_host = aef_profile['domainName']
                 tsn_port = None
             else:
+                host_info = aef_profile['interfaceDescriptions'][0]
                 tsn_host = host_info["ipv4Addr"]
                 tsn_port = host_info["port"]
 
