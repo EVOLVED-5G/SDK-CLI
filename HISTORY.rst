@@ -3,6 +3,12 @@ History
 =======
 
 -------------------
+1.0.11 (2023-09-12)
+-------------------
+* Bug fix on validation pipeline. Take into account that domainName may not be present in the service description (aefProfile)
+* Requirements file has been updated to remove package conflicts. Also, deploy yaml has been updated for better debugging issues.
+
+-------------------
 1.0.12 (2023-09-14)
 -------------------
 * Minor improvement on validation pipeline. On tests related with TSN allow the PORT to be Null in the constructor of the TSNManager class. If so, don't add the port when constructing the tsn endpoint url
