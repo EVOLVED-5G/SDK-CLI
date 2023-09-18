@@ -1818,7 +1818,7 @@ class TSNManager:
                       retrieve_specific_resource_name(self.tsn_manager.api_name, "TSN_DETAIL_PROFILE"). \
                       format(profileName=self.name)
 
-            response = requests.get(url=url, headers=self.tsn_manager.headers_auth)
+            response = requests.get(url=url, headers=self.tsn_manager.headers_auth , verify = False)
             response.raise_for_status()
             parameters_dict = json.loads(response.text)[self.name]
             return self.TSNProfileConfiguration(parameters_dict)
@@ -1833,7 +1833,7 @@ class TSNManager:
         url = self.url_prefix + self.service_discoverer. \
             retrieve_specific_resource_name(self.api_name, "TSN_LIST_PROFILES")
 
-        response = requests.get(url=url, headers=self.headers_auth)
+        response = requests.get(url=url, headers=self.headers_auth , verify= False)
         response.raise_for_status()
         response_dict = json.loads(response.text)
         return [
@@ -1863,7 +1863,7 @@ class TSNManager:
                                                                                         "TSN_APPLY_CONFIGURATION")
 
         response = requests.post(
-            url=url, json=data, headers=self.headers_auth
+            url=url, json=data, headers=self.headers_auth, verify= False
         )
         response.raise_for_status()
         response = json.loads(response.text)
@@ -1902,7 +1902,8 @@ class TSNManager:
         response = requests.post(
             url=url,
             json=data,
-            headers=self.headers_auth
+            headers=self.headers_auth,
+            verify= False
         )
         response.raise_for_status()
         response = json.loads(response.text)
@@ -1927,7 +1928,7 @@ class TSNManager:
             "token": clearance_token,
         }
         response = requests.post(
-            url=url, json=data, headers=self.headers_auth
+            url=url, json=data, headers=self.headers_auth,  verify= False
         )
         response.raise_for_status()
         assert "success" in json.loads(response.text)["message"]
