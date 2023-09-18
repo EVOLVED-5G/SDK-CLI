@@ -3,6 +3,17 @@ History
 =======
 
 -------------------
+1.0.13 (2023-09-18)
+-------------------
+* TSN endpoints, set ssl verify to false
+
+-------------------
+1.0.12 (2023-09-14)
+-------------------
+* Minor improvement on validation pipeline. On tests related with TSN allow the PORT to be Null in the constructor of the TSNManager class. If so, don't add the port when constructing the tsn endpoint url
+
+
+-------------------
 1.0.12 (2023-09-14)
 -------------------
 * Minor improvement on validation pipeline. On tests related with TSN allow the PORT to be Null in the constructor of the TSNManager class. If so, don't add the port when constructing the tsn endpoint url
